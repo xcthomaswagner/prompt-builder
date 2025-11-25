@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   Sparkles,
   History,
@@ -75,6 +75,7 @@ const estimateTokens = (text) => {
 
 // --- Gemini API Configuration ---
 const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
+const openAiEnvKey = import.meta.env.VITE_OPENAI_API_KEY;
 
 const callGemini = async (prompt, systemInstruction, apiKey) => {
   if (!apiKey) throw new Error("Gemini API Key is missing");
@@ -188,7 +189,7 @@ const callOpenAI = async (prompt, systemInstruction, apiKey) => {
   const url = "https://api.openai.com/v1/chat/completions";
 
   const payload = {
-    model: "gpt-4o",
+    model: "gpt-5.1",
     messages: [
       { role: "system", content: systemInstruction + "\n\nIMPORTANT: You must return valid JSON only." },
       { role: "user", content: prompt }
@@ -262,6 +263,77 @@ const callAnthropic = async (prompt, systemInstruction, apiKey) => {
   }
 };
 
+const extractExpandedPrompt = (response) => {
+  if (!response) return '';
+  if (typeof response === 'string') {
+    return response.trim();
+  }
+
+  const readPath = (obj, path) => {
+    let current = obj;
+    for (const segment of path) {
+      if (current == null) return '';
+      current = current[segment];
+    }
+    if (typeof current === 'string') {
+      return current.trim();
+    }
+    if (current && typeof current === 'object') {
+      try {
+        return JSON.stringify(current);
+      } catch (err) {
+        return '';
+      }
+    }
+    return '';
+  };
+
+  const candidatePaths = [
+    ['final_output', 'expanded_prompt_text'],
+    ['final_output', 'expandedPromptText'],
+    ['final_output', 'expanded_prompt', 'text'],
+    ['final_output', 'expandedPrompt', 'text'],
+    ['final_output', 'expanded_prompt'],
+    ['final_output', 'expandedPrompt'],
+    ['final_output', 'text'],
+    ['final_output', 'prompt'],
+    ['expanded_prompt_text'],
+    ['expandedPromptText'],
+    ['expanded_prompt'],
+    ['expandedPrompt'],
+    ['finalPrompt'],
+    ['final_prompt_text'],
+    ['final_prompt']
+  ];
+
+  for (const path of candidatePaths) {
+    const value = readPath(response, path);
+    if (value) return value;
+  }
+
+  const finalOutput = response.final_output;
+  if (typeof finalOutput === 'string') {
+    return finalOutput.trim();
+  }
+
+  if (finalOutput && typeof finalOutput === 'object') {
+    try {
+      const serialized = JSON.stringify(finalOutput);
+      if (serialized) return serialized;
+    } catch (err) {
+      console.warn('Failed to stringify final_output', err);
+    }
+  }
+
+  try {
+    const serialized = JSON.stringify(response);
+    return serialized || '';
+  } catch (err) {
+    console.warn('Failed to stringify AI response', err);
+    return '';
+  }
+};
+
 // --- Lookup Data ---
 
 const TONES = [
@@ -326,6 +398,8 @@ export default function App() {
   const [showSettings, setShowSettings] = useState(false);
   const [historySearchQuery, setHistorySearchQuery] = useState('');
   const [currentHistoryId, setCurrentHistoryId] = useState(null);
+  const [isSavingHistory, setIsSavingHistory] = useState(false);
+  const generationRunRef = useRef(0);
 
   // Helper: Generate a hash signature for the prompt (first 60 chars)
   const generateSignature = (text) => {
@@ -341,7 +415,13 @@ export default function App() {
 
   // Settings State
   const [selectedProvider, setSelectedProvider] = useState(localStorage.getItem('selectedProvider') || 'gemini');
-  const [chatgptApiKey, setChatgptApiKey] = useState(localStorage.getItem('chatgptApiKey') || '');
+  const [chatgptApiKey, setChatgptApiKey] = useState(() => {
+    const stored = localStorage.getItem('chatgptApiKey');
+    if (stored && !stored.startsWith('VITE_')) {
+      return stored;
+    }
+    return openAiEnvKey || stored || '';
+  });
   const [claudeApiKey, setClaudeApiKey] = useState(localStorage.getItem('claudeApiKey') || '');
   const [geminiApiKey, setGeminiApiKey] = useState(localStorage.getItem('geminiApiKey') || apiKey || '');
 
@@ -440,14 +520,27 @@ export default function App() {
 
   // --- Core Logic: Prompt Construction ---
   const handleGenerate = async () => {
-    if (!apiKey) {
-      setErrorMsg("API Key missing. Check .env file.");
-      return;
-    }
+    const requestState = {
+      originalText: inputText,
+      outputType: selectedOutputType,
+      tone: selectedTone,
+      format: selectedFormat,
+      length: selectedLength
+    };
+    const historySnapshot = promptHistory;
+    const historyIdSnapshot = currentHistoryId;
+    const runId = Date.now();
+    generationRunRef.current = runId;
+
     setIsGenerating(true);
     setGeneratedResult(null);
     setReversePromptTriggered(false);
     setErrorMsg('');
+    setIsSavingHistory(false);
+
+    let finalPromptText = '';
+    let isReverse = false;
+    let generationFailed = false;
 
     try {
       const toneObj = TONES.find(t => t.id === selectedTone);
@@ -491,40 +584,19 @@ export default function App() {
 
       let aiData;
       if (selectedProvider === 'chatgpt') {
-        if (!chatgptApiKey) throw new Error("ChatGPT API Key is missing. Please add it in Settings.");
+        if (!chatgptApiKey) throw new Error("OpenAI GPT-5.1 API Key is missing. Please add it in Settings.");
         aiData = await callOpenAI(inputText, systemPrompt, chatgptApiKey);
       } else if (selectedProvider === 'claude') {
         if (!claudeApiKey) throw new Error("Claude API Key is missing. Please add it in Settings.");
         aiData = await callAnthropic(inputText, systemPrompt, claudeApiKey);
       } else {
-        // Default to Gemini
         if (!geminiApiKey) throw new Error("Gemini API Key is missing. Please add it in Settings.");
-        // Note: callGemini uses the global apiKey variable, but we should update it to use the one from settings if we refactor callGemini
-        // For now, let's pass it if we update callGemini, or rely on the global one if it's the same.
-        // Actually, let's update callGemini to accept the key too, or just rely on the fact that geminiApiKey initializes from apiKey
-        // But callGemini currently uses the global 'apiKey' variable.
-        // Let's modify callGemini to accept the key as an argument to be consistent, OR just ensure 'apiKey' is updated?
-        // 'apiKey' is a constant from import. We can't update it.
-        // We should update callGemini to take the key as an argument.
-
-        // Since I can't easily update callGemini signature in this step without changing the definition, 
-        // and I already defined callGemini to use the global 'apiKey', I'll stick with that for now 
-        // BUT wait, the user might have changed the key in settings.
-        // So I SHOULD update callGemini to take the key.
-
-        // Let's assume I'll update callGemini signature in a separate step or just use the global one for now if it matches.
-        // However, the user wants to use the key from settings.
-        // I will use a modified call for Gemini that passes the key if I can, but callGemini signature is (prompt, systemInstruction).
-        // I'll update callGemini signature in the next step. For now, I'll call it as is, but I'll add a TODO or just fix it now.
-
-        // Actually, I can just redefine callGemini to take the key in the previous step? No, I already ran it.
-        // I will update callGemini signature in a subsequent step.
         aiData = await callGemini(inputText, systemPrompt, geminiApiKey);
       }
       console.log("AI Data received:", aiData);
 
-      const isReverse = aiData.reverse_prompting?.was_triggered || false;
-      const finalPromptText = aiData.final_output?.expanded_prompt_text;
+      isReverse = aiData.reverse_prompting?.was_triggered || false;
+      finalPromptText = extractExpandedPrompt(aiData);
 
       if (!finalPromptText) {
         console.error("No final prompt text in response:", aiData);
@@ -536,90 +608,9 @@ export default function App() {
       setGeneratedResult(finalPromptText);
       console.log("Result set successfully");
 
-      if (user && db) {
-        try {
-          // Versioning Logic
-          // 1. If we have a currentHistoryId, we are editing that specific prompt -> Update it.
-          // 2. If not, check if the "signature" (hash of first 60 chars) matches an existing prompt -> Update it.
-          // 3. Else, create new.
-
-          const signature = generateSignature(inputText);
-
-          let existingItem = null;
-          if (currentHistoryId) {
-            existingItem = promptHistory.find(item => item.id === currentHistoryId);
-          }
-
-          if (!existingItem) {
-            // Fallback: Try to find by signature
-            existingItem = promptHistory.find(item => item.signature === signature);
-          }
-
-          const newVersionData = {
-            originalText: inputText,
-            finalPrompt: finalPromptText,
-            outputType: selectedOutputType,
-            tone: selectedTone,
-            format: selectedFormat,
-            length: selectedLength,
-            createdAt: new Date().toISOString(),
-            isReversePrompted: isReverse,
-            signature: signature
-          };
-
-          const saveTask = async () => {
-            if (existingItem) {
-              // Update existing item
-              console.log("Updating existing prompt version:", existingItem.id);
-              const docRef = doc(db, 'artifacts', appId, 'users', user.uid, 'prompt_history', existingItem.id);
-              await updateDoc(docRef, {
-                ...newVersionData,
-                createdAt: serverTimestamp(), // Update top-level time to now
-                version: (existingItem.version || 1) + 1,
-                versions: arrayUnion(newVersionData),
-                signature: signature // Update signature in case it changed slightly but we stuck to ID
-              });
-              return existingItem.id;
-            } else {
-              // Create new item
-              console.log("Creating new prompt history item");
-              const docRef = await addDoc(collection(db, 'artifacts', appId, 'users', user.uid, 'prompt_history'), {
-                ...newVersionData,
-                createdAt: serverTimestamp(),
-                isPrivate: false,
-                version: 1,
-                versions: [newVersionData],
-                signature: signature
-              });
-              return docRef.id;
-            }
-          };
-
-          const timeoutPromise = new Promise((_, reject) =>
-            setTimeout(() => reject(new Error('Firestore save timeout')), 5000)
-          );
-
-          // Race the save task against the timeout
-          const savedId = await Promise.race([saveTask(), timeoutPromise]);
-
-          // Set the current ID so subsequent edits version this doc
-          if (savedId) {
-            setCurrentHistoryId(savedId);
-          }
-
-          console.log("Saved to history");
-        } catch (dbError) {
-          console.error("Failed to save to history:", dbError);
-          // Don't show error to user, just log it
-        }
-      }
-
-      console.log("About to exit try block");
-
     } catch (err) {
       console.error("Prompt generation error:", err);
 
-      // Provide more specific error messages
       if (err.message?.includes("API Key")) {
         setErrorMsg("API Key is missing or invalid. Please check your configuration.");
       } else if (err.message?.includes("HTTP error")) {
@@ -629,11 +620,103 @@ export default function App() {
       } else {
         setErrorMsg(`Failed to generate prompt: ${err.message || "Unknown error"}. Please try again.`);
       }
+
+      generationFailed = true;
     } finally {
       console.log("Setting isGenerating to false");
       setIsGenerating(false);
       console.log("isGenerating set to false");
     }
+
+    if (generationFailed || !user || !db || !finalPromptText) {
+      setIsSavingHistory(false);
+      return;
+    }
+
+    setIsSavingHistory(true);
+    const signature = generateSignature(requestState.originalText);
+
+    const saveTask = async () => {
+      let existingItem = historyIdSnapshot
+        ? historySnapshot.find(item => item.id === historyIdSnapshot)
+        : null;
+
+      if (!existingItem) {
+        existingItem = historySnapshot.find(item => item.signature === signature);
+      }
+
+      const newVersionData = {
+        originalText: requestState.originalText,
+        finalPrompt: finalPromptText,
+        outputType: requestState.outputType,
+        tone: requestState.tone,
+        format: requestState.format,
+        length: requestState.length,
+        createdAt: new Date().toISOString(),
+        isReversePrompted: isReverse,
+        signature
+      };
+
+      if (existingItem) {
+        console.log("Updating existing prompt version:", existingItem.id);
+        const docRef = doc(db, 'artifacts', appId, 'users', user.uid, 'prompt_history', existingItem.id);
+        await updateDoc(docRef, {
+          ...newVersionData,
+          createdAt: serverTimestamp(),
+          version: (existingItem.version || 1) + 1,
+          versions: arrayUnion(newVersionData),
+          signature
+        });
+        return existingItem.id;
+      } else {
+        console.log("Creating new prompt history item");
+        const docRef = await addDoc(collection(db, 'artifacts', appId, 'users', user.uid, 'prompt_history'), {
+          ...newVersionData,
+          createdAt: serverTimestamp(),
+          isPrivate: false,
+          version: 1,
+          versions: [newVersionData],
+          signature
+        });
+        return docRef.id;
+      }
+    };
+
+    const saveWithTimeout = () => {
+      return new Promise((resolve, reject) => {
+        const timeoutId = setTimeout(() => reject(new Error('Firestore save timeout')), 5000);
+        saveTask()
+          .then((result) => {
+            clearTimeout(timeoutId);
+            resolve(result);
+          })
+          .catch((error) => {
+            clearTimeout(timeoutId);
+            reject(error);
+          });
+      });
+    };
+
+    saveWithTimeout()
+      .then((savedId) => {
+        if (generationRunRef.current !== runId) {
+          setIsSavingHistory(false);
+          return;
+        }
+        if (savedId) {
+          setCurrentHistoryId(savedId);
+        }
+        console.log("Saved to history");
+        setIsSavingHistory(false);
+      })
+      .catch((dbError) => {
+        if (generationRunRef.current !== runId) {
+          setIsSavingHistory(false);
+          return;
+        }
+        console.error("Failed to save to history:", dbError);
+        setIsSavingHistory(false);
+      });
   };
 
 
@@ -854,6 +937,13 @@ export default function App() {
                 </>
               )}
             </button>
+
+            {isSavingHistory && (
+              <div className="mt-3 flex items-center gap-2 text-xs text-slate-500">
+                <div className="w-4 h-4 border-2 border-slate-200 border-t-cyan-500 rounded-full animate-spin" />
+                Saving to history...
+              </div>
+            )}
 
             {errorMsg && (
               <div className="p-4 bg-red-50 text-red-600 rounded-lg text-sm border border-red-100 flex items-center gap-2">
@@ -1196,7 +1286,7 @@ export default function App() {
                       : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300'
                       }`}
                   >
-                    <div className="text-xs font-semibold">ChatGPT</div>
+                    <div className="text-xs font-semibold text-left leading-tight">OpenAI GPT-5.1</div>
                   </button>
                   <button
                     onClick={() => setSelectedProvider('claude')}
@@ -1223,9 +1313,9 @@ export default function App() {
               <div className="space-y-4">
                 <h3 className="text-sm font-bold text-slate-700">API Keys</h3>
 
-                {/* ChatGPT API Key */}
+                {/* OpenAI GPT-5.1 API Key */}
                 <div className="space-y-2">
-                  <label className="text-xs font-medium text-slate-600">ChatGPT API Key</label>
+                  <label className="text-xs font-medium text-slate-600">OpenAI GPT-5.1 API Key</label>
                   <input
                     type="password"
                     value={chatgptApiKey}
