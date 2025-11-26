@@ -18,6 +18,7 @@ import {
   Eye,
   Zap,
   EyeOff,
+  X,
   Search
 } from 'lucide-react';
 import { initializeApp } from "firebase/app";
@@ -35,6 +36,8 @@ import {
   arrayUnion
 } from "firebase/firestore";
 import { getAuth, signInWithPopup, GoogleAuthProvider, OAuthProvider, onAuthStateChanged, signOut } from "firebase/auth";
+import buildPromptPlan from './lib/promptAssembler';
+import PROMPT_SPECS from './lib/promptSpecs';
 
 // --- Firebase Configuration ---
 // Note: In a real app, these come from import.meta.env
@@ -57,7 +60,7 @@ try {
   console.warn("Firebase not initialized. Check your .env file.");
 }
 
-const appId = 'default-app-id'; // You can customize this if needed
+const appId = firebaseConfig.appId || 'default-app-id';
 
 // --- Token Estimation Function ---
 // Simple token estimation: ~4 characters per token on average for English text
@@ -86,12 +89,15 @@ const callGemini = async (prompt, systemInstruction, apiKey) => {
     contents: [{ parts: [{ text: prompt }] }],
     systemInstruction: { parts: [{ text: systemInstruction }] },
     generationConfig: {
+      maxOutputTokens: 4096,
       responseMimeType: "application/json",
       responseSchema: {
         type: "OBJECT",
+        required: ["analysis", "reverse_prompting", "final_output"],
         properties: {
           analysis: {
             type: "OBJECT",
+            required: ["detected_domain", "input_quality_score", "is_vague_or_short"],
             properties: {
               detected_domain: { type: "STRING" },
               input_quality_score: { type: "INTEGER" }, // 1-10
@@ -100,6 +106,7 @@ const callGemini = async (prompt, systemInstruction, apiKey) => {
           },
           reverse_prompting: {
             type: "OBJECT",
+            required: ["was_triggered", "refined_task_text", "reasoning"],
             properties: {
               was_triggered: { type: "BOOLEAN" },
               refined_task_text: { type: "STRING" },
@@ -108,6 +115,7 @@ const callGemini = async (prompt, systemInstruction, apiKey) => {
           },
           final_output: {
             type: "OBJECT",
+            required: ["expanded_prompt_text", "enrichment_attributes_used"],
             properties: {
               expanded_prompt_text: { type: "STRING" }, // The big cohesive text
               enrichment_attributes_used: { type: "ARRAY", items: { type: "STRING" } }
@@ -350,7 +358,8 @@ const OUTPUT_TYPES = [
   { id: 'data', label: 'Data', icon: Database, context: 'Structured Data / Tables' },
   { id: 'code', label: 'Code', icon: Code, context: 'Production-Ready Code' },
   { id: 'copy', label: 'Copy', icon: Copy, context: 'Marketing Copy / Creative Writing' },
-  { id: 'comms', label: 'Comms', icon: MessageSquare, context: 'Email / Communication' }
+  { id: 'comms', label: 'Comms', icon: MessageSquare, context: 'Email / Communication' },
+  { id: 'json', label: 'JSON', icon: Code, context: 'Canonical Prompt Blueprint (JSON object)' }
 ];
 
 const FORMATS = [
@@ -399,6 +408,9 @@ export default function App() {
   const [historySearchQuery, setHistorySearchQuery] = useState('');
   const [currentHistoryId, setCurrentHistoryId] = useState(null);
   const [isSavingHistory, setIsSavingHistory] = useState(false);
+  const [showSystemPrompt, setShowSystemPrompt] = useState(false);
+  const [activeVersionHistoryId, setActiveVersionHistoryId] = useState(null);
+  const [isHistoryLoading, setIsHistoryLoading] = useState(true);
   const generationRunRef = useRef(0);
 
   // Helper: Generate a hash signature for the prompt (first 60 chars)
@@ -439,7 +451,7 @@ export default function App() {
     if (!db || !user) return;
     if (window.confirm('Are you sure you want to delete this prompt?')) {
       try {
-        await deleteDoc(doc(db, 'artifacts', appId, 'users', user.uid, 'prompt_history', itemId));
+        await deleteDoc(doc(db, 'users', user.uid, 'prompt_history', itemId));
       } catch (error) {
         console.error("Error deleting document: ", error);
       }
@@ -450,7 +462,7 @@ export default function App() {
     e.stopPropagation();
     if (!db || !user) return;
     try {
-      await updateDoc(doc(db, 'artifacts', appId, 'users', user.uid, 'prompt_history', item.id), {
+      await updateDoc(doc(db, 'users', user.uid, 'prompt_history', item.id), {
         isPrivate: !item.isPrivate
       });
     } catch (error) {
@@ -499,14 +511,41 @@ export default function App() {
 
   useEffect(() => {
     if (!user || !db) return;
+    setIsHistoryLoading(true);
+    console.log("Setting up history listener for user:", user.uid);
+
+    // REMOVED orderBy to avoid index issues. Sorting client-side instead.
     const q = query(
-      collection(db, 'artifacts', appId, 'users', user.uid, 'prompt_history'),
-      orderBy('createdAt', 'desc')
+      collection(db, 'users', user.uid, 'prompt_history')
     );
+
     const unsubscribe = onSnapshot(q, (snapshot) => {
-      const items = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      console.log("History snapshot received. Size:", snapshot.size);
+      const items = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+
+      // Client-side sort (Newest first)
+      items.sort((a, b) => {
+        // Handle Firestore Timestamps, strings, or nulls (pending writes)
+        const getMillis = (item) => {
+          if (!item.createdAt) return Date.now(); // Pending write = now
+          if (item.createdAt.toMillis) return item.createdAt.toMillis();
+          if (item.createdAt.seconds) return item.createdAt.seconds * 1000;
+          return new Date(item.createdAt).getTime();
+        };
+        return getMillis(b) - getMillis(a);
+      });
+
+      console.log("History items sorted:", items.length);
       setPromptHistory(items);
-    }, (error) => console.error("History fetch error:", error));
+      setIsHistoryLoading(false);
+    }, (error) => {
+      console.error("Error fetching history:", error);
+      setIsHistoryLoading(false);
+    });
+
     return () => unsubscribe();
   }, [user]);
 
@@ -548,50 +587,59 @@ export default function App() {
       const formatObj = FORMATS.find(f => f.id === selectedFormat);
       const lengthObj = LENGTHS.find(t => t.id === selectedLength);
 
-      const systemPrompt = `
-        You are an Expert Prompt Architect Engine. Your goal is to transform a user's input into a HIGH-FIDELITY, COHESIVE, and DETAILED prompt for another LLM.
-        
-        INPUT CONFIGURATION:
-        - Tone: ${toneObj.label} (${toneObj.prompt})
-        - Output Type: ${typeObj.label} (${typeObj.context})
-        - Structure Format: ${formatObj.label} (${formatObj.prompt})
-        - Detail Level: ${lengthObj.label}
-        - User Notes: ${notes || "None"}
-        - Aesthetic Mode: ${aestheticMode ? "ON (Visual clarity/whitespace)" : "OFF"}
-        - Strip Meta-Commentary: ${stripMeta ? "YES" : "NO"}
+      // Use the new assembler for ALL types
+      const plan = buildPromptPlan({
+        specId: selectedOutputType,
+        userInput: inputText,
+        tone: toneObj,
+        outputType: typeObj,
+        format: formatObj,
+        length: lengthObj,
+        notes,
+        toggles: {
+          allowPlaceholders,
+          stripMeta,
+          aestheticMode
+        }
+      });
 
-        EXECUTION PIPELINE:
-        
-        1. **DOMAIN ANALYSIS**: 
-           - Identify the specific domain.
-           - Extract key nouns and entities.
+      const systemPrompt = `${plan.systemPrompt}
 
-        2. **SUFFICIENCY CHECK**: 
-           - Is the User Input < 15 words or vague?
-           - If YES: Trigger "Reverse Prompting". Rewrite the task into a specific, expert-level request.
-           - If NO: Use the User Input as is.
+CRITICAL JSON RESPONSE CONTRACT:
+You MUST return a complete JSON object with ALL THREE sections below. Do not omit any section.
 
-        3. **ENRICHMENT**: 
-           - Select 4-6 specific, high-value attributes relevant to the Domain.
+REQUIRED STRUCTURE:
+{
+  "analysis": {
+    "detected_domain": string,
+    "input_quality_score": integer,
+    "is_vague_or_short": boolean
+  },
+  "reverse_prompting": {
+    "was_triggered": boolean,
+    "refined_task_text": string,
+    "reasoning": string
+  },
+  "final_output": {
+    "expanded_prompt_text": string,
+    "enrichment_attributes_used": string[]
+  }
+}
 
-        4. **FINAL PROMPT GENERATION**:
-           - Write the final output as a **single, fluid, and comprehensive set of instructions**.
-           - INTEGRATE settings into natural language.
-           - The output must be ready to copy-paste into an LLM.
+CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" field must contain the final expanded prompt or blueprint following the STRUCTURAL TEMPLATE and rules above. This field cannot be empty.`;
 
-        Return a JSON object containing the analysis and the final expanded prompt text.
-      `;
+      const userPromptForModel = plan.userPrompt || inputText;
 
       let aiData;
       if (selectedProvider === 'chatgpt') {
         if (!chatgptApiKey) throw new Error("OpenAI GPT-5.1 API Key is missing. Please add it in Settings.");
-        aiData = await callOpenAI(inputText, systemPrompt, chatgptApiKey);
+        aiData = await callOpenAI(userPromptForModel, systemPrompt, chatgptApiKey);
       } else if (selectedProvider === 'claude') {
         if (!claudeApiKey) throw new Error("Claude API Key is missing. Please add it in Settings.");
-        aiData = await callAnthropic(inputText, systemPrompt, claudeApiKey);
+        aiData = await callAnthropic(userPromptForModel, systemPrompt, claudeApiKey);
       } else {
         if (!geminiApiKey) throw new Error("Gemini API Key is missing. Please add it in Settings.");
-        aiData = await callGemini(inputText, systemPrompt, geminiApiKey);
+        aiData = await callGemini(userPromptForModel, systemPrompt, geminiApiKey);
       }
       console.log("AI Data received:", aiData);
 
@@ -628,73 +676,85 @@ export default function App() {
       console.log("isGenerating set to false");
     }
 
-    if (generationFailed || !user || !db || !finalPromptText) {
+    if (generationFailed || !finalPromptText) {
+      console.log("Save skipped: Generation failed or no prompt text");
+      setIsSavingHistory(false);
+      return;
+    }
+
+    if (!user) {
+      console.log("Save skipped: No user logged in");
+      setIsSavingHistory(false);
+      return;
+    }
+
+    if (!db) {
+      console.error("Save skipped: Firestore DB not initialized");
       setIsSavingHistory(false);
       return;
     }
 
     setIsSavingHistory(true);
     const signature = generateSignature(requestState.originalText);
+    console.log("Attempting to save task...", { signature, user: user.uid });
 
     const saveTask = async () => {
-      let existingItem = historyIdSnapshot
-        ? historySnapshot.find(item => item.id === historyIdSnapshot)
-        : null;
+      try {
+        let existingItem = historyIdSnapshot
+          ? historySnapshot.find(item => item.id === historyIdSnapshot)
+          : null;
 
-      if (!existingItem) {
-        existingItem = historySnapshot.find(item => item.signature === signature);
-      }
+        if (!existingItem) {
+          existingItem = historySnapshot.find(item => item.signature === signature);
+        }
 
-      const newVersionData = {
-        originalText: requestState.originalText,
-        finalPrompt: finalPromptText,
-        outputType: requestState.outputType,
-        tone: requestState.tone,
-        format: requestState.format,
-        length: requestState.length,
-        createdAt: new Date().toISOString(),
-        isReversePrompted: isReverse,
-        signature
-      };
-
-      if (existingItem) {
-        console.log("Updating existing prompt version:", existingItem.id);
-        const docRef = doc(db, 'artifacts', appId, 'users', user.uid, 'prompt_history', existingItem.id);
-        await updateDoc(docRef, {
-          ...newVersionData,
-          createdAt: serverTimestamp(),
-          version: (existingItem.version || 1) + 1,
-          versions: arrayUnion(newVersionData),
+        const newVersionData = {
+          originalText: requestState.originalText,
+          finalPrompt: finalPromptText,
+          outputType: requestState.outputType,
+          tone: requestState.tone,
+          format: requestState.format,
+          length: requestState.length,
+          createdAt: new Date().toISOString(),
+          isReversePrompted: isReverse,
           signature
-        });
-        return existingItem.id;
-      } else {
-        console.log("Creating new prompt history item");
-        const docRef = await addDoc(collection(db, 'artifacts', appId, 'users', user.uid, 'prompt_history'), {
-          ...newVersionData,
-          createdAt: serverTimestamp(),
-          isPrivate: false,
-          version: 1,
-          versions: [newVersionData],
-          signature
-        });
-        return docRef.id;
+        };
+
+        if (existingItem) {
+          console.log("Updating existing prompt version:", existingItem.id);
+          const docRef = doc(db, 'users', user.uid, 'prompt_history', existingItem.id);
+          await updateDoc(docRef, {
+            ...newVersionData,
+            createdAt: serverTimestamp(),
+            version: (existingItem.version || 1) + 1,
+            versions: arrayUnion(newVersionData),
+            signature
+          });
+          console.log("Update successful");
+          return existingItem.id;
+        } else {
+          console.log("Creating new prompt history item");
+          const collectionRef = collection(db, 'users', user.uid, 'prompt_history');
+          const docRef = await addDoc(collectionRef, {
+            ...newVersionData,
+            createdAt: serverTimestamp(),
+            isPrivate: false,
+            version: 1,
+            versions: [newVersionData],
+            signature
+          });
+          console.log("Create successful, ID:", docRef.id);
+          return docRef.id;
+        }
+      } catch (error) {
+        console.error("Error saving to Firestore:", error);
+        throw error;
       }
     };
 
     const saveWithTimeout = () => {
-      return new Promise((resolve, reject) => {
-        const timeoutId = setTimeout(() => reject(new Error('Firestore save timeout')), 5000);
-        saveTask()
-          .then((result) => {
-            clearTimeout(timeoutId);
-            resolve(result);
-          })
-          .catch((error) => {
-            clearTimeout(timeoutId);
-            reject(error);
-          });
-      });
+      // No artificial timeout; rely on Firestore's own behavior
+      return saveTask();
     };
 
     saveWithTimeout()
@@ -715,18 +775,27 @@ export default function App() {
           return;
         }
         console.error("Failed to save to history:", dbError);
+        console.error("Error code:", dbError.code);
+        console.error("Error message:", dbError.message);
+        console.error("Full error:", JSON.stringify(dbError, null, 2));
         setIsSavingHistory(false);
       });
   };
 
 
 
-  const loadFromHistory = (item) => {
-    setCurrentHistoryId(item.id);
-    setInputText(item.originalText);
-    setSelectedOutputType(item.outputType || 'doc');
-    setSelectedTone(item.tone || 'professional');
-    setSelectedFormat(item.format || 'paragraph');
+  const loadFromHistory = (item, versionData = null) => {
+    const data = versionData || item;
+    setCurrentHistoryId(item.id); // Always keep the parent ID
+    setInputText(data.originalText);
+    setSelectedOutputType(data.outputType || 'doc');
+    setSelectedTone(data.tone || 'professional');
+    setSelectedFormat(data.format || 'paragraph');
+    setSelectedLength(data.length || 'medium');
+    // Load the generated prompt result
+    if (data.finalPrompt) {
+      setGeneratedResult(data.finalPrompt);
+    }
   };
 
   const handleCopy = () => {
@@ -858,16 +927,75 @@ export default function App() {
 
         {/* Scrollable Work Area */}
         <div className="flex-1 overflow-y-auto bg-slate-50/50 p-4 md:p-8">
-          <div className="max-w-4xl mx-auto space-y-6 pb-20">
+          <div className="max-w-6xl mx-auto space-y-6 pb-20">
 
             {/* Input Section */}
             <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6 transition-all focus-within:ring-2 focus-within:ring-indigo-100 focus-within:border-indigo-400">
+              <div className="flex justify-end mb-2">
+                <button
+                  onClick={() => setShowSystemPrompt(!showSystemPrompt)}
+                  className="text-xs text-slate-500 hover:text-indigo-600 flex items-center gap-1"
+                >
+                  {showSystemPrompt ? <EyeOff className="w-3 h-3" /> : <Eye className="w-3 h-3" />}
+                  {showSystemPrompt ? 'Hide System Prompt' : 'Show System Prompt'}
+                </button>
+              </div>
+
+              {showSystemPrompt && (
+                <div className="mb-6 p-4 bg-slate-100 rounded-lg border border-slate-200 text-xs font-mono text-slate-600 overflow-auto max-h-64">
+                  <h3 className="font-bold mb-2 text-slate-700">System Prompt Preview:</h3>
+                  <pre className="whitespace-pre-wrap">
+                    {(() => {
+                      try {
+                        const toneObj = TONES.find(t => t.id === selectedTone);
+                        const typeObj = OUTPUT_TYPES.find(t => t.id === selectedOutputType);
+                        const formatObj = FORMATS.find(f => f.id === selectedFormat);
+                        const lengthObj = LENGTHS.find(t => t.id === selectedLength);
+
+                        const plan = buildPromptPlan({
+                          specId: selectedOutputType,
+                          userInput: inputText || "(User Input)",
+                          tone: toneObj,
+                          outputType: typeObj,
+                          format: formatObj,
+                          length: lengthObj,
+                          notes,
+                          toggles: { allowPlaceholders, stripMeta, aestheticMode }
+                        });
+                        return plan.systemPrompt;
+                      } catch (e) {
+                        return "Error generating preview: " + e.message;
+                      }
+                    })()}
+                  </pre>
+                </div>
+              )}
+
               <div className="flex justify-between items-center mb-3">
                 <label className="text-sm font-semibold text-slate-700">Your Original Prompt</label>
                 <div className="flex items-center gap-3 text-xs font-mono">
                   <span className="text-slate-400">{inputText.length} chars</span>
                   <span className="text-slate-300">•</span>
                   <span className="text-cyan-600 font-semibold">{estimateTokens(inputText)} tokens</span>
+                  <span className="text-slate-300">•</span>
+                  <button
+                    onClick={() => {
+                      setInputText('');
+                      setSelectedOutputType('doc');
+                      setSelectedTone('professional');
+                      setSelectedFormat('paragraph');
+                      setSelectedLength('medium');
+                      setNotes('');
+                      setAllowPlaceholders(false);
+                      setStripMeta(true);
+                      setAestheticMode(false);
+                      setGeneratedResult(null);
+                      setCurrentHistoryId(null);
+                    }}
+                    className="text-slate-500 hover:text-slate-700 font-sans text-xs px-2 py-0.5 rounded hover:bg-slate-100 transition-colors"
+                  >
+                    Reset
+                  </button>
                 </div>
               </div>
               <textarea
@@ -896,7 +1024,7 @@ export default function App() {
             <div>
               <label className="text-sm font-semibold text-slate-700 mb-3 block">Output Type</label>
               <div className="grid grid-cols-3 md:grid-cols-6 gap-3">
-                {OUTPUT_TYPES.map((type) => {
+                {OUTPUT_TYPES.filter(type => type.id !== 'json').map((type) => {
                   const Icon = type.icon;
                   const isSelected = selectedOutputType === type.id;
                   return (
@@ -1131,7 +1259,7 @@ export default function App() {
                 {/* Prompt Content */}
                 <div className="p-6 bg-slate-50">
                   <div className="bg-white rounded-lg border border-slate-200 p-5">
-                    <pre className="whitespace-pre-wrap font-sans text-sm text-slate-700 leading-relaxed">
+                    <pre className="whitespace-pre-wrap font-mono text-sm text-slate-700 leading-relaxed">
                       {generatedResult}
                     </pre>
                   </div>
@@ -1171,70 +1299,196 @@ export default function App() {
         </div>
 
         <div className="flex-1 overflow-y-auto p-3 space-y-2">
-          {promptHistory.length === 0 ? (
+          {isHistoryLoading ? (
+            <div className="flex justify-center items-center py-10">
+              <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-indigo-500"></div>
+            </div>
+          ) : promptHistory.length === 0 ? (
             <div className="text-center text-slate-400 mt-10 text-sm">No history yet.</div>
           ) : (
             promptHistory
               .filter(item => {
+                if (!historySearchQuery) return true;
                 const query = historySearchQuery.toLowerCase();
-                return (
+
+                // Check current version
+                const currentMatch = (
                   item.originalText?.toLowerCase().includes(query) ||
                   item.outputType?.toLowerCase().includes(query) ||
-                  item.tone?.toLowerCase().includes(query)
+                  item.tone?.toLowerCase().includes(query) ||
+                  item.format?.toLowerCase().includes(query)
                 );
+                if (currentMatch) return true;
+
+                // Check history versions
+                if (item.versions && item.versions.length > 0) {
+                  return item.versions.some(v => (
+                    v.originalText?.toLowerCase().includes(query) ||
+                    v.outputType?.toLowerCase().includes(query) ||
+                    v.tone?.toLowerCase().includes(query) ||
+                    v.format?.toLowerCase().includes(query)
+                  ));
+                }
+
+                return false;
               })
-              .map((item) => (
-                <div key={item.id} className={`group p-3 rounded-lg border transition-all cursor-pointer relative ${item.isPrivate ? 'bg-slate-50 border-slate-100 opacity-75' : 'bg-white border-transparent hover:bg-slate-50 hover:border-slate-200'}`}>
-                  <div onClick={() => loadFromHistory(item)}>
-                    <div className="font-medium text-slate-800 text-sm truncate pr-16">{item.originalText || "Untitled Prompt"}</div>
+              .map((item) => {
+                // Calculate match details for display
+                let matchBadge = null;
+                if (historySearchQuery) {
+                  const query = historySearchQuery.toLowerCase();
+                  const currentMatch = (
+                    item.originalText?.toLowerCase().includes(query) ||
+                    item.outputType?.toLowerCase().includes(query) ||
+                    item.tone?.toLowerCase().includes(query) ||
+                    item.format?.toLowerCase().includes(query)
+                  );
 
-                    {/* Metadata Tags */}
-                    <div className="flex flex-wrap gap-1 mt-1.5">
-                      <span className="text-[10px] text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded capitalize">{item.outputType}</span>
-                      <span className="text-[10px] text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded capitalize">{item.format}</span>
-                      <span className="text-[10px] text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded capitalize">{item.length}</span>
-                      <span className="text-[10px] text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded capitalize">{item.tone}</span>
-                    </div>
+                  if (!currentMatch && item.versions) {
+                    const matchingVer = [...item.versions].reverse().find(v => (
+                      v.originalText?.toLowerCase().includes(query) ||
+                      v.outputType?.toLowerCase().includes(query) ||
+                      v.tone?.toLowerCase().includes(query) ||
+                      v.format?.toLowerCase().includes(query)
+                    ));
 
-                    {/* Date & Version */}
-                    <div className="text-[10px] text-slate-400 mt-2 flex items-center gap-1.5">
-                      <span>
-                        {item.createdAt?.seconds ? new Date(item.createdAt.seconds * 1000).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) : 'Just now'}
-                        {item.createdAt?.seconds && `, ${new Date(item.createdAt.seconds * 1000).toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' })}`}
-                      </span>
-                      <span>•</span>
-                      <span>{item.version || 1} version</span>
-                      {item.isReversePrompted && (
-                        <>
-                          <span>•</span>
-                          <span className="text-amber-600 flex items-center gap-0.5" title="Reverse Prompting Used">
-                            <Sparkles className="w-2.5 h-2.5" />
-                            <span className="font-bold">RP</span>
-                          </span>
-                        </>
+                    if (matchingVer) {
+                      // Find the index to calculate version number
+                      const verIndex = item.versions.indexOf(matchingVer);
+                      const verNum = verIndex + 1; // 1-based index
+                      matchBadge = (
+                        <span className="text-[10px] bg-amber-100 text-amber-700 px-1.5 py-0.5 rounded font-medium border border-amber-200">
+                          Found in v{verNum}
+                        </span>
+                      );
+                    }
+                  }
+                }
+
+                return (
+                  <div key={item.id} className={`group p-3 rounded-lg border transition-all cursor-pointer relative ${item.isPrivate ? 'bg-slate-50 border-slate-100 opacity-75' : 'bg-white border-transparent hover:bg-slate-50 hover:border-slate-200'}`}>
+                    <div onClick={() => loadFromHistory(item)}>
+                      <div className="font-medium text-slate-800 text-sm truncate pr-16">{item.originalText || "Untitled Prompt"}</div>
+
+                      {/* Metadata Tags */}
+                      <div className="flex flex-wrap gap-1 mt-1.5">
+                        <span className="text-[10px] text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded capitalize">{item.outputType}</span>
+                        <span className="text-[10px] text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded capitalize">{item.format}</span>
+                        <span className="text-[10px] text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded capitalize">{item.length}</span>
+                        <span className="text-[10px] text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded capitalize">{item.tone}</span>
+                        {matchBadge}
+                      </div>
+
+                      {/* Date & Version */}
+                      <div className="text-[10px] text-slate-400 mt-2 flex items-center gap-1.5">
+                        <span>
+                          {item.createdAt?.seconds ? new Date(item.createdAt.seconds * 1000).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) : 'Just now'}
+                          {item.createdAt?.seconds && `, ${new Date(item.createdAt.seconds * 1000).toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' })}`}
+                        </span>
+                        <span>•</span>
+                        <span>•</span>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setActiveVersionHistoryId(activeVersionHistoryId === item.id ? null : item.id);
+                          }}
+                          className="hover:text-indigo-600 hover:underline cursor-pointer transition-colors"
+                        >
+                          {item.version || 1} version{item.version !== 1 ? 's' : ''}
+                        </button>
+                        {item.isReversePrompted && (
+                          <>
+                            <span>•</span>
+                            <span className="text-amber-600 flex items-center gap-0.5" title="Reverse Prompting Used">
+                              <Sparkles className="w-2.5 h-2.5" />
+                              <span className="font-bold">RP</span>
+                            </span>
+                          </>
+                        )}
+                      </div>
+
+                      {/* Version History Popover */}
+                      {activeVersionHistoryId === item.id && Array.isArray(item.versions) && item.versions.length > 0 && (
+                        <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-lg shadow-xl border border-slate-200 z-20 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+                          <div className="bg-slate-50 px-3 py-2 border-b border-slate-100 flex justify-between items-center">
+                            <span className="text-xs font-semibold text-slate-700">Version History</span>
+                            <button
+                              onClick={(e) => { e.stopPropagation(); setActiveVersionHistoryId(null); }}
+                              className="text-slate-400 hover:text-slate-600"
+                            >
+                              <X className="w-3 h-3" />
+                            </button>
+                          </div>
+                          <div className="max-h-48 overflow-y-auto">
+                            {[...item.versions].reverse().map((ver, idx) => {
+                              const verNum = item.versions.length - idx;
+                              // Robust date parsing
+                              let dateStr = '';
+                              try {
+                                let date;
+                                if (ver.createdAt?.seconds) {
+                                  date = new Date(ver.createdAt.seconds * 1000);
+                                } else if (ver.createdAt) {
+                                  date = new Date(ver.createdAt);
+                                }
+                                if (date && !isNaN(date.getTime())) {
+                                  dateStr = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                                }
+                              } catch (e) { console.warn("Date parse error", e); }
+
+                              return (
+                                <div
+                                  key={idx}
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    loadFromHistory(item, ver);
+                                    setActiveVersionHistoryId(null);
+                                  }}
+                                  className="px-3 py-2 hover:bg-slate-50 cursor-pointer border-b border-slate-50 last:border-0 flex items-center justify-between group/ver"
+                                >
+                                  <div>
+                                    <div className="flex items-center gap-2">
+                                      <span className="text-xs font-medium text-slate-700">v{verNum}</span>
+                                      <span className="text-[10px] text-slate-400">
+                                        {dateStr}
+                                      </span>
+                                    </div>
+                                    <div className="flex gap-1 mt-0.5">
+                                      <span className="text-[9px] px-1 rounded bg-slate-100 text-slate-500">{ver.tone}</span>
+                                      <span className="text-[9px] px-1 rounded bg-slate-100 text-slate-500">{ver.format}</span>
+                                    </div>
+                                  </div>
+                                  <div className="opacity-0 group-hover/ver:opacity-100 text-indigo-600 text-[10px] font-medium">
+                                    Load
+                                  </div>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </div>
                       )}
                     </div>
-                  </div>
 
-                  {/* Action Buttons */}
-                  <div className="absolute top-2 right-2 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity bg-white/80 backdrop-blur-sm rounded-lg p-0.5">
-                    <button
-                      onClick={(e) => handleTogglePrivate(e, item)}
-                      className={`p-1 rounded hover:bg-slate-100 ${item.isPrivate ? 'text-indigo-500' : 'text-slate-400 hover:text-slate-600'}`}
-                      title={item.isPrivate ? "Make Public" : "Make Private"}
-                    >
-                      {item.isPrivate ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
-                    </button>
-                    <button
-                      onClick={(e) => handleDeleteHistory(e, item.id)}
-                      className="p-1 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded transition-colors"
-                      title="Delete"
-                    >
-                      <Trash2 className="w-3.5 h-3.5" />
-                    </button>
+                    {/* Action Buttons */}
+                    <div className="absolute top-2 right-2 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity bg-white/80 backdrop-blur-sm rounded-lg p-0.5">
+                      <button
+                        onClick={(e) => handleTogglePrivate(e, item)}
+                        className={`p-1 rounded hover:bg-slate-100 ${item.isPrivate ? 'text-indigo-500' : 'text-slate-400 hover:text-slate-600'}`}
+                        title="Private"
+                      >
+                        {item.isPrivate ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
+                      </button>
+                      <button
+                        onClick={(e) => handleDeleteHistory(e, item.id)}
+                        className="p-1 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded transition-colors"
+                        title="Delete"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
                   </div>
-                </div>
-              ))
+                );
+              })
           )}
         </div>
         <div className="p-4 border-t border-slate-100 flex items-center justify-between">
@@ -1249,134 +1503,136 @@ export default function App() {
             <Settings2 className="w-4 h-4" />
           </button>
         </div>
-      </div>
+      </div >
 
       {/* Settings Modal */}
-      {showSettings && (
-        <div className="absolute inset-0 z-50 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-white w-full max-w-md rounded-2xl shadow-2xl flex flex-col overflow-hidden">
-            {/* Header */}
-            <div className="p-6 border-b border-slate-100 flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-indigo-100 rounded-full flex items-center justify-center">
-                  <Settings2 className="w-5 h-5 text-indigo-600" />
+      {
+        showSettings && (
+          <div className="absolute inset-0 z-50 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4">
+            <div className="bg-white w-full max-w-md rounded-2xl shadow-2xl flex flex-col overflow-hidden">
+              {/* Header */}
+              <div className="p-6 border-b border-slate-100 flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-indigo-100 rounded-full flex items-center justify-center">
+                    <Settings2 className="w-5 h-5 text-indigo-600" />
+                  </div>
+                  <h2 className="text-xl font-bold text-slate-800">Settings</h2>
                 </div>
-                <h2 className="text-xl font-bold text-slate-800">Settings</h2>
-              </div>
-              <button
-                onClick={() => setShowSettings(false)}
-                className="text-slate-400 hover:text-slate-600 transition-colors"
-              >
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-            </div>
-
-            {/* Body */}
-            <div className="p-6 space-y-6 max-h-[70vh] overflow-y-auto">
-              {/* AI Provider Selection */}
-              <div className="space-y-3">
-                <label className="text-sm font-bold text-slate-700">AI Provider</label>
-                <div className="grid grid-cols-3 gap-2">
-                  <button
-                    onClick={() => setSelectedProvider('chatgpt')}
-                    className={`p-3 rounded-lg border-2 transition-all ${selectedProvider === 'chatgpt'
-                      ? 'border-green-500 bg-green-50 text-green-700'
-                      : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300'
-                      }`}
-                  >
-                    <div className="text-xs font-semibold text-left leading-tight">OpenAI GPT-5.1</div>
-                  </button>
-                  <button
-                    onClick={() => setSelectedProvider('claude')}
-                    className={`p-3 rounded-lg border-2 transition-all ${selectedProvider === 'claude'
-                      ? 'border-purple-500 bg-purple-50 text-purple-700'
-                      : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300'
-                      }`}
-                  >
-                    <div className="text-xs font-semibold">Claude</div>
-                  </button>
-                  <button
-                    onClick={() => setSelectedProvider('gemini')}
-                    className={`p-3 rounded-lg border-2 transition-all ${selectedProvider === 'gemini'
-                      ? 'border-blue-500 bg-blue-50 text-blue-700'
-                      : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300'
-                      }`}
-                  >
-                    <div className="text-xs font-semibold">Gemini</div>
-                  </button>
-                </div>
+                <button
+                  onClick={() => setShowSettings(false)}
+                  className="text-slate-400 hover:text-slate-600 transition-colors"
+                >
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
               </div>
 
-              {/* API Keys */}
-              <div className="space-y-4">
-                <h3 className="text-sm font-bold text-slate-700">API Keys</h3>
-
-                {/* OpenAI GPT-5.1 API Key */}
-                <div className="space-y-2">
-                  <label className="text-xs font-medium text-slate-600">OpenAI GPT-5.1 API Key</label>
-                  <input
-                    type="password"
-                    value={chatgptApiKey}
-                    onChange={(e) => setChatgptApiKey(e.target.value)}
-                    placeholder="sk-..."
-                    className="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                  />
+              {/* Body */}
+              <div className="p-6 space-y-6 max-h-[70vh] overflow-y-auto">
+                {/* AI Provider Selection */}
+                <div className="space-y-3">
+                  <label className="text-sm font-bold text-slate-700">AI Provider</label>
+                  <div className="grid grid-cols-3 gap-2">
+                    <button
+                      onClick={() => setSelectedProvider('chatgpt')}
+                      className={`p-3 rounded-lg border-2 transition-all ${selectedProvider === 'chatgpt'
+                        ? 'border-green-500 bg-green-50 text-green-700'
+                        : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300'
+                        }`}
+                    >
+                      <div className="text-xs font-semibold text-left leading-tight">OpenAI GPT-5.1</div>
+                    </button>
+                    <button
+                      onClick={() => setSelectedProvider('claude')}
+                      className={`p-3 rounded-lg border-2 transition-all ${selectedProvider === 'claude'
+                        ? 'border-purple-500 bg-purple-50 text-purple-700'
+                        : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300'
+                        }`}
+                    >
+                      <div className="text-xs font-semibold">Claude</div>
+                    </button>
+                    <button
+                      onClick={() => setSelectedProvider('gemini')}
+                      className={`p-3 rounded-lg border-2 transition-all ${selectedProvider === 'gemini'
+                        ? 'border-blue-500 bg-blue-50 text-blue-700'
+                        : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300'
+                        }`}
+                    >
+                      <div className="text-xs font-semibold">Gemini</div>
+                    </button>
+                  </div>
                 </div>
 
-                {/* Claude API Key */}
-                <div className="space-y-2">
-                  <label className="text-xs font-medium text-slate-600">Claude API Key</label>
-                  <input
-                    type="password"
-                    value={claudeApiKey}
-                    onChange={(e) => setClaudeApiKey(e.target.value)}
-                    placeholder="sk-ant-..."
-                    className="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                  />
+                {/* API Keys */}
+                <div className="space-y-4">
+                  <h3 className="text-sm font-bold text-slate-700">API Keys</h3>
+
+                  {/* OpenAI GPT-5.1 API Key */}
+                  <div className="space-y-2">
+                    <label className="text-xs font-medium text-slate-600">OpenAI GPT-5.1 API Key</label>
+                    <input
+                      type="password"
+                      value={chatgptApiKey}
+                      onChange={(e) => setChatgptApiKey(e.target.value)}
+                      placeholder="sk-..."
+                      className="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    />
+                  </div>
+
+                  {/* Claude API Key */}
+                  <div className="space-y-2">
+                    <label className="text-xs font-medium text-slate-600">Claude API Key</label>
+                    <input
+                      type="password"
+                      value={claudeApiKey}
+                      onChange={(e) => setClaudeApiKey(e.target.value)}
+                      placeholder="sk-ant-..."
+                      className="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                    />
+                  </div>
+
+                  {/* Gemini API Key */}
+                  <div className="space-y-2">
+                    <label className="text-xs font-medium text-slate-600">Gemini API Key</label>
+                    <input
+                      type="password"
+                      value={geminiApiKey}
+                      onChange={(e) => setGeminiApiKey(e.target.value)}
+                      placeholder="AIza..."
+                      className="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    />
+                  </div>
                 </div>
 
-                {/* Gemini API Key */}
-                <div className="space-y-2">
-                  <label className="text-xs font-medium text-slate-600">Gemini API Key</label>
-                  <input
-                    type="password"
-                    value={geminiApiKey}
-                    onChange={(e) => setGeminiApiKey(e.target.value)}
-                    placeholder="AIza..."
-                    className="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  />
+                {/* Info */}
+                <div className="p-3 bg-blue-50 rounded-lg border border-blue-100">
+                  <p className="text-xs text-blue-700">
+                    <strong>Note:</strong> API keys are stored locally in your browser and never sent to our servers.
+                  </p>
                 </div>
               </div>
 
-              {/* Info */}
-              <div className="p-3 bg-blue-50 rounded-lg border border-blue-100">
-                <p className="text-xs text-blue-700">
-                  <strong>Note:</strong> API keys are stored locally in your browser and never sent to our servers.
-                </p>
+              {/* Footer */}
+              <div className="p-4 border-t border-slate-100 flex justify-end gap-3">
+                <button
+                  onClick={() => setShowSettings(false)}
+                  className="px-4 py-2 text-slate-600 font-medium hover:bg-slate-50 rounded-lg transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={() => setShowSettings(false)}
+                  className="px-6 py-2 bg-indigo-600 text-white font-bold rounded-lg hover:bg-indigo-700 shadow-md hover:shadow-lg transition-all"
+                >
+                  Save Settings
+                </button>
               </div>
-            </div>
-
-            {/* Footer */}
-            <div className="p-4 border-t border-slate-100 flex justify-end gap-3">
-              <button
-                onClick={() => setShowSettings(false)}
-                className="px-4 py-2 text-slate-600 font-medium hover:bg-slate-50 rounded-lg transition-colors"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={() => setShowSettings(false)}
-                className="px-6 py-2 bg-indigo-600 text-white font-bold rounded-lg hover:bg-indigo-700 shadow-md hover:shadow-lg transition-all"
-              >
-                Save Settings
-              </button>
             </div>
           </div>
-        </div>
-      )}
+        )
+      }
 
-    </div>
+    </div >
   );
 }
