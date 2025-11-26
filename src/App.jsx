@@ -19,7 +19,8 @@ import {
   Zap,
   EyeOff,
   X,
-  Search
+  Search,
+  Beaker
 } from 'lucide-react';
 import { initializeApp } from "firebase/app";
 import {
@@ -38,6 +39,7 @@ import {
 import { getAuth, signInWithPopup, GoogleAuthProvider, OAuthProvider, onAuthStateChanged, signOut } from "firebase/auth";
 import buildPromptPlan from './lib/promptAssembler';
 import PROMPT_SPECS from './lib/promptSpecs';
+import ExperimentMode from './components/ExperimentMode';
 
 // --- Firebase Configuration ---
 // Note: In a real app, these come from import.meta.env
@@ -412,6 +414,9 @@ export default function App() {
   const [activeVersionHistoryId, setActiveVersionHistoryId] = useState(null);
   const [isHistoryLoading, setIsHistoryLoading] = useState(true);
   const generationRunRef = useRef(0);
+
+  // Mode toggle: 'builder' or 'experiment'
+  const [appMode, setAppMode] = useState('builder');
 
   // Helper: Generate a hash signature for the prompt (first 60 chars)
   const generateSignature = (text) => {
@@ -898,11 +903,39 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
       <div className="flex-1 flex flex-col h-full overflow-hidden relative">
         {/* Header */}
         <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 shadow-sm z-10">
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 bg-cyan-500 rounded-lg flex items-center justify-center text-white font-bold shadow-cyan-200 shadow-md">
-              <Sparkles className="w-5 h-5" />
+          <div className="flex items-center gap-6">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 bg-cyan-500 rounded-lg flex items-center justify-center text-white font-bold shadow-cyan-200 shadow-md">
+                <Sparkles className="w-5 h-5" />
+              </div>
+              <h1 className="font-bold text-xl text-slate-800 tracking-tight">Intelligent Prompt Builder</h1>
             </div>
-            <h1 className="font-bold text-xl text-slate-800 tracking-tight">Intelligent Prompt Builder</h1>
+
+            {/* Mode Toggle Tabs */}
+            <div className="flex items-center bg-slate-100 rounded-lg p-1">
+              <button
+                onClick={() => setAppMode('builder')}
+                className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-medium transition-all ${
+                  appMode === 'builder'
+                    ? 'bg-white text-slate-800 shadow-sm'
+                    : 'text-slate-500 hover:text-slate-700'
+                }`}
+              >
+                <Wand2 className="w-4 h-4" />
+                Builder
+              </button>
+              <button
+                onClick={() => setAppMode('experiment')}
+                className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-medium transition-all ${
+                  appMode === 'experiment'
+                    ? 'bg-white text-purple-700 shadow-sm'
+                    : 'text-slate-500 hover:text-slate-700'
+                }`}
+              >
+                <Beaker className="w-4 h-4" />
+                Experiment
+              </button>
+            </div>
           </div>
           <div className="flex items-center gap-4">
             <a href="#" className="text-sm text-slate-500 hover:text-indigo-600 font-medium hidden md:block">Documentation</a>
@@ -927,6 +960,28 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
 
         {/* Scrollable Work Area */}
         <div className="flex-1 overflow-y-auto bg-slate-50/50 p-4 md:p-8">
+          {appMode === 'experiment' ? (
+            <div className="max-w-6xl mx-auto pb-20">
+              <ExperimentMode
+                callLLM={async (userPrompt, systemPrompt) => {
+                  // Use the currently selected provider
+                  if (selectedProvider === 'chatgpt') {
+                    if (!chatgptApiKey) throw new Error("OpenAI API Key is missing");
+                    return callOpenAI(userPrompt, systemPrompt, chatgptApiKey);
+                  } else if (selectedProvider === 'claude') {
+                    if (!claudeApiKey) throw new Error("Claude API Key is missing");
+                    return callAnthropic(userPrompt, systemPrompt, claudeApiKey);
+                  } else {
+                    if (!geminiApiKey) throw new Error("Gemini API Key is missing");
+                    return callGemini(userPrompt, systemPrompt, geminiApiKey);
+                  }
+                }}
+                defaultOutputType={selectedOutputType}
+                db={db}
+                user={user}
+              />
+            </div>
+          ) : (
           <div className="max-w-6xl mx-auto space-y-6 pb-20">
 
             {/* Input Section */}
@@ -1268,6 +1323,7 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
             )}
 
           </div>
+          )}
         </div>
 
       </div>
