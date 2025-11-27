@@ -15,6 +15,7 @@ Operate as a **prompt architect**, not as the final content generator. Your outp
 ## 2. Inputs You Receive
 
 ### 2.1 UI / Control Inputs
+
 You receive the following structured controls from the UI:
 
 - **userInput** (string)
@@ -49,6 +50,7 @@ You receive the following structured controls from the UI:
   - Each toggle also has a corresponding label such as `allowPlaceholdersLabel`, `stripMetaLabel`, `aestheticModeLabel` with values like `ENABLED`/`DISABLED`.
 
 ### 2.2 Spec / Metadata Inputs
+
 You also receive a **prompt spec** chosen by `specId` (e.g., `doc`, `comms`). Each spec provides:
 
 - **metadata**:

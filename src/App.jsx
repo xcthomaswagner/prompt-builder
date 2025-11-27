@@ -46,7 +46,7 @@ import ExperimentMode from './components/ExperimentMode';
 import TypeSpecificForm from './components/TypeSpecificForms/index.jsx';
 import QualityFeedback from './components/QualityFeedback.jsx';
 import ReasoningPanel from './components/ReasoningPanel.jsx';
-import TemplateSelector, { CompactTemplateSelector } from './components/TemplateSelector.jsx';
+import TemplateSelector from './components/TemplateSelector.jsx';
 import OutcomeFeedback from './components/OutcomeFeedback.jsx';
 
 // New Evolution Modules
@@ -444,7 +444,6 @@ export default function App() {
   const [selectedTemplate, setSelectedTemplate] = useState(null);
   const [showOutcomeFeedback, setShowOutcomeFeedback] = useState(false);
   const [lastGeneratedPromptId, setLastGeneratedPromptId] = useState(null);
-  const [isAnalyzing, setIsAnalyzing] = useState(false);
 
   // Handle template selection
   const handleTemplateSelect = (template) => {
