@@ -20,7 +20,8 @@ import {
   EyeOff,
   X,
   Search,
-  Beaker
+  Beaker,
+  Lightbulb
 } from 'lucide-react';
 import { initializeApp } from "firebase/app";
 import {
@@ -40,6 +41,19 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, OAuthProvider, onAuthStat
 import buildPromptPlan from './lib/promptAssembler';
 import PROMPT_SPECS from './lib/promptSpecs';
 import ExperimentMode from './components/ExperimentMode';
+
+// New Evolution Components
+import TypeSpecificForm from './components/TypeSpecificForms/index.jsx';
+import QualityFeedback from './components/QualityFeedback.jsx';
+import ReasoningPanel from './components/ReasoningPanel.jsx';
+import TemplateSelector, { CompactTemplateSelector } from './components/TemplateSelector.jsx';
+import OutcomeFeedback from './components/OutcomeFeedback.jsx';
+
+// New Evolution Modules
+import { runPipeline } from './lib/pipeline/index.js';
+import { createSpec, mergeSpec } from './lib/promptSpecs/index.js';
+import { quickQualityCheck } from './lib/quality/index.js';
+import { recordOutcome, learnFromOutcome } from './lib/learning/index.js';
 
 // --- Firebase Configuration ---
 // Note: In a real app, these come from import.meta.env
@@ -421,6 +435,52 @@ export default function App() {
   // Experiment history state (lifted from ExperimentMode for sidebar rendering)
   const [experimentHistory, setExperimentHistory] = useState(null);
 
+  // Evolution Features State
+  const [promptSpec, setPromptSpec] = useState(null);
+  const [qualityResult, setQualityResult] = useState(null);
+  const [reasoning, setReasoning] = useState({});
+  const [showTemplates, setShowTemplates] = useState(false);
+  const [selectedTemplate, setSelectedTemplate] = useState(null);
+  const [showOutcomeFeedback, setShowOutcomeFeedback] = useState(false);
+  const [lastGeneratedPromptId, setLastGeneratedPromptId] = useState(null);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+
+  // Handle template selection
+  const handleTemplateSelect = (template) => {
+    setSelectedTemplate(template);
+    setSelectedOutputType(template.outputType);
+    if (template.exampleInput) {
+      setInputText(template.exampleInput);
+    }
+    // Apply template defaults to spec
+    const spec = createSpec(template.outputType);
+    const mergedSpec = mergeSpec(spec, template.defaults || {});
+    setPromptSpec(mergedSpec);
+    setShowTemplates(false);
+  };
+
+  // Handle spec field changes from type-specific forms
+  const handleSpecChange = (field, value) => {
+    setPromptSpec(prev => {
+      if (!prev) {
+        const newSpec = createSpec(selectedOutputType);
+        return mergeSpec(newSpec, { [field]: value });
+      }
+      return mergeSpec(prev, { [field]: value });
+    });
+  };
+
+  // Handle outcome feedback submission
+  const handleOutcomeSubmit = async (outcome) => {
+    if (!db || !user) return;
+    try {
+      await recordOutcome(db, user.uid, outcome);
+      await learnFromOutcome(db, user.uid, outcome);
+    } catch (error) {
+      console.error('Failed to record outcome:', error);
+    }
+  };
+
   // Helper: Generate a hash signature for the prompt (first 60 chars)
   const generateSignature = (text) => {
     const prefix = text.trim().substring(0, 60).toLowerCase();
@@ -663,6 +723,20 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
       setReversePromptTriggered(isReverse);
       setGeneratedResult(finalPromptText);
       console.log("Result set successfully");
+
+      // Run quick quality check
+      const currentSpec = promptSpec || createSpec(selectedOutputType);
+      const qualityCheck = quickQualityCheck(finalPromptText, currentSpec);
+      setQualityResult(qualityCheck);
+
+      // Set reasoning from analysis if available
+      if (aiData.reverse_prompting?.reasoning) {
+        setReasoning({
+          analysis: aiData.reverse_prompting.reasoning,
+          tone: `Selected ${selectedTone} tone for this ${selectedOutputType}`,
+          format: `Using ${selectedFormat} format`,
+        });
+      }
 
     } catch (err) {
       console.error("Prompt generation error:", err);
@@ -977,6 +1051,37 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
           ) : (
           <div className="max-w-6xl mx-auto space-y-6 pb-20">
 
+            {/* Quick Start Templates Toggle */}
+            <div className="flex items-center justify-between">
+              <button
+                onClick={() => setShowTemplates(!showTemplates)}
+                className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                  showTemplates
+                    ? 'bg-indigo-100 text-indigo-700'
+                    : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50'
+                }`}
+              >
+                <Lightbulb className="w-4 h-4" />
+                Quick Start Templates
+                {showTemplates ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+              </button>
+              {selectedTemplate && (
+                <span className="text-xs text-indigo-600 bg-indigo-50 px-2 py-1 rounded">
+                  Using: {selectedTemplate.label}
+                </span>
+              )}
+            </div>
+
+            {/* Template Selector */}
+            {showTemplates && (
+              <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+                <TemplateSelector
+                  onSelect={handleTemplateSelect}
+                  selectedId={selectedTemplate?.id}
+                />
+              </div>
+            )}
+
             {/* Input Section */}
             <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6 transition-all focus-within:ring-2 focus-within:ring-indigo-100 focus-within:border-indigo-400">
               <div className="flex justify-end mb-2">
@@ -1039,6 +1144,11 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
                       setAestheticMode(false);
                       setGeneratedResult(null);
                       setCurrentHistoryId(null);
+                      // Reset evolution state
+                      setPromptSpec(null);
+                      setQualityResult(null);
+                      setReasoning({});
+                      setSelectedTemplate(null);
                     }}
                     className="text-slate-500 hover:text-slate-700 font-sans text-xs px-2 py-0.5 rounded hover:bg-slate-100 transition-colors"
                   >
@@ -1091,6 +1201,13 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
                 })}
               </div>
             </div>
+
+            {/* Type-Specific Form */}
+            <TypeSpecificForm
+              outputType={selectedOutputType}
+              spec={promptSpec || createSpec(selectedOutputType)}
+              onChange={handleSpecChange}
+            />
 
             {/* Action Button */}
             <button
@@ -1311,6 +1428,43 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
                       {generatedResult}
                     </pre>
                   </div>
+                </div>
+
+                {/* Quality Feedback */}
+                {qualityResult && (
+                  <div className="px-6 pb-6">
+                    <QualityFeedback
+                      quality={qualityResult}
+                      onImprove={() => {
+                        // TODO: Implement auto-improve based on feedback
+                        console.log('Auto-improve requested');
+                      }}
+                    />
+                  </div>
+                )}
+
+                {/* Reasoning Panel */}
+                {reasoning && Object.keys(reasoning).length > 0 && (
+                  <div className="px-6 pb-6">
+                    <ReasoningPanel
+                      reasoning={reasoning}
+                      inferredSettings={{
+                        tone: selectedTone,
+                        format: selectedFormat,
+                        length: selectedLength,
+                      }}
+                    />
+                  </div>
+                )}
+
+                {/* Feedback Button */}
+                <div className="px-6 pb-6 flex justify-end">
+                  <button
+                    onClick={() => setShowOutcomeFeedback(true)}
+                    className="text-sm text-slate-500 hover:text-indigo-600 flex items-center gap-1"
+                  >
+                    How did this work for you?
+                  </button>
                 </div>
               </div>
             )}
@@ -1751,6 +1905,17 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
           </div>
         )
       }
+
+      {/* Outcome Feedback Modal */}
+      {showOutcomeFeedback && generatedResult && (
+        <OutcomeFeedback
+          promptId={lastGeneratedPromptId}
+          spec={promptSpec}
+          onSubmit={handleOutcomeSubmit}
+          onDismiss={() => setShowOutcomeFeedback(false)}
+          isOpen={showOutcomeFeedback}
+        />
+      )}
 
     </div>
   );
