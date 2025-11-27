@@ -25,10 +25,11 @@ const CITATION_STYLES = [
 export default function DocForm({ spec, onChange }) {
   const typeSpecific = spec.typeSpecific || {};
 
-  const handleChange = (field, value) => {
+  const handleChange = (field, value, additionalFields = {}) => {
     onChange('typeSpecific', {
       ...typeSpecific,
       [field]: value,
+      ...additionalFields,
     });
   };
 
@@ -49,11 +50,11 @@ export default function DocForm({ spec, onChange }) {
           options={DOCUMENT_TYPES}
           value={typeSpecific.document_type}
           onChange={(v) => {
-            handleChange('document_type', v);
-            // Auto-suggest sections for the type
-            if (v && SECTION_STRUCTURES[v]) {
-              handleChange('section_structure', SECTION_STRUCTURES[v]);
-            }
+            // Update document_type and auto-suggest sections in one call
+            const additionalFields = v && SECTION_STRUCTURES[v]
+              ? { section_structure: SECTION_STRUCTURES[v] }
+              : {};
+            handleChange('document_type', v, additionalFields);
           }}
         />
       </FormField>
