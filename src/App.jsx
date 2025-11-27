@@ -1188,7 +1188,13 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
                   return (
                     <button
                       key={type.id}
-                      onClick={() => setSelectedOutputType(type.id)}
+                      onClick={() => {
+                        if (type.id !== selectedOutputType) {
+                          setSelectedOutputType(type.id);
+                          // Reset spec when output type changes to avoid stale typeSpecific data
+                          setPromptSpec(createSpec(type.id));
+                        }
+                      }}
                       className={`flex flex-col items-center justify-center p-3 rounded-lg border transition-all duration-200 ${isSelected
                         ? 'bg-cyan-50 border-cyan-500 text-cyan-700 shadow-sm ring-1 ring-cyan-200'
                         : 'bg-white border-slate-200 text-slate-500 hover:bg-slate-50 hover:border-slate-300'

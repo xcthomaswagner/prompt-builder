@@ -34,11 +34,8 @@ export default function TypeSpecificForm({ outputType, spec, onChange }) {
     return null;
   }
   
-  return (
-    <div className="bg-slate-50 rounded-lg p-4 border border-slate-200">
-      <FormComponent spec={spec} onChange={onChange} />
-    </div>
-  );
+  // Forms handle their own styling (accordion wrapper)
+  return <FormComponent spec={spec} onChange={onChange} />;
 }
 
 /**

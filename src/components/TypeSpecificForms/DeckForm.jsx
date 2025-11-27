@@ -2,6 +2,8 @@
  * Deck-specific form fields
  */
 
+import { useState } from 'react';
+import { ChevronDown, ChevronUp, Layout } from 'lucide-react';
 import { FormField, ButtonGroup, Checkbox, NumberInput, Select } from '../ui/FormField.jsx';
 
 const PRESENTATION_CONTEXTS = [
@@ -26,6 +28,7 @@ const VISUAL_STYLES = [
 ];
 
 export default function DeckForm({ spec, onChange }) {
+  const [isExpanded, setIsExpanded] = useState(true);
   const typeSpecific = spec.typeSpecific || {};
 
   const handleChange = (field, value) => {
@@ -36,63 +39,76 @@ export default function DeckForm({ spec, onChange }) {
   };
 
   return (
-    <div className="space-y-4">
-      <h4 className="text-sm font-semibold text-slate-600 uppercase tracking-wide">
-        Deck Settings
-      </h4>
+    <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+      {/* Accordion Header */}
+      <button
+        onClick={() => setIsExpanded(!isExpanded)}
+        className="w-full flex items-center justify-between p-4 bg-slate-50 hover:bg-slate-100 transition-colors"
+      >
+        <div className="flex items-center gap-2 text-sm font-semibold text-slate-700">
+          <Layout className="w-4 h-4 text-slate-500" />
+          Deck Settings
+        </div>
+        {isExpanded ? <ChevronUp className="w-4 h-4 text-slate-400" /> : <ChevronDown className="w-4 h-4 text-slate-400" />}
+      </button>
 
-      {/* Presentation Context */}
-      <FormField label="Presentation Context" hint="What type of presentation is this?">
-        <ButtonGroup
-          options={PRESENTATION_CONTEXTS}
-          value={typeSpecific.presentation_context}
-          onChange={(v) => handleChange('presentation_context', v)}
-        />
-      </FormField>
+      {/* Accordion Content */}
+      {isExpanded && (
+        <div className="p-6 space-y-6">
+          {/* Presentation Context */}
+          <FormField label="Presentation Context" hint="What type of presentation is this?">
+            <ButtonGroup
+              options={PRESENTATION_CONTEXTS}
+              value={typeSpecific.presentation_context}
+              onChange={(v) => handleChange('presentation_context', v)}
+            />
+          </FormField>
 
-      {/* Duration */}
-      <FormField label="Duration">
-        <Select
-          value={typeSpecific.duration_minutes}
-          onChange={(v) => handleChange('duration_minutes', v ? parseInt(v) : null)}
-          options={DURATION_OPTIONS}
-          placeholder="Auto (based on content)"
-        />
-      </FormField>
+          {/* Duration */}
+          <FormField label="Duration">
+            <Select
+              value={typeSpecific.duration_minutes}
+              onChange={(v) => handleChange('duration_minutes', v ? parseInt(v) : null)}
+              options={DURATION_OPTIONS}
+              placeholder="Auto (based on content)"
+            />
+          </FormField>
 
-      {/* Slide Count */}
-      <FormField label="Target Slides" hint="Leave empty for auto">
-        <NumberInput
-          value={typeSpecific.slide_count}
-          onChange={(v) => handleChange('slide_count', v)}
-          min={3}
-          max={100}
-          placeholder="Auto"
-        />
-      </FormField>
+          {/* Slide Count */}
+          <FormField label="Target Slides" hint="Leave empty for auto">
+            <NumberInput
+              value={typeSpecific.slide_count}
+              onChange={(v) => handleChange('slide_count', v)}
+              min={3}
+              max={100}
+              placeholder="Auto"
+            />
+          </FormField>
 
-      {/* Visual Style */}
-      <FormField label="Visual Style">
-        <ButtonGroup
-          options={VISUAL_STYLES}
-          value={typeSpecific.visual_style}
-          onChange={(v) => handleChange('visual_style', v)}
-        />
-      </FormField>
+          {/* Visual Style */}
+          <FormField label="Visual Style">
+            <ButtonGroup
+              options={VISUAL_STYLES}
+              value={typeSpecific.visual_style}
+              onChange={(v) => handleChange('visual_style', v)}
+            />
+          </FormField>
 
-      {/* Toggles */}
-      <div className="flex flex-wrap gap-4 pt-2">
-        <Checkbox
-          label="Include Speaker Notes"
-          checked={typeSpecific.include_speaker_notes !== false}
-          onChange={(v) => handleChange('include_speaker_notes', v)}
-        />
-        <Checkbox
-          label="Include Visual Suggestions"
-          checked={typeSpecific.include_visual_suggestions !== false}
-          onChange={(v) => handleChange('include_visual_suggestions', v)}
-        />
-      </div>
+          {/* Toggles */}
+          <div className="flex flex-wrap gap-4 pt-2">
+            <Checkbox
+              label="Include Speaker Notes"
+              checked={typeSpecific.include_speaker_notes !== false}
+              onChange={(v) => handleChange('include_speaker_notes', v)}
+            />
+            <Checkbox
+              label="Include Visual Suggestions"
+              checked={typeSpecific.include_visual_suggestions !== false}
+              onChange={(v) => handleChange('include_visual_suggestions', v)}
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 }

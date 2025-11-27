@@ -2,6 +2,8 @@
  * Comms-specific form fields
  */
 
+import { useState } from 'react';
+import { ChevronDown, ChevronUp, MessageSquare } from 'lucide-react';
 import { FormField, ButtonGroup, Checkbox, TextInput } from '../ui/FormField.jsx';
 
 const CHANNELS = [
@@ -27,6 +29,7 @@ const URGENCY_LEVELS = [
 ];
 
 export default function CommsForm({ spec, onChange }) {
+  const [isExpanded, setIsExpanded] = useState(true);
   const typeSpecific = spec.typeSpecific || {};
 
   const handleChange = (field, value) => {
@@ -40,76 +43,89 @@ export default function CommsForm({ spec, onChange }) {
   const showGreetingOptions = ['email', 'letter', 'memo'].includes(typeSpecific.channel);
 
   return (
-    <div className="space-y-4">
-      <h4 className="text-sm font-semibold text-slate-600 uppercase tracking-wide">
-        Communication Settings
-      </h4>
-
-      {/* Channel */}
-      <FormField label="Channel">
-        <ButtonGroup
-          options={CHANNELS}
-          value={typeSpecific.channel || 'email'}
-          onChange={(v) => handleChange('channel', v)}
-          size="sm"
-        />
-      </FormField>
-
-      {/* Formality */}
-      <FormField label="Formality">
-        <ButtonGroup
-          options={FORMALITY_LEVELS}
-          value={typeSpecific.formality_level || 'professional'}
-          onChange={(v) => handleChange('formality_level', v)}
-        />
-      </FormField>
-
-      {/* Response Urgency */}
-      <FormField label="Response Urgency" hint="How quickly do you need a response?">
-        <ButtonGroup
-          options={URGENCY_LEVELS}
-          value={typeSpecific.response_urgency || 'normal'}
-          onChange={(v) => handleChange('response_urgency', v)}
-        />
-      </FormField>
-
-      {/* Thread Context */}
-      <FormField 
-        label="Thread Context" 
-        hint="Is this a reply? Provide context"
+    <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+      {/* Accordion Header */}
+      <button
+        onClick={() => setIsExpanded(!isExpanded)}
+        className="w-full flex items-center justify-between p-4 bg-slate-50 hover:bg-slate-100 transition-colors"
       >
-        <TextInput
-          value={typeSpecific.thread_context}
-          onChange={(v) => handleChange('thread_context', v)}
-          placeholder="e.g., Following up on yesterday's meeting..."
-        />
-      </FormField>
+        <div className="flex items-center gap-2 text-sm font-semibold text-slate-700">
+          <MessageSquare className="w-4 h-4 text-slate-500" />
+          Communication Settings
+        </div>
+        {isExpanded ? <ChevronUp className="w-4 h-4 text-slate-400" /> : <ChevronDown className="w-4 h-4 text-slate-400" />}
+      </button>
 
-      {/* Action Items */}
-      <FormField 
-        label="Action Items" 
-        hint="What do you need from the recipient?"
-      >
-        <TextInput
-          value={typeSpecific.action_items_text}
-          onChange={(v) => handleChange('action_items_text', v)}
-          placeholder="e.g., Review document, Schedule meeting"
-        />
-      </FormField>
+      {/* Accordion Content */}
+      {isExpanded && (
+        <div className="p-6 space-y-6">
+          {/* Channel */}
+          <FormField label="Channel">
+            <ButtonGroup
+              options={CHANNELS}
+              value={typeSpecific.channel || 'email'}
+              onChange={(v) => handleChange('channel', v)}
+              size="sm"
+            />
+          </FormField>
 
-      {/* Greeting/Signature toggles */}
-      {showGreetingOptions && (
-        <div className="flex flex-wrap gap-4 pt-2">
-          <Checkbox
-            label="Include Greeting"
-            checked={typeSpecific.include_greeting !== false}
-            onChange={(v) => handleChange('include_greeting', v)}
-          />
-          <Checkbox
-            label="Include Signature"
-            checked={typeSpecific.include_signature !== false}
-            onChange={(v) => handleChange('include_signature', v)}
-          />
+          {/* Formality */}
+          <FormField label="Formality">
+            <ButtonGroup
+              options={FORMALITY_LEVELS}
+              value={typeSpecific.formality_level || 'professional'}
+              onChange={(v) => handleChange('formality_level', v)}
+            />
+          </FormField>
+
+          {/* Response Urgency */}
+          <FormField label="Response Urgency" hint="How quickly do you need a response?">
+            <ButtonGroup
+              options={URGENCY_LEVELS}
+              value={typeSpecific.response_urgency || 'normal'}
+              onChange={(v) => handleChange('response_urgency', v)}
+            />
+          </FormField>
+
+          {/* Thread Context */}
+          <FormField 
+            label="Thread Context" 
+            hint="Is this a reply? Provide context"
+          >
+            <TextInput
+              value={typeSpecific.thread_context}
+              onChange={(v) => handleChange('thread_context', v)}
+              placeholder="e.g., Following up on yesterday's meeting..."
+            />
+          </FormField>
+
+          {/* Action Items */}
+          <FormField 
+            label="Action Items" 
+            hint="What do you need from the recipient?"
+          >
+            <TextInput
+              value={typeSpecific.action_items_text}
+              onChange={(v) => handleChange('action_items_text', v)}
+              placeholder="e.g., Review document, Schedule meeting"
+            />
+          </FormField>
+
+          {/* Greeting/Signature toggles */}
+          {showGreetingOptions && (
+            <div className="flex flex-wrap gap-4 pt-2">
+              <Checkbox
+                label="Include Greeting"
+                checked={typeSpecific.include_greeting !== false}
+                onChange={(v) => handleChange('include_greeting', v)}
+              />
+              <Checkbox
+                label="Include Signature"
+                checked={typeSpecific.include_signature !== false}
+                onChange={(v) => handleChange('include_signature', v)}
+              />
+            </div>
+          )}
         </div>
       )}
     </div>
