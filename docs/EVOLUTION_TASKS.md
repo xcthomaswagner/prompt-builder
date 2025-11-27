@@ -47,20 +47,20 @@ git commit -m "revert: Phase X - <reason>"
 
 ---
 
-## Phase 3: Output-Type-Specific Forms
+## Phase 3: Output-Type-Specific Forms ✅ COMPLETE
 
-**Branch:** `feat/phase3-type-specific-forms`
+**Branch:** `feat/phase3-type-specific-forms` (merged)
 
-- [ ] 3.1 Create shared form components (`src/components/ui/FormField.jsx`, etc.)
-- [ ] 3.2 Create DeckForm (`src/components/TypeSpecificForms/DeckForm.jsx`)
-- [ ] 3.3 Create CodeForm (`src/components/TypeSpecificForms/CodeForm.jsx`)
-- [ ] 3.4 Create DocForm (`src/components/TypeSpecificForms/DocForm.jsx`)
-- [ ] 3.5 Create DataForm (`src/components/TypeSpecificForms/DataForm.jsx`)
-- [ ] 3.6 Create CopyForm (`src/components/TypeSpecificForms/CopyForm.jsx`)
-- [ ] 3.7 Create CommsForm (`src/components/TypeSpecificForms/CommsForm.jsx`)
-- [ ] 3.8 Create form router (`src/components/TypeSpecificForms/index.jsx`)
-- [ ] 3.9 Integrate with App.jsx (behind flag)
-- [ ] 3.10 Merge to main
+- [x] 3.1 Create shared form components (`src/components/ui/FormField.jsx`, etc.)
+- [x] 3.2 Create DeckForm (`src/components/TypeSpecificForms/DeckForm.jsx`)
+- [x] 3.3 Create CodeForm (`src/components/TypeSpecificForms/CodeForm.jsx`)
+- [x] 3.4 Create DocForm (`src/components/TypeSpecificForms/DocForm.jsx`)
+- [x] 3.5 Create DataForm (`src/components/TypeSpecificForms/DataForm.jsx`)
+- [x] 3.6 Create CopyForm (`src/components/TypeSpecificForms/CopyForm.jsx`)
+- [x] 3.7 Create CommsForm (`src/components/TypeSpecificForms/CommsForm.jsx`)
+- [x] 3.8 Create form router (`src/components/TypeSpecificForms/index.jsx`)
+- [ ] 3.9 Integrate with App.jsx (behind flag) - *deferred*
+- [x] 3.10 Merge to main
 
 ---
 
