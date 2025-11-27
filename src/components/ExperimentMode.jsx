@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Beaker, Play, Loader2, AlertCircle, Zap, Settings2, ChevronDown, ChevronUp, Layout, FileText, Database, Code, Copy, MessageSquare } from 'lucide-react';
 import MatrixSelector from './MatrixSelector';
 import ModelSelector from './ModelSelector';

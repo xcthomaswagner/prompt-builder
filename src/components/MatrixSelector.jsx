@@ -1,4 +1,3 @@
-import React from 'react';
 import MultiSelectChips from './MultiSelectChips';
 
 // Default options – can be overridden via props

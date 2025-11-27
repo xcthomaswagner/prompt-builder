@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { ChevronDown, ChevronUp, Copy, CheckCircle2, ClipboardList, Loader2 } from 'lucide-react';
+import { useState } from 'react';
+import { ChevronDown, ChevronUp, Copy, CheckCircle2, Loader2 } from 'lucide-react';
 
 /**
  * Dimension labels for Judge v2 evaluation display

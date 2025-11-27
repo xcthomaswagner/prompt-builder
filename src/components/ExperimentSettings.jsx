@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { X, Plus, Trash2, Save, FileText, Layout, Database, Code, Copy, MessageSquare, Upload, File, Image, AlertCircle, Loader2, Settings, Users, Shield } from 'lucide-react';
 import { 
   CONTENT_TYPES, 

@@ -1,5 +1,3 @@
-import React from 'react';
-
 /**
  * A reusable multi-select chip component.
  *
