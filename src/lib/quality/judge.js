@@ -230,10 +230,35 @@ export function quickQualityCheck(expandedPrompt, spec) {
   const score = Math.max(30, Math.min(95, 
     baseScore - (issues.length * 10) + (strengths.length * 5)
   ));
+
+  // Generate quick dimension estimates based on heuristics
+  const dimensions = {
+    structure: {
+      score: hasHeadings ? 8 : (wordCount > 200 ? 5 : 7),
+      feedback: hasHeadings 
+        ? 'Good use of sections and structure' 
+        : 'Consider adding section headings for clarity',
+    },
+    specificity: {
+      score: vagueCount > 2 ? 5 : (vagueCount > 0 ? 7 : 8),
+      feedback: vagueCount > 2 
+        ? 'Contains vague terms that could be more specific' 
+        : 'Good level of specificity',
+    },
+    completeness: {
+      score: wordCount < 50 ? 4 : (wordCount > 2000 ? 6 : 8),
+      feedback: wordCount < 50 
+        ? 'May be too brief to cover all aspects' 
+        : wordCount > 2000 
+          ? 'Very comprehensive but consider condensing' 
+          : 'Good coverage of the topic',
+    },
+  };
   
   return {
     overall_score: score,
     interpretation: interpretScore(score),
+    dimensions,
     quick_check: true,
     strengths,
     improvements: issues,

@@ -50,7 +50,8 @@ import TemplateSelector, { CompactTemplateSelector } from './components/Template
 import OutcomeFeedback from './components/OutcomeFeedback.jsx';
 
 // New Evolution Modules
-import { runPipeline } from './lib/pipeline/index.js';
+// Note: runPipeline is available for future split-pipeline mode
+// import { runPipeline } from './lib/pipeline/index.js';
 import { createSpec, mergeSpec } from './lib/promptSpecs/index.js';
 import { quickQualityCheck } from './lib/quality/index.js';
 import { recordOutcome, learnFromOutcome } from './lib/learning/index.js';
