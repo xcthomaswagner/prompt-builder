@@ -96,8 +96,7 @@ function getTypeSpecificPromptHints(outputType) {
     
     copy: `- copy_type: ad|landing|email|social|press|tagline|product
    - emotional_appeal: fear|aspiration|urgency|trust|curiosity
-   - cta_type: Suggested call to action
-   - word_count: Target word count`,
+   - cta_type: Suggested call to action`,
     
     comms: `- channel: email|slack|memo|letter
    - formality_level: casual|professional|formal

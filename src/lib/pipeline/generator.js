@@ -99,9 +99,6 @@ function getTypeSpecificInstructions(outputType, typeSpecific) {
       if (typeSpecific.cta_type) {
         parts.push(`- Call to action: ${typeSpecific.cta_type}`);
       }
-      if (typeSpecific.word_count) {
-        parts.push(`- Target word count: ${typeSpecific.word_count}`);
-      }
       return parts.join('\n');
     },
     

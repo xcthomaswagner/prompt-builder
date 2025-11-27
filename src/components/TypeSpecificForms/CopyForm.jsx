@@ -2,8 +2,8 @@
  * Copy-specific form fields
  */
 
-import { FormField, ButtonGroup, Select, TextInput, NumberInput } from '../ui/FormField.jsx';
-import { CTA_SUGGESTIONS, WORD_COUNT_RANGES } from '../../lib/promptSpecs/templates/copy.js';
+import { FormField, ButtonGroup, Select, TextInput } from '../ui/FormField.jsx';
+import { CTA_SUGGESTIONS } from '../../lib/promptSpecs/templates/copy.js';
 
 const COPY_TYPES = [
   { value: 'ad', label: 'Ad' },
@@ -47,11 +47,6 @@ export default function CopyForm({ spec, onChange }) {
   const ctaSuggestions = typeSpecific.copy_type
     ? CTA_SUGGESTIONS[typeSpecific.copy_type] || []
     : [];
-
-  // Get word count range for copy type
-  const wordRange = typeSpecific.copy_type
-    ? WORD_COUNT_RANGES[typeSpecific.copy_type]
-    : null;
 
   return (
     <div className="space-y-4">
@@ -107,20 +102,6 @@ export default function CopyForm({ spec, onChange }) {
             placeholder="e.g., Learn More, Shop Now"
           />
         )}
-      </FormField>
-
-      {/* Word Count */}
-      <FormField 
-        label="Target Word Count" 
-        hint={wordRange ? `Typical: ${wordRange.min}-${wordRange.max} words` : 'Optional'}
-      >
-        <NumberInput
-          value={typeSpecific.word_count}
-          onChange={(v) => handleChange('word_count', v)}
-          min={1}
-          max={2000}
-          placeholder={wordRange ? `~${Math.round((wordRange.min + wordRange.max) / 2)}` : 'Auto'}
-        />
       </FormField>
 
       {/* Brand Voice */}

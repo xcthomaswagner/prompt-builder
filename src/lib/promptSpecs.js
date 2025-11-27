@@ -137,15 +137,12 @@ Every blueprint must follow this exact hierarchy:
 - Element 1 with specific directive (e.g., "Include 3 concrete examples of X")
 - Element 2 with specific directive
 - [2-4 elements per section]
-**Length Guidance**: [X paragraphs / Y sentences / Z words]
-
 [Repeat for each major section - minimum 3, maximum 6 sections]
 
 ## Execution Requirements
 **Tone**: [Specific descriptor + rationale, e.g., "Professional but accessible - target audience is non-technical executives"]
 **Voice**: [First person / Third person / etc.]
 **Formatting**: [Paragraph style / bullet points / mixed / etc.]
-**Length**: [Total word count range or page estimate]
 **Prohibited**: [Specific things to avoid, e.g., "No jargon," "No passive voice," "No unsupported claims"]
 
 ## Closing Directive
@@ -159,7 +156,6 @@ Before outputting, verify:
 - [ ] Exactly ONE H1 title
 - [ ] 3-6 H2 sections with clear boundaries
 - [ ] Each H2 has 2-4 concrete Required Elements
-- [ ] Length guidance provided for each section
 - [ ] Tone and prohibited behaviors specified
 - [ ] No narrative prose (only instructional directives)
 - [ ] No placeholder text like "[Insert examples here]"`
