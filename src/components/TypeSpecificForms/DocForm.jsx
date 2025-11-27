@@ -44,7 +44,7 @@ export default function DocForm({ spec, onChange }) {
         Document Settings
       </h4>
 
-      {/* Document Type */}
+      {/* Document Type - Full Width */}
       <FormField label="Document Type">
         <ButtonGroup
           options={DOCUMENT_TYPES}
@@ -59,46 +59,85 @@ export default function DocForm({ spec, onChange }) {
         />
       </FormField>
 
-      {/* Section Structure */}
+      {/* Two Column Layout - Sections | Settings & Options */}
       {suggestedSections.length > 0 && (
-        <FormField 
-          label="Sections" 
-          hint="Select which sections to include"
-        >
-          <MultiSelect
-            options={suggestedSections.map(s => ({
-              value: s,
-              label: s.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase())
-            }))}
-            value={typeSpecific.section_structure || []}
-            onChange={(v) => handleChange('section_structure', v)}
-          />
-        </FormField>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Left Column - Sections */}
+          <div className="bg-slate-50 rounded-lg p-4 border border-slate-200">
+            <FormField 
+              label="Sections" 
+              hint="Select which sections to include"
+            >
+              <MultiSelect
+                options={suggestedSections.map(s => ({
+                  value: s,
+                  label: s.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase())
+                }))}
+                value={typeSpecific.section_structure || []}
+                onChange={(v) => handleChange('section_structure', v)}
+              />
+            </FormField>
+          </div>
+
+          {/* Right Column - Settings & Options */}
+          <div className="bg-slate-50 rounded-lg p-4 border border-slate-200 space-y-4">
+            <h5 className="text-sm font-medium text-slate-700">Settings & Options</h5>
+            
+            {/* Toggles */}
+            <div className="space-y-2">
+              <Checkbox
+                label="Include Executive Summary"
+                checked={typeSpecific.include_executive_summary || false}
+                onChange={(v) => handleChange('include_executive_summary', v)}
+              />
+              <Checkbox
+                label="Include Table of Contents"
+                checked={typeSpecific.include_toc || false}
+                onChange={(v) => handleChange('include_toc', v)}
+              />
+            </div>
+
+            {/* Citation Style */}
+            <FormField label="Citation Style" hint="If references are needed">
+              <Select
+                value={typeSpecific.citation_style}
+                onChange={(v) => handleChange('citation_style', v)}
+                options={CITATION_STYLES}
+                placeholder="None"
+              />
+            </FormField>
+          </div>
+        </div>
       )}
 
-      {/* Toggles */}
-      <div className="space-y-2 pt-2">
-        <Checkbox
-          label="Include Executive Summary"
-          checked={typeSpecific.include_executive_summary || false}
-          onChange={(v) => handleChange('include_executive_summary', v)}
-        />
-        <Checkbox
-          label="Include Table of Contents"
-          checked={typeSpecific.include_toc || false}
-          onChange={(v) => handleChange('include_toc', v)}
-        />
-      </div>
-
-      {/* Citation Style */}
-      <FormField label="Citation Style" hint="If references are needed">
-        <Select
-          value={typeSpecific.citation_style}
-          onChange={(v) => handleChange('citation_style', v)}
-          options={CITATION_STYLES}
-          placeholder="None"
-        />
-      </FormField>
+      {/* Fallback when no sections - show settings inline */}
+      {suggestedSections.length === 0 && (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="bg-slate-50 rounded-lg p-4 border border-slate-200 space-y-4">
+            <h5 className="text-sm font-medium text-slate-700">Settings & Options</h5>
+            <div className="space-y-2">
+              <Checkbox
+                label="Include Executive Summary"
+                checked={typeSpecific.include_executive_summary || false}
+                onChange={(v) => handleChange('include_executive_summary', v)}
+              />
+              <Checkbox
+                label="Include Table of Contents"
+                checked={typeSpecific.include_toc || false}
+                onChange={(v) => handleChange('include_toc', v)}
+              />
+            </div>
+            <FormField label="Citation Style" hint="If references are needed">
+              <Select
+                value={typeSpecific.citation_style}
+                onChange={(v) => handleChange('citation_style', v)}
+                options={CITATION_STYLES}
+                placeholder="None"
+              />
+            </FormField>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
