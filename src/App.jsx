@@ -844,6 +844,7 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
         }
         if (savedId) {
           setCurrentHistoryId(savedId);
+          setLastGeneratedPromptId(savedId);
         }
         console.log("Saved to history");
         setIsSavingHistory(false);
@@ -1150,6 +1151,8 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
                       setQualityResult(null);
                       setReasoning({});
                       setSelectedTemplate(null);
+                      setShowTemplates(false);
+                      setLastGeneratedPromptId(null);
                     }}
                     className="text-slate-500 hover:text-slate-700 font-sans text-xs px-2 py-0.5 rounded hover:bg-slate-100 transition-colors"
                   >
