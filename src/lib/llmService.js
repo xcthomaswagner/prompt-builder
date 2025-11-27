@@ -58,6 +58,11 @@ export const SUPPORTED_MODELS = [
 ];
 
 /**
+ * Request timeout in milliseconds (2 minutes)
+ */
+const REQUEST_TIMEOUT_MS = 120000;
+
+/**
  * Get models grouped by provider for UI display.
  */
 export function getModelsByProvider() {
@@ -80,6 +85,7 @@ export function getModelById(modelId) {
 
 /**
  * Call Gemini API.
+ * Note: Gemini API requires the key as a URL parameter (not header-based auth).
  */
 async function callGemini(userPrompt, systemPrompt, apiKey, modelId = 'gemini-2.0-flash') {
   const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelId}:generateContent?key=${apiKey}`;
@@ -94,7 +100,7 @@ async function callGemini(userPrompt, systemPrompt, apiKey, modelId = 'gemini-2.
   };
 
   const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 120000);
+  const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
 
   try {
     const response = await fetch(url, {
@@ -141,7 +147,7 @@ async function callOpenAI(userPrompt, systemPrompt, apiKey, modelId = 'gpt-4o') 
   messages.push({ role: 'user', content: userPrompt });
 
   const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 120000);
+  const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
 
   try {
     const response = await fetch(url, {
@@ -193,7 +199,7 @@ async function callAnthropic(userPrompt, systemPrompt, apiKey, modelId = 'claude
   const url = 'https://api.anthropic.com/v1/messages';
 
   const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 120000);
+  const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
 
   try {
     const response = await fetch(url, {
@@ -239,18 +245,32 @@ async function callAnthropic(userPrompt, systemPrompt, apiKey, modelId = 'claude
 
 /**
  * Unified model caller – routes to the appropriate provider based on model ID.
+ * Supports optional file attachments for multimodal models.
  * 
  * @param {string} modelId - The model ID (e.g., 'gpt-4o', 'gemini-2.0-flash')
  * @param {string} userPrompt - The user's prompt
  * @param {string} systemPrompt - Optional system prompt
  * @param {Object} apiKeys - Object containing API keys { gemini, openai, anthropic }
+ * @param {Array} [fileAttachments] - Optional array of file attachments for vision models
+ *   Each attachment: { url, fileName, contentType, score }
  * @returns {Promise<string>} - The model's response text
  */
-export async function callModel(modelId, userPrompt, systemPrompt, apiKeys) {
+export async function callModel(modelId, userPrompt, systemPrompt, apiKeys, fileAttachments = []) {
   const model = getModelById(modelId);
   
   if (!model) {
     throw new Error(`Unknown model: ${modelId}`);
+  }
+
+  // Note: File attachments are currently logged but not fully implemented.
+  // Full multimodal support requires fetching file content and formatting for each provider.
+  // For now, we proceed with text-only calls.
+  if (fileAttachments && fileAttachments.length > 0) {
+    console.log(`[callModel] ${fileAttachments.length} file attachment(s) provided for ${modelId}`);
+    // TODO: Implement multimodal API calls for each provider:
+    // - Gemini: Add inline_data parts with base64 content
+    // - OpenAI: Add image_url content type to messages
+    // - Anthropic: Add image content blocks with base64 data
   }
 
   switch (model.provider) {

@@ -41,30 +41,166 @@ const OUTPUT_TYPES = [
 ];
 
 /**
- * Judge system prompt for evaluating output quality.
+ * Judge v2 system prompt with multi-dimensional rubrics and calibrated scoring.
  */
-export const JUDGE_SYSTEM_PROMPT = `You are an expert output quality evaluator. Your task is to assess the quality of an AI-generated output based on how well it serves the user's original goal.
+export const JUDGE_SYSTEM_PROMPT = `You are an expert output quality evaluator using a multi-dimensional rubric system.
 
-Evaluate the following criteria:
-1. **Clarity**: Is the output easy to understand? Is the language clear and unambiguous?
-2. **Usefulness**: Does the output actually help accomplish the user's original goal? Would it be actionable?
-3. **Accuracy**: Is the information correct, well-reasoned, and logically sound?
-4. **Conciseness**: Is it appropriately detailed without unnecessary fluff or repetition?
-5. **Insight**: Does it add value beyond the obvious? Does it show understanding of the problem?
-6. **Real-world applicability**: Would this output work in practice? Is it realistic and implementable?
+## SCORING CALIBRATION (CRITICAL)
+Use the FULL 0-10 range. Do not compress scores.
+- **7 = Baseline**: A competent but imperfect answer. This is your anchor point.
+- **8-10**: Reserve for distinctly superior responses with clear excellence.
+- **5-6**: Meaningful issues present, but still useful.
+- **0-4**: Poor, seriously flawed, or fails the task.
 
+## FOUR EVALUATION DIMENSIONS
+Score each dimension independently (0-10):
+
+1. **Instruction Adherence**: Does the output follow all explicit instructions from the blueprint/prompt?
+2. **Task Quality & Correctness**: Is the content accurate, well-reasoned, and genuinely useful for the task?
+3. **Structure & Format**: Does the output follow the requested format and have clear, logical organization?
+4. **Tone & Audience Fit**: Does the tone match the request? Is it appropriate for the intended audience?
+
+## JUSTIFICATION REQUIREMENTS
+For EACH dimension, you must explain:
+- Why you assigned this specific score
+- Why it is NOT higher (what would improve it)
+- Why it is NOT lower (what it does well)
+
+## RESPONSE FORMAT
 You MUST respond with a valid JSON object in this exact format:
 {
-  "score": <integer 1-10>,
-  "critique": "<1-2 sentence analysis of strengths and weaknesses>"
-}
+  "dimensions": {
+    "instructionAdherence": <0-10>,
+    "taskQuality": <0-10>,
+    "structureFormat": <0-10>,
+    "toneAudience": <0-10>
+  },
+  "justifications": {
+    "instructionAdherence": "<why this score, why not higher, why not lower>",
+    "taskQuality": "<why this score, why not higher, why not lower>",
+    "structureFormat": "<why this score, why not higher, why not lower>",
+    "toneAudience": "<why this score, why not higher, why not lower>"
+  },
+  "composite": <weighted average, 1 decimal place>,
+  "summary": "<1-2 sentence overall assessment>"
+}`;
 
-Scoring guide:
-- 9-10: Excellent - Highly useful, clear, accurate, and insightful
-- 7-8: Good - Solid quality with minor areas for improvement
-- 5-6: Acceptable - Gets the job done but lacks depth or polish
-- 3-4: Poor - Significant quality issues that limit usefulness
-- 1-2: Failed - Not useful for the intended purpose`;
+/**
+ * Judge A (Strict) - Focuses on accuracy and technical correctness
+ */
+const JUDGE_A_STRICT_PROMPT = `You are JUDGE A (STRICT) - an expert evaluator focused on ACCURACY and TECHNICAL CORRECTNESS.
+
+Your evaluation priorities (in order):
+1. **Factual accuracy** - Is the content correct and verifiable?
+2. **Completeness** - Does it fully address all requirements?
+3. **Technical precision** - Are details exact and unambiguous?
+4. **Logical coherence** - Is the reasoning sound?
+
+You are deliberately STRICT. When in doubt, score LOWER. A score of 7 means "technically correct with minor issues."
+
+${JUDGE_SYSTEM_PROMPT}`;
+
+/**
+ * Judge B (Style) - Focuses on readability and user experience
+ */
+const JUDGE_B_STYLE_PROMPT = `You are JUDGE B (STYLE) - an expert evaluator focused on READABILITY and USER EXPERIENCE.
+
+Your evaluation priorities (in order):
+1. **Clarity** - Is it easy to understand on first read?
+2. **Engagement** - Is it interesting and well-written?
+3. **Appropriate tone** - Does it match the audience and context?
+4. **Flow and structure** - Does it guide the reader smoothly?
+
+You are deliberately focused on STYLE. A score of 7 means "readable and appropriate but not exceptional."
+
+${JUDGE_SYSTEM_PROMPT}`;
+
+/**
+ * Get rubric enforcement modifier for the judge prompt.
+ */
+const getRubricEnforcementModifier = (mode) => {
+  switch (mode) {
+    case 'lenient':
+      return `\n## ENFORCEMENT MODE: LENIENT
+Focus on overall intent and value. Minor issues should not significantly impact scores.
+Be generous when the output achieves its core purpose, even if execution is imperfect.`;
+    case 'strict':
+      return `\n## ENFORCEMENT MODE: STRICT
+Apply all criteria rigorously. Every deviation from requirements should impact the score.
+Reserve high scores (8+) only for outputs that excel across ALL dimensions.`;
+    default:
+      return ''; // Standard mode - no modifier
+  }
+};
+
+/**
+ * Build baseline examples section for anchored judging.
+ * Handles text-based and file-based (PDF/image) baselines.
+ * 
+ * @param {Object} baselines - Baselines object { [outputType]: [{ score, label, content, contentType, fileUrl }] }
+ * @param {string} outputType - Current output type ID
+ * @returns {{ textSection: string, fileAttachments: Array, requiresVision: boolean }}
+ */
+const buildBaselineSection = (baselines, outputType) => {
+  const result = {
+    textSection: '',
+    fileAttachments: [],
+    requiresVision: false
+  };
+
+  if (!baselines || !baselines[outputType] || baselines[outputType].length === 0) {
+    return result;
+  }
+
+  const examples = baselines[outputType];
+  const sortedExamples = [...examples].sort((a, b) => a.score - b.score);
+  
+  // Separate text-based and file-based examples
+  const textExamples = sortedExamples.filter(ex => ex.content && !ex.fileUrl);
+  const fileExamples = sortedExamples.filter(ex => ex.fileUrl);
+
+  // Build text section
+  if (textExamples.length > 0 || fileExamples.length > 0) {
+    let section = `\n## CALIBRATION EXAMPLES (Score Anchors)
+Use these examples to calibrate your scoring. Compare the candidate output against these reference points.
+
+`;
+
+    // Add text-based examples
+    for (const ex of textExamples) {
+      const contentPreview = ex.content.substring(0, 500);
+      section += `### Score ${ex.score}/10 Example${ex.label ? ` - ${ex.label}` : ''} [${ex.contentType || 'text'}]
+\`\`\`
+${contentPreview}${ex.content.length > 500 ? '...' : ''}
+\`\`\`
+
+`;
+    }
+
+    // Add references to file-based examples
+    for (const ex of fileExamples) {
+      section += `### Score ${ex.score}/10 Example${ex.label ? ` - ${ex.label}` : ''} [${ex.contentType || 'file'}]
+*See attached file: ${ex.fileName}*
+
+`;
+      result.fileAttachments.push({
+        url: ex.fileUrl,
+        fileName: ex.fileName,
+        contentType: ex.contentType,
+        score: ex.score
+      });
+      if (ex.contentType === 'pdf' || ex.contentType === 'image') {
+        result.requiresVision = true;
+      }
+    }
+
+    section += `**Scoring Instruction**: Score the candidate relative to these examples. If clearly better than a reference → score higher. If clearly worse → score lower. If similar quality → assign the same score.\n`;
+
+    result.textSection = section;
+  }
+
+  return result;
+};
 
 /**
  * Extract the expanded prompt text from the AI response.
@@ -200,12 +336,18 @@ CRITICAL: The "expanded_prompt_text" field must contain the final expanded promp
       // Phase 2: Judge step (if enabled)
       if (models.enableJudge && models.judgeModel) {
         try {
+          // Build baseline section for anchored judging (Layer 3)
+          const baselineInfo = buildBaselineSection(models.baselines, outputType);
+          const judgeOptions = models.judgeOptions || {};
+          const rubricModifier = getRubricEnforcementModifier(judgeOptions.rubricEnforcement);
+          
+          // Build the judge prompt
           const judgePrompt = `## Original User Request:
 ${prompt}
 
 ## Output Type: ${typeObj.label} (${typeObj.context})
 ## Tone: ${toneObj.label} | Length: ${lengthObj.label} | Format: ${formatObj.label}
-
+${baselineInfo.textSection}
 ## Blueprint (Expanded Prompt):
 ${blueprintResult}
 
@@ -215,24 +357,103 @@ ${executionResult}
 ## Task:
 Evaluate the quality of the Generated Output for this specific output type. Consider whether it effectively addresses the Original User Request and provides genuine value for a ${typeObj.label.toLowerCase()}. Return your evaluation as JSON.`;
 
-          const judgeResponse = await callModel(
-            models.judgeModel,
-            judgePrompt,
-            JUDGE_SYSTEM_PROMPT,
-            models.apiKeys
-          );
+          let finalEvaluation;
 
-          const evaluation = parseJsonResponse(judgeResponse);
+          if (judgeOptions.dualJudge) {
+            // Dual-judge committee mode: Run two judges and average
+            const [judgeAResponse, judgeBResponse] = await Promise.all([
+              callModel(
+                models.judgeModel,
+                judgePrompt,
+                JUDGE_A_STRICT_PROMPT + rubricModifier,
+                models.apiKeys,
+                baselineInfo.fileAttachments
+              ),
+              callModel(
+                models.judgeModel,
+                judgePrompt,
+                JUDGE_B_STYLE_PROMPT + rubricModifier,
+                models.apiKeys,
+                baselineInfo.fileAttachments
+              )
+            ]);
+
+            const evalA = parseJsonResponse(judgeAResponse);
+            const evalB = parseJsonResponse(judgeBResponse);
+
+            // Average the dimension scores
+            const avgDimensions = {
+              instructionAdherence: ((evalA.dimensions?.instructionAdherence || 0) + (evalB.dimensions?.instructionAdherence || 0)) / 2,
+              taskQuality: ((evalA.dimensions?.taskQuality || 0) + (evalB.dimensions?.taskQuality || 0)) / 2,
+              structureFormat: ((evalA.dimensions?.structureFormat || 0) + (evalB.dimensions?.structureFormat || 0)) / 2,
+              toneAudience: ((evalA.dimensions?.toneAudience || 0) + (evalB.dimensions?.toneAudience || 0)) / 2
+            };
+
+            const avgComposite = parseFloat(
+              ((avgDimensions.instructionAdherence + avgDimensions.taskQuality + 
+                avgDimensions.structureFormat + avgDimensions.toneAudience) / 4).toFixed(1)
+            );
+
+            finalEvaluation = {
+              dimensions: avgDimensions,
+              justifications: {
+                instructionAdherence: `[Strict: ${evalA.dimensions?.instructionAdherence || 0}] ${evalA.justifications?.instructionAdherence || ''}\n[Style: ${evalB.dimensions?.instructionAdherence || 0}] ${evalB.justifications?.instructionAdherence || ''}`,
+                taskQuality: `[Strict: ${evalA.dimensions?.taskQuality || 0}] ${evalA.justifications?.taskQuality || ''}\n[Style: ${evalB.dimensions?.taskQuality || 0}] ${evalB.justifications?.taskQuality || ''}`,
+                structureFormat: `[Strict: ${evalA.dimensions?.structureFormat || 0}] ${evalA.justifications?.structureFormat || ''}\n[Style: ${evalB.dimensions?.structureFormat || 0}] ${evalB.justifications?.structureFormat || ''}`,
+                toneAudience: `[Strict: ${evalA.dimensions?.toneAudience || 0}] ${evalA.justifications?.toneAudience || ''}\n[Style: ${evalB.dimensions?.toneAudience || 0}] ${evalB.justifications?.toneAudience || ''}`
+              },
+              composite: avgComposite,
+              summary: `[Dual-Judge Average] Strict: ${evalA.composite || 0}, Style: ${evalB.composite || 0}. ${evalA.summary || ''}`
+            };
+          } else {
+            // Single judge mode
+            const judgeResponse = await callModel(
+              models.judgeModel,
+              judgePrompt,
+              JUDGE_SYSTEM_PROMPT + rubricModifier,
+              models.apiKeys,
+              baselineInfo.fileAttachments
+            );
+
+            finalEvaluation = parseJsonResponse(judgeResponse);
+          }
+          
+          // Calculate composite if not provided
+          let composite = finalEvaluation.composite;
+          if (!composite && finalEvaluation.dimensions) {
+            const dims = finalEvaluation.dimensions;
+            const scores = [
+              dims.instructionAdherence || 0,
+              dims.taskQuality || 0,
+              dims.structureFormat || 0,
+              dims.toneAudience || 0
+            ];
+            composite = parseFloat((scores.reduce((a, b) => a + b, 0) / 4).toFixed(1));
+          }
+          
           result.evaluation = {
             ai: {
-              score: evaluation.score || 0,
-              critique: evaluation.critique || ''
+              // New v2 schema
+              dimensions: finalEvaluation.dimensions || null,
+              justifications: finalEvaluation.justifications || null,
+              composite: composite || 0,
+              summary: finalEvaluation.summary || '',
+              // Legacy compatibility
+              score: composite || finalEvaluation.score || 0,
+              critique: finalEvaluation.summary || finalEvaluation.critique || '',
+              // Metadata
+              dualJudge: judgeOptions.dualJudge || false,
+              rubricEnforcement: judgeOptions.rubricEnforcement || 'standard'
             }
           };
           result.judgeModelId = models.judgeModel;
         } catch (judgeErr) {
           result.evaluation = {
             ai: {
+              dimensions: null,
+              justifications: null,
+              composite: 0,
+              summary: `Judge error: ${judgeErr.message}`,
               score: 0,
               critique: `Judge error: ${judgeErr.message}`
             }

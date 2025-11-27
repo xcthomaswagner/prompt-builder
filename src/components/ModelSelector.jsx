@@ -1,6 +1,6 @@
 import React from 'react';
 import { ChevronDown } from 'lucide-react';
-import { SUPPORTED_MODELS, getModelsByProvider } from '../lib/llmService';
+import { getModelsByProvider } from '../lib/llmService';
 
 /**
  * ModelSelector – dropdown for selecting an LLM model.

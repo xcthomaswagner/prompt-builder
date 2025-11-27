@@ -85,7 +85,7 @@ const openAiEnvKey = import.meta.env.VITE_OPENAI_API_KEY;
 const callGemini = async (prompt, systemInstruction, apiKey) => {
   if (!apiKey) throw new Error("Gemini API Key is missing");
 
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
 
   const payload = {
     contents: [{ parts: [{ text: prompt }] }],
@@ -239,7 +239,7 @@ const callAnthropic = async (prompt, systemInstruction, apiKey) => {
   const url = "https://api.anthropic.com/v1/messages";
 
   const payload = {
-    model: "claude-3-5-sonnet-20240620",
+    model: "claude-3-5-sonnet-20241022",
     max_tokens: 4096,
     system: systemInstruction + "\n\nIMPORTANT: You must return valid JSON only.",
     messages: [
@@ -254,7 +254,7 @@ const callAnthropic = async (prompt, systemInstruction, apiKey) => {
         "Content-Type": "application/json",
         "x-api-key": apiKey,
         "anthropic-version": "2023-06-01",
-        "dangerously-allow-browser": "true"
+        "anthropic-dangerous-direct-browser-access": "true"
       },
       body: JSON.stringify(payload)
     });
@@ -417,6 +417,9 @@ export default function App() {
 
   // Mode toggle: 'builder' or 'experiment'
   const [appMode, setAppMode] = useState('builder');
+
+  // Experiment history state (lifted from ExperimentMode for sidebar rendering)
+  const [experimentHistory, setExperimentHistory] = useState(null);
 
   // Helper: Generate a hash signature for the prompt (first 60 chars)
   const generateSignature = (text) => {
@@ -757,12 +760,8 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
       }
     };
 
-    const saveWithTimeout = () => {
-      // No artificial timeout; rely on Firestore's own behavior
-      return saveTask();
-    };
-
-    saveWithTimeout()
+    // Save to Firestore (relies on Firestore's own timeout behavior)
+    saveTask()
       .then((savedId) => {
         if (generationRunRef.current !== runId) {
           setIsSavingHistory(false);
@@ -803,29 +802,16 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
     }
   };
 
-  const handleCopy = () => {
+  const handleCopy = async () => {
     if (!generatedResult) return;
-    const textArea = document.createElement("textarea");
-    textArea.value = generatedResult;
-    textArea.style.position = "fixed";
-    textArea.style.left = "-9999px";
-    textArea.style.top = "0";
-    document.body.appendChild(textArea);
-    textArea.focus();
-    textArea.select();
     try {
-      const successful = document.execCommand('copy');
-      if (successful) {
-        setCopySuccess(true);
-        setTimeout(() => setCopySuccess(false), 2000);
-      } else {
-        throw new Error("Copy failed");
-      }
+      await navigator.clipboard.writeText(generatedResult);
+      setCopySuccess(true);
+      setTimeout(() => setCopySuccess(false), 2000);
     } catch (err) {
       console.error('Unable to copy', err);
       setErrorMsg("Failed to copy to clipboard.");
     }
-    document.body.removeChild(textArea);
   };
 
   // Show sign-in screen if not authenticated
@@ -984,6 +970,8 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
                   openai: chatgptApiKey,
                   anthropic: claudeApiKey
                 }}
+                firebaseApp={app}
+                onHistoryChange={setExperimentHistory}
               />
             </div>
           ) : (
@@ -1333,7 +1321,8 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
 
       </div>
 
-      {/* Sidebar - History */}
+      {/* Sidebar - History (only shown in Builder mode) */}
+      {appMode !== 'experiment' && (
       <div className="w-80 bg-slate-50/50 border-l border-slate-200 flex flex-col hidden md:flex z-10 shadow-sm">
         <div className="p-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
           <div className="flex items-center gap-2 text-slate-700">
@@ -1564,7 +1553,82 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
             <Settings2 className="w-4 h-4" />
           </button>
         </div>
-      </div >
+      </div>
+      )}
+
+      {/* Sidebar - Experiment History (only shown in Experiment mode) */}
+      {appMode === 'experiment' && experimentHistory && (
+      <div className="w-80 bg-slate-50/50 border-l border-slate-200 flex flex-col hidden md:flex z-10 shadow-sm">
+        <div className="p-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+          <div className="flex items-center gap-2 text-slate-700">
+            <History className="w-4 h-4" />
+            <h2 className="font-bold text-sm">Experiment History</h2>
+          </div>
+          <span className="text-xs font-medium text-slate-400 bg-slate-100 px-2 py-0.5 rounded-full">
+            {experimentHistory.experiments?.length || 0}
+          </span>
+        </div>
+
+        <div className="flex-1 overflow-y-auto p-3 space-y-2">
+          {experimentHistory.loadingHistory ? (
+            <div className="flex justify-center items-center py-10">
+              <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-cyan-500"></div>
+            </div>
+          ) : experimentHistory.experiments?.length === 0 ? (
+            <div className="text-center text-slate-400 mt-10 text-sm">No experiments yet.</div>
+          ) : (
+            experimentHistory.experiments?.map((exp) => (
+              <div
+                key={exp.id}
+                onClick={() => experimentHistory.handleLoadExperiment(exp.id)}
+                className={`p-3 rounded-lg border cursor-pointer transition-all group ${
+                  experimentHistory.currentExperimentId === exp.id
+                    ? 'bg-cyan-50 border-cyan-200'
+                    : 'bg-white border-slate-100 hover:bg-slate-50 hover:border-slate-200'
+                }`}
+              >
+                <div className="flex items-start justify-between gap-2">
+                  <div className="flex-1 min-w-0">
+                    <div className="text-sm font-medium text-slate-700 truncate">
+                      {exp.originalPrompt?.substring(0, 40) || 'Untitled'}
+                      {exp.originalPrompt?.length > 40 ? '...' : ''}
+                    </div>
+                    <div className="flex items-center gap-2 mt-1 text-xs text-slate-400">
+                      <span>{exp.totalCells || 0} cells</span>
+                      <span>•</span>
+                      <span className={
+                        exp.status === 'complete' ? 'text-green-500' :
+                        exp.status === 'running' ? 'text-cyan-500' :
+                        exp.status === 'failed' ? 'text-red-500' : ''
+                      }>
+                        {exp.status || 'unknown'}
+                      </span>
+                    </div>
+                    <div className="text-xs text-slate-400 mt-1">
+                      {exp.createdAt?.seconds
+                        ? new Date(exp.createdAt.seconds * 1000).toLocaleDateString(undefined, {
+                            month: 'short',
+                            day: 'numeric',
+                            hour: 'numeric',
+                            minute: '2-digit'
+                          })
+                        : 'Just now'}
+                    </div>
+                  </div>
+                  <button
+                    onClick={(e) => experimentHistory.handleDeleteExperiment(exp.id, e)}
+                    className="p-1 text-slate-300 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity"
+                    title="Delete experiment"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+      </div>
+      )}
 
       {/* Settings Modal */}
       {
@@ -1629,9 +1693,9 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
                 <div className="space-y-4">
                   <h3 className="text-sm font-bold text-slate-700">API Keys</h3>
 
-                  {/* OpenAI GPT-5.1 API Key */}
+                  {/* OpenAI API Key */}
                   <div className="space-y-2">
-                    <label className="text-xs font-medium text-slate-600">OpenAI GPT-5.1 API Key</label>
+                    <label className="text-xs font-medium text-slate-600">OpenAI API Key</label>
                     <input
                       type="password"
                       value={chatgptApiKey}
@@ -1675,18 +1739,12 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
               </div>
 
               {/* Footer */}
-              <div className="p-4 border-t border-slate-100 flex justify-end gap-3">
-                <button
-                  onClick={() => setShowSettings(false)}
-                  className="px-4 py-2 text-slate-600 font-medium hover:bg-slate-50 rounded-lg transition-colors"
-                >
-                  Cancel
-                </button>
+              <div className="p-4 border-t border-slate-100 flex justify-end">
                 <button
                   onClick={() => setShowSettings(false)}
                   className="px-6 py-2 bg-indigo-600 text-white font-bold rounded-lg hover:bg-indigo-700 shadow-md hover:shadow-lg transition-all"
                 >
-                  Save Settings
+                  Done
                 </button>
               </div>
             </div>
@@ -1694,6 +1752,6 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
         )
       }
 
-    </div >
+    </div>
   );
 }

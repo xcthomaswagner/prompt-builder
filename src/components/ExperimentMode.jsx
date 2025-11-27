@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Beaker, Play, Loader2, AlertCircle, History, Trash2, Zap, Settings2, ChevronDown, ChevronUp } from 'lucide-react';
+import { Beaker, Play, Loader2, AlertCircle, Zap, Settings2, ChevronDown, ChevronUp, Layout, FileText, Database, Code, Copy, MessageSquare } from 'lucide-react';
 import MatrixSelector from './MatrixSelector';
 import ModelSelector from './ModelSelector';
 import ResultsGrid from './ResultsGrid';
+import ExperimentSettings from './ExperimentSettings';
 import { runMatrixExperiment } from '../lib/experimentRunner';
 import {
   createExperiment,
@@ -11,7 +12,9 @@ import {
   completeExperiment,
   subscribeToExperiments,
   getExperimentWithResults,
-  deleteExperiment
+  deleteExperiment,
+  subscribeToBaselines,
+  saveBaselines
 } from '../lib/experimentStore';
 
 /**
@@ -23,8 +26,10 @@ import {
  * @param {Object} [props.db] - Firestore instance (optional, for persistence).
  * @param {Object} [props.user] - Current user object (optional, for persistence).
  * @param {Object} [props.apiKeys] - API keys { gemini, openai, anthropic }
+ * @param {Object} [props.firebaseApp] - Firebase app instance (for storage uploads)
+ * @param {Function} [props.onHistoryChange] - Callback with history state for parent rendering
  */
-export default function ExperimentMode({ callLLM, defaultOutputType = 'doc', db, user, apiKeys = {} }) {
+export default function ExperimentMode({ callLLM, defaultOutputType = 'doc', db, user, apiKeys = {}, firebaseApp, onHistoryChange }) {
   // Form state
   const [originalPrompt, setOriginalPrompt] = useState('');
   const [outputType, setOutputType] = useState(defaultOutputType);
@@ -56,8 +61,15 @@ export default function ExperimentMode({ callLLM, defaultOutputType = 'doc', db,
 
   // History state
   const [experiments, setExperiments] = useState([]);
-  const [showHistory, setShowHistory] = useState(false);
   const [loadingHistory, setLoadingHistory] = useState(false);
+
+  // Settings modal state
+  const [showSettings, setShowSettings] = useState(false);
+  const [baselines, setBaselines] = useState({});
+  const [judgeOptions, setJudgeOptions] = useState({
+    dualJudge: false,
+    rubricEnforcement: 'standard'
+  });
 
   // Persistence enabled check
   const canPersist = db && user?.uid;
@@ -72,6 +84,42 @@ export default function ExperimentMode({ callLLM, defaultOutputType = 'doc', db,
 
     return () => unsubscribe();
   }, [db, user?.uid, canPersist]);
+
+  // Subscribe to baselines
+  useEffect(() => {
+    if (!canPersist) return;
+
+    const unsubscribe = subscribeToBaselines(db, user.uid, (b) => {
+      setBaselines(b);
+    });
+
+    return () => unsubscribe();
+  }, [db, user?.uid, canPersist]);
+
+  // Notify parent of history state changes for sidebar rendering
+  useEffect(() => {
+    if (onHistoryChange) {
+      onHistoryChange({
+        experiments,
+        loadingHistory,
+        currentExperimentId,
+        handleLoadExperiment,
+        handleDeleteExperiment
+      });
+    }
+  }, [experiments, loadingHistory, currentExperimentId, onHistoryChange]);
+
+  // Save baselines and judge options handler
+  const handleSaveSettings = async (newBaselines, newJudgeOptions) => {
+    setJudgeOptions(newJudgeOptions);
+    if (!canPersist) return;
+    try {
+      await saveBaselines(db, user.uid, newBaselines);
+      // TODO: Save judge options to Firestore if needed
+    } catch (err) {
+      console.error('Failed to save settings:', err);
+    }
+  };
 
   const totalCombos = (matrixConfig.tones?.length || 0) *
     (matrixConfig.lengths?.length || 0) *
@@ -133,7 +181,9 @@ export default function ExperimentMode({ callLLM, defaultOutputType = 'doc', db,
           executionModel,
           judgeModel,
           enableJudge,
-          apiKeys
+          apiKeys,
+          baselines, // Pass baselines for anchored judging
+          judgeOptions // Pass judge options for dual-judge and rubric enforcement
         },
         onProgress: async (completed, total, result) => {
           setProgress({ completed, total });
@@ -230,7 +280,6 @@ export default function ExperimentMode({ callLLM, defaultOutputType = 'doc', db,
         } else {
           setResults([]);
         }
-        setShowHistory(false);
       }
     } catch (err) {
       console.error('Failed to load experiment:', err);
@@ -259,18 +308,16 @@ export default function ExperimentMode({ callLLM, defaultOutputType = 'doc', db,
   };
 
   const OUTPUT_TYPE_OPTIONS = [
-    { id: 'doc', label: 'Doc' },
-    { id: 'deck', label: 'Deck' },
-    { id: 'code', label: 'Code' },
-    { id: 'copy', label: 'Copy' },
-    { id: 'comms', label: 'Comms' },
-    { id: 'data', label: 'Data' }
+    { id: 'deck', label: 'Deck', icon: Layout },
+    { id: 'doc', label: 'Doc', icon: FileText },
+    { id: 'data', label: 'Data', icon: Database },
+    { id: 'code', label: 'Code', icon: Code },
+    { id: 'copy', label: 'Copy', icon: Copy },
+    { id: 'comms', label: 'Comms', icon: MessageSquare }
   ];
 
   return (
-    <div className="flex gap-6">
-      {/* Main Content */}
-      <div className="flex-1 space-y-6">
+    <div className="space-y-6">
         {/* Header */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -283,20 +330,18 @@ export default function ExperimentMode({ callLLM, defaultOutputType = 'doc', db,
             </div>
           </div>
           
-          {canPersist && (
-            <button
-              type="button"
-              onClick={() => setShowHistory(!showHistory)}
-              className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all ${
-                showHistory
-                  ? 'bg-cyan-100 text-cyan-700'
-                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-              }`}
-            >
-              <History size={16} />
-              History ({experiments.length})
-            </button>
-          )}
+          <div className="flex items-center gap-2">
+            {canPersist && (
+              <button
+                type="button"
+                onClick={() => setShowSettings(true)}
+                className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium bg-slate-100 text-slate-600 hover:bg-slate-200 transition-all"
+                title="Experiment Settings"
+              >
+                <Settings2 size={16} />
+              </button>
+            )}
+          </div>
         </div>
 
       {/* Original Prompt Input */}
@@ -315,21 +360,25 @@ export default function ExperimentMode({ callLLM, defaultOutputType = 'doc', db,
         <div>
           <label className="text-sm font-semibold text-slate-700 mb-3 block">Output Type</label>
           <div className="grid grid-cols-3 md:grid-cols-6 gap-3">
-            {OUTPUT_TYPE_OPTIONS.map(opt => (
-              <button
-                key={opt.id}
-                type="button"
-                onClick={() => setOutputType(opt.id)}
-                disabled={isRunning}
-                className={`flex flex-col items-center justify-center p-3 min-h-[60px] rounded-lg border transition-all duration-200 ${
-                  outputType === opt.id
-                    ? 'bg-cyan-50 border-cyan-500 text-cyan-700 shadow-sm ring-1 ring-cyan-200'
-                    : 'bg-white border-slate-200 text-slate-500 hover:bg-slate-50 hover:border-slate-300'
-                } ${isRunning ? 'opacity-50 cursor-not-allowed' : ''}`}
-              >
-                <span className="text-xs font-medium">{opt.label}</span>
-              </button>
-            ))}
+            {OUTPUT_TYPE_OPTIONS.map(opt => {
+              const Icon = opt.icon;
+              return (
+                <button
+                  key={opt.id}
+                  type="button"
+                  onClick={() => setOutputType(opt.id)}
+                  disabled={isRunning}
+                  className={`flex flex-col items-center justify-center p-3 min-h-[60px] rounded-lg border transition-all duration-200 ${
+                    outputType === opt.id
+                      ? 'bg-cyan-50 border-cyan-500 text-cyan-700 shadow-sm ring-1 ring-cyan-200'
+                      : 'bg-white border-slate-200 text-slate-500 hover:bg-slate-50 hover:border-slate-300'
+                  } ${isRunning ? 'opacity-50 cursor-not-allowed' : ''}`}
+                >
+                  <Icon size={20} className="mb-1" />
+                  <span className="text-xs font-medium">{opt.label}</span>
+                </button>
+              );
+            })}
           </div>
         </div>
 
@@ -391,7 +440,7 @@ export default function ExperimentMode({ callLLM, defaultOutputType = 'doc', db,
 
               {/* Toggles */}
               <div className="flex flex-wrap gap-6 pt-4 border-t border-slate-100">
-        <label className="flex items-center gap-2 text-sm text-slate-600 cursor-pointer">
+                <label className="flex items-center gap-2 text-sm text-slate-600 cursor-pointer">
                   <input
                     type="checkbox"
                     checked={toggles.allowPlaceholders}
@@ -459,7 +508,7 @@ export default function ExperimentMode({ callLLM, defaultOutputType = 'doc', db,
             <div className="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden">
               <div
                 className="h-full rounded-full transition-all duration-300 bg-cyan-400"
-                style={{ width: `${(progress.completed / progress.total) * 100}%` }}
+                style={{ width: `${progress.total > 0 ? (progress.completed / progress.total) * 100 : 0}%` }}
               />
             </div>
           </div>
@@ -474,85 +523,20 @@ export default function ExperimentMode({ callLLM, defaultOutputType = 'doc', db,
       )}
 
       {/* Results Grid */}
-        {results.length > 0 && (
-          <ResultsGrid results={results} />
-        )}
-      </div>
-
-      {/* History Panel */}
-      {showHistory && canPersist && (
-        <div className="w-80 bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden flex flex-col">
-          <div className="p-4 border-b border-slate-100 bg-slate-50">
-            <h3 className="font-semibold text-slate-700 flex items-center gap-2">
-              <History size={16} />
-              Experiment History
-            </h3>
-          </div>
-          
-          <div className="flex-1 overflow-y-auto p-2 space-y-2 max-h-[600px]">
-            {loadingHistory && (
-              <div className="flex items-center justify-center py-8">
-                <Loader2 className="animate-spin text-slate-400" size={24} />
-              </div>
-            )}
-            
-            {!loadingHistory && experiments.length === 0 && (
-              <div className="text-center py-8 text-slate-400 text-sm">
-                No experiments yet
-              </div>
-            )}
-            
-            {!loadingHistory && experiments.map((exp) => (
-              <div
-                key={exp.id}
-                onClick={() => handleLoadExperiment(exp.id)}
-                className={`p-3 rounded-lg border cursor-pointer transition-all group ${
-                  currentExperimentId === exp.id
-                    ? 'bg-cyan-50 border-cyan-200'
-                    : 'bg-white border-slate-100 hover:bg-slate-50 hover:border-slate-200'
-                }`}
-              >
-                <div className="flex items-start justify-between gap-2">
-                  <div className="flex-1 min-w-0">
-                    <div className="text-sm font-medium text-slate-700 truncate">
-                      {exp.originalPrompt?.substring(0, 50) || 'Untitled'}
-                      {exp.originalPrompt?.length > 50 ? '...' : ''}
-                    </div>
-                    <div className="flex items-center gap-2 mt-1 text-xs text-slate-400">
-                      <span>{exp.totalCells || 0} cells</span>
-                      <span>•</span>
-                      <span className={
-                        exp.status === 'complete' ? 'text-green-500' :
-                        exp.status === 'running' ? 'text-blue-500' :
-                        exp.status === 'failed' ? 'text-red-500' : ''
-                      }>
-                        {exp.status || 'unknown'}
-                      </span>
-                    </div>
-                    <div className="text-xs text-slate-400 mt-1">
-                      {exp.createdAt?.seconds
-                        ? new Date(exp.createdAt.seconds * 1000).toLocaleDateString(undefined, {
-                            month: 'short',
-                            day: 'numeric',
-                            hour: 'numeric',
-                            minute: '2-digit'
-                          })
-                        : 'Just now'}
-                    </div>
-                  </div>
-                  <button
-                    onClick={(e) => handleDeleteExperiment(exp.id, e)}
-                    className="p-1 text-slate-300 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity"
-                    title="Delete experiment"
-                  >
-                    <Trash2 size={14} />
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
+      {results.length > 0 && (
+        <ResultsGrid results={results} />
       )}
+
+      {/* Settings Modal */}
+      <ExperimentSettings
+        isOpen={showSettings}
+        onClose={() => setShowSettings(false)}
+        baselines={baselines}
+        judgeOptions={judgeOptions}
+        onSave={handleSaveSettings}
+        firebaseApp={firebaseApp}
+        userId={user?.uid}
+      />
     </div>
   );
 }

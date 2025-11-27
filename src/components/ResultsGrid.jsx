@@ -2,6 +2,16 @@ import React, { useState } from 'react';
 import { ChevronDown, ChevronUp, Copy, CheckCircle2, ClipboardList, Loader2 } from 'lucide-react';
 
 /**
+ * Dimension labels for Judge v2 evaluation display
+ */
+const DIMENSION_LABELS = [
+  { key: 'instructionAdherence', label: 'Instructions' },
+  { key: 'taskQuality', label: 'Task Quality' },
+  { key: 'structureFormat', label: 'Structure' },
+  { key: 'toneAudience', label: 'Tone' }
+];
+
+/**
  * ResultsGrid – displays experiment results in a table/card grid.
  *
  * @param {Object} props
@@ -47,14 +57,15 @@ export default function ResultsGrid({ results }) {
     }
   };
 
-  // Copy all completed results
+  // Copy all completed results (prefer executionResult if available, fallback to blueprintResult)
   const handleCopyAll = async () => {
-    const completedResults = results.filter(r => r.blueprintResult && !r.error);
+    const completedResults = results.filter(r => (r.executionResult || r.blueprintResult) && !r.error);
     if (completedResults.length === 0) return;
 
     const allText = completedResults.map((r, i) => {
       const header = `=== ${r.config.tone} • ${r.config.length} • ${r.config.format} ===`;
-      return `${header}\n\n${r.blueprintResult}`;
+      const content = r.executionResult || r.blueprintResult;
+      return `${header}\n\n${content}`;
     }).join('\n\n---\n\n');
 
     try {
@@ -66,7 +77,7 @@ export default function ResultsGrid({ results }) {
     }
   };
 
-  const completedCount = results.filter(r => r.blueprintResult && !r.error).length;
+  const completedCount = results.filter(r => (r.executionResult || r.blueprintResult) && !r.error).length;
 
   // Render status indicator (circle for pending/running, nothing for complete)
   const renderStatusIndicator = (result) => {
@@ -92,9 +103,11 @@ export default function ResultsGrid({ results }) {
 
   // Render AI score as small gray text (for completed items, shown on right side)
   const renderAiScoreCompact = (result) => {
-    if (!result.evaluation?.ai?.score) return null;
+    const ai = result.evaluation?.ai;
+    if (!ai) return null;
     if (result.status !== 'complete' && !result.blueprintResult) return null;
-    const score = result.evaluation.ai.score;
+    const score = ai.composite || ai.score;
+    if (!score) return null;
     return (
       <span className="text-xs text-slate-400 font-medium">
         {score}/10
@@ -173,12 +186,12 @@ export default function ResultsGrid({ results }) {
                 </div>
                 <div className="flex items-center gap-2">
                   {renderAiScoreCompact(result)}
-                  {result.blueprintResult && (
+                  {(result.executionResult || result.blueprintResult) && (
                     <button
                       type="button"
                       onClick={(e) => {
                         e.stopPropagation();
-                        handleCopy(result.blueprintResult, index);
+                        handleCopy(result.executionResult || result.blueprintResult, index);
                       }}
                       className="p-1.5 text-slate-400 hover:text-cyan-600 hover:bg-cyan-50 rounded transition-colors"
                       title="Copy this result"
@@ -241,16 +254,54 @@ export default function ResultsGrid({ results }) {
                               <span className="ml-2 font-normal text-slate-400">({result.judgeModelId})</span>
                             )}
                           </h4>
-                          <div className="flex items-start gap-4 p-4 bg-purple-50 rounded-lg border border-purple-100">
-                            <div className="flex flex-col items-center">
-                              <div className={`text-2xl font-bold ${getScoreColor(result.evaluation.ai.score).split(' ')[0]}`}>
-                                {result.evaluation.ai.score}
+                          <div className="p-4 bg-purple-50 rounded-lg border border-purple-100 space-y-3">
+                            {/* Composite Score + Summary */}
+                            <div className="flex items-start gap-4">
+                              <div className="flex flex-col items-center">
+                                <div className={`text-2xl font-bold ${getScoreColor(result.evaluation.ai.composite || result.evaluation.ai.score).split(' ')[0]}`}>
+                                  {result.evaluation.ai.composite || result.evaluation.ai.score}
+                                </div>
+                                <div className="text-xs text-slate-400">/ 10</div>
                               </div>
-                              <div className="text-xs text-slate-400">/ 10</div>
+                              <div className="flex-1">
+                                <p className="text-sm text-slate-700">{result.evaluation.ai.summary || result.evaluation.ai.critique}</p>
+                              </div>
                             </div>
-                            <div className="flex-1">
-                              <p className="text-sm text-slate-700">{result.evaluation.ai.critique}</p>
-                            </div>
+                            
+                            {/* Dimension Breakdown (v2) */}
+                            {result.evaluation.ai.dimensions && (
+                              <div className="border-t border-purple-200 pt-3">
+                                <div className="grid grid-cols-2 gap-2 text-xs">
+                                  {DIMENSION_LABELS.map(({ key, label }) => (
+                                    <div key={key} className="flex items-center justify-between bg-white/50 rounded px-2 py-1">
+                                      <span className="text-slate-500">{label}</span>
+                                      <span className={`font-semibold ${getScoreColor(result.evaluation.ai.dimensions[key]).split(' ')[0]}`}>
+                                        {result.evaluation.ai.dimensions[key]}
+                                      </span>
+                                    </div>
+                                  ))}
+                                </div>
+                                
+                                {/* Justifications (collapsible) */}
+                                {result.evaluation.ai.justifications && (
+                                  <details className="mt-2">
+                                    <summary className="text-xs text-purple-600 cursor-pointer hover:text-purple-800">
+                                      View justifications
+                                    </summary>
+                                    <div className="mt-2 space-y-2 text-xs text-slate-600">
+                                      {DIMENSION_LABELS.map(({ key, label }) => (
+                                        result.evaluation.ai.justifications[key] && (
+                                          <div key={key} className="bg-white/70 rounded p-2">
+                                            <span className="font-medium text-slate-700">{label}:</span>{' '}
+                                            {result.evaluation.ai.justifications[key]}
+                                          </div>
+                                        )
+                                      ))}
+                                    </div>
+                                  </details>
+                                )}
+                              </div>
+                            )}
                           </div>
                         </div>
                       )}

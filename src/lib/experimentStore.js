@@ -8,7 +8,9 @@ import {
   onSnapshot,
   serverTimestamp,
   deleteDoc,
-  getDoc
+  getDoc,
+  setDoc,
+  getDocs
 } from 'firebase/firestore';
 
 /**
@@ -141,13 +143,20 @@ export function subscribeToExperiments(db, userId, callback) {
   const experimentsRef = collection(db, 'users', userId, 'experiments');
   const experimentsQuery = query(experimentsRef, orderBy('createdAt', 'desc'));
   
-  return onSnapshot(experimentsQuery, (snapshot) => {
-    const experiments = snapshot.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data()
-    }));
-    callback(experiments);
-  });
+  return onSnapshot(
+    experimentsQuery,
+    (snapshot) => {
+      const experiments = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+      callback(experiments);
+    },
+    (error) => {
+      console.error('Error subscribing to experiments:', error);
+      callback([]);
+    }
+  );
 }
 
 /**
@@ -158,10 +167,76 @@ export function subscribeToExperiments(db, userId, callback) {
  * @param {string} experimentId - Experiment ID
  */
 export async function deleteExperiment(db, userId, experimentId) {
-  // Note: In production, you'd want to delete subcollection docs first
-  // or use a Cloud Function. For now, we just delete the parent.
+  // Delete all results in the subcollection first
+  const resultsRef = collection(db, 'users', userId, 'experiments', experimentId, 'results');
+  const resultsSnapshot = await getDocs(resultsRef);
+  
+  // Delete each result document
+  const deletePromises = resultsSnapshot.docs.map(resultDoc => 
+    deleteDoc(resultDoc.ref)
+  );
+  await Promise.all(deletePromises);
+  
+  // Then delete the parent experiment
   const experimentRef = doc(db, 'users', userId, 'experiments', experimentId);
   await deleteDoc(experimentRef);
+}
+
+/**
+ * Get baseline examples for all output types.
+ * 
+ * @param {Object} db - Firestore instance
+ * @param {string} userId - User ID
+ * @returns {Promise<Object>} - Baselines object { [outputType]: [{ score, label, content }] }
+ */
+export async function getBaselines(db, userId) {
+  const baselinesRef = doc(db, 'users', userId, 'experiment_settings', 'baselines');
+  const snapshot = await getDoc(baselinesRef);
+  if (snapshot.exists()) {
+    return snapshot.data().baselines || {};
+  }
+  return {};
+}
+
+/**
+ * Save baseline examples for all output types.
+ * 
+ * @param {Object} db - Firestore instance
+ * @param {string} userId - User ID
+ * @param {Object} baselines - Baselines object { [outputType]: [{ score, label, content }] }
+ */
+export async function saveBaselines(db, userId, baselines) {
+  const baselinesRef = doc(db, 'users', userId, 'experiment_settings', 'baselines');
+  await setDoc(baselinesRef, {
+    baselines,
+    updatedAt: serverTimestamp()
+  }, { merge: true });
+}
+
+/**
+ * Subscribe to baseline changes.
+ * 
+ * @param {Object} db - Firestore instance
+ * @param {string} userId - User ID
+ * @param {Function} callback - Called with baselines object on change
+ * @returns {Function} - Unsubscribe function
+ */
+export function subscribeToBaselines(db, userId, callback) {
+  const baselinesRef = doc(db, 'users', userId, 'experiment_settings', 'baselines');
+  return onSnapshot(
+    baselinesRef,
+    (snapshot) => {
+      if (snapshot.exists()) {
+        callback(snapshot.data().baselines || {});
+      } else {
+        callback({});
+      }
+    },
+    (error) => {
+      console.error('Error subscribing to baselines:', error);
+      callback({});
+    }
+  );
 }
 
 export default {
@@ -171,5 +246,8 @@ export default {
   completeExperiment,
   getExperimentWithResults,
   subscribeToExperiments,
-  deleteExperiment
+  deleteExperiment,
+  getBaselines,
+  saveBaselines,
+  subscribeToBaselines
 };
