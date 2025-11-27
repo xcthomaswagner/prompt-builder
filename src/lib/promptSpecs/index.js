@@ -6,6 +6,14 @@
  * @module promptSpecs
  */
 
+// Import creators for use in createSpec function
+import { createDeckSpec } from './templates/deck.js';
+import { createCodeSpec } from './templates/code.js';
+import { createDocSpec } from './templates/doc.js';
+import { createDataSpec } from './templates/data.js';
+import { createCopySpec } from './templates/copy.js';
+import { createCommsSpec } from './templates/comms.js';
+
 // Schema exports
 export {
   SCHEMA_VERSION,
