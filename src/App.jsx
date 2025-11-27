@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import {
   Sparkles,
   History,
@@ -13,7 +13,6 @@ import {
   ChevronDown,
   ChevronUp,
   Wand2,
-  CheckCircle2,
   AlertCircle,
   Eye,
   Zap,
