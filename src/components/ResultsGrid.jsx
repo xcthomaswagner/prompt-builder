@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ChevronDown, ChevronUp, Copy, CheckCircle2, ClipboardList } from 'lucide-react';
+import { ChevronDown, ChevronUp, Copy, CheckCircle2, ClipboardList, Loader2 } from 'lucide-react';
 
 /**
  * ResultsGrid – displays experiment results in a table/card grid.
@@ -68,20 +68,38 @@ export default function ResultsGrid({ results }) {
 
   const completedCount = results.filter(r => r.blueprintResult && !r.error).length;
 
-  const getStatusBadge = (result) => {
+  // Render status indicator (circle for pending/running, nothing for complete)
+  const renderStatusIndicator = (result) => {
     if (result.status === 'pending') {
-      return <span className="px-2 py-0.5 text-xs rounded-full bg-amber-100 text-amber-600">Pending</span>;
+      return <Loader2 size={14} className="text-slate-300" />;
     }
     if (result.status === 'running') {
-      return <span className="px-2 py-0.5 text-xs rounded-full bg-cyan-100 text-cyan-600 animate-pulse">Running</span>;
+      return <Loader2 size={14} className="text-slate-400 animate-spin" />;
     }
     if (result.status === 'error' || result.error) {
-      return <span className="px-2 py-0.5 text-xs rounded-full bg-red-100 text-red-600">Error</span>;
+      return <span className="w-3 h-3 rounded-full bg-red-400" />;
     }
-    if (result.blueprintResult) {
-      return <span className="px-2 py-0.5 text-xs rounded-full bg-green-100 text-green-600">Complete</span>;
-    }
+    // Complete items show no circle
     return null;
+  };
+
+  // Get score color based on value
+  const getScoreColor = (score) => {
+    if (score >= 7) return 'text-green-600 bg-green-100';
+    if (score >= 4) return 'text-amber-600 bg-amber-100';
+    return 'text-red-600 bg-red-100';
+  };
+
+  // Render AI score as small gray text (for completed items, shown on right side)
+  const renderAiScoreCompact = (result) => {
+    if (!result.evaluation?.ai?.score) return null;
+    if (result.status !== 'complete' && !result.blueprintResult) return null;
+    const score = result.evaluation.ai.score;
+    return (
+      <span className="text-xs text-slate-400 font-medium">
+        {score}/10
+      </span>
+    );
   };
 
   return (
@@ -147,13 +165,14 @@ export default function ResultsGrid({ results }) {
                 onClick={() => toggleRow(index)}
                 className="w-full flex items-center justify-between p-3 hover:bg-slate-100 transition-colors text-left"
               >
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2">
+                  {renderStatusIndicator(result)}
                   <span className="text-sm font-medium text-slate-700">
                     {configLabel}
                   </span>
-                  {getStatusBadge(result)}
                 </div>
                 <div className="flex items-center gap-2">
+                  {renderAiScoreCompact(result)}
                   {result.blueprintResult && (
                     <button
                       type="button"
@@ -181,19 +200,74 @@ export default function ResultsGrid({ results }) {
 
               {/* Expanded Content */}
               {isExpanded && (
-                <div className="border-t border-slate-200 p-4 bg-white">
+                <div className="border-t border-slate-200 p-4 bg-white space-y-4">
                   {result.error ? (
                     <div className="text-sm text-red-600 bg-red-50 p-3 rounded border border-red-100">
                       Error: {result.error}
                     </div>
-                  ) : result.blueprintResult ? (
-                    <pre className="text-sm text-slate-700 whitespace-pre-wrap font-mono bg-slate-50 p-4 rounded-lg max-h-96 overflow-auto border border-slate-100">
-                      {result.blueprintResult}
-                    </pre>
                   ) : (
-                    <div className="text-sm text-slate-400 italic">
-                      Waiting for result...
-                    </div>
+                    <>
+                      {/* Blueprint */}
+                      {result.blueprintResult && (
+                        <div>
+                          <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Blueprint</h4>
+                          <pre className="text-sm text-slate-700 whitespace-pre-wrap font-mono bg-slate-50 p-4 rounded-lg max-h-64 overflow-auto border border-slate-100">
+                            {result.blueprintResult}
+                          </pre>
+                        </div>
+                      )}
+
+                      {/* Execution Result */}
+                      {result.executionResult && (
+                        <div>
+                          <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">
+                            Execution Result
+                            {result.executionModelId && (
+                              <span className="ml-2 font-normal text-slate-400">({result.executionModelId})</span>
+                            )}
+                          </h4>
+                          <pre className="text-sm text-slate-700 whitespace-pre-wrap font-mono bg-blue-50 p-4 rounded-lg max-h-64 overflow-auto border border-blue-100">
+                            {result.executionResult}
+                          </pre>
+                        </div>
+                      )}
+
+                      {/* AI Evaluation */}
+                      {result.evaluation?.ai && (
+                        <div>
+                          <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">
+                            AI Evaluation
+                            {result.judgeModelId && (
+                              <span className="ml-2 font-normal text-slate-400">({result.judgeModelId})</span>
+                            )}
+                          </h4>
+                          <div className="flex items-start gap-4 p-4 bg-purple-50 rounded-lg border border-purple-100">
+                            <div className="flex flex-col items-center">
+                              <div className={`text-2xl font-bold ${getScoreColor(result.evaluation.ai.score).split(' ')[0]}`}>
+                                {result.evaluation.ai.score}
+                              </div>
+                              <div className="text-xs text-slate-400">/ 10</div>
+                            </div>
+                            <div className="flex-1">
+                              <p className="text-sm text-slate-700">{result.evaluation.ai.critique}</p>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Execution Error */}
+                      {result.executionError && (
+                        <div className="text-sm text-amber-600 bg-amber-50 p-3 rounded border border-amber-100">
+                          Execution Error: {result.executionError}
+                        </div>
+                      )}
+
+                      {!result.blueprintResult && (
+                        <div className="text-sm text-slate-400 italic">
+                          Waiting for result...
+                        </div>
+                      )}
+                    </>
                   )}
                 </div>
               )}

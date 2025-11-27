@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Beaker, Play, Loader2, AlertCircle, History, Trash2, Zap } from 'lucide-react';
+import { Beaker, Play, Loader2, AlertCircle, History, Trash2, Zap, Settings2, ChevronDown, ChevronUp } from 'lucide-react';
 import MatrixSelector from './MatrixSelector';
+import ModelSelector from './ModelSelector';
 import ResultsGrid from './ResultsGrid';
 import { runMatrixExperiment } from '../lib/experimentRunner';
 import {
@@ -21,8 +22,9 @@ import {
  * @param {string} [props.defaultOutputType] - Default output type ID (e.g., 'doc').
  * @param {Object} [props.db] - Firestore instance (optional, for persistence).
  * @param {Object} [props.user] - Current user object (optional, for persistence).
+ * @param {Object} [props.apiKeys] - API keys { gemini, openai, anthropic }
  */
-export default function ExperimentMode({ callLLM, defaultOutputType = 'doc', db, user }) {
+export default function ExperimentMode({ callLLM, defaultOutputType = 'doc', db, user, apiKeys = {} }) {
   // Form state
   const [originalPrompt, setOriginalPrompt] = useState('');
   const [outputType, setOutputType] = useState(defaultOutputType);
@@ -38,6 +40,12 @@ export default function ExperimentMode({ callLLM, defaultOutputType = 'doc', db,
     stripMeta: true,
     aestheticMode: false
   });
+
+  // Model selection state
+  const [executionModel, setExecutionModel] = useState('gemini-2.0-flash');
+  const [judgeModel, setJudgeModel] = useState('gemini-2.0-flash');
+  const [enableJudge, setEnableJudge] = useState(false);
+  const [showAdvanced, setShowAdvanced] = useState(false);
 
   // Execution state
   const [isRunning, setIsRunning] = useState(false);
@@ -99,7 +107,10 @@ export default function ExperimentMode({ callLLM, defaultOutputType = 'doc', db,
           outputType,
           matrixConfig,
           toggles,
-          totalCells: totalCombos
+          totalCells: totalCombos,
+          executionModel,
+          judgeModel: enableJudge ? judgeModel : null,
+          enableJudge
         });
         setCurrentExperimentId(experimentId);
       } catch (err) {
@@ -118,6 +129,12 @@ export default function ExperimentMode({ callLLM, defaultOutputType = 'doc', db,
         outputType,
         callLLM,
         toggles,
+        models: {
+          executionModel,
+          judgeModel,
+          enableJudge,
+          apiKeys
+        },
         onProgress: async (completed, total, result) => {
           setProgress({ completed, total });
           setResults(prev => {
@@ -304,7 +321,7 @@ export default function ExperimentMode({ callLLM, defaultOutputType = 'doc', db,
                 type="button"
                 onClick={() => setOutputType(opt.id)}
                 disabled={isRunning}
-                className={`flex flex-col items-center justify-center p-3 rounded-lg border transition-all duration-200 ${
+                className={`flex flex-col items-center justify-center p-3 min-h-[60px] rounded-lg border transition-all duration-200 ${
                   outputType === opt.id
                     ? 'bg-cyan-50 border-cyan-500 text-cyan-700 shadow-sm ring-1 ring-cyan-200'
                     : 'bg-white border-slate-200 text-slate-500 hover:bg-slate-50 hover:border-slate-300'
@@ -317,43 +334,96 @@ export default function ExperimentMode({ callLLM, defaultOutputType = 'doc', db,
         </div>
 
       {/* Matrix Selector */}
-      <MatrixSelector
-        value={matrixConfig}
-        onChange={setMatrixConfig}
-      />
+        <MatrixSelector
+          value={matrixConfig}
+          onChange={setMatrixConfig}
+        />
 
-      {/* Toggles */}
-        <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-4 flex flex-wrap gap-6">
+        {/* Advanced Settings (Model Selection) */}
+        <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+          <button
+            type="button"
+            onClick={() => setShowAdvanced(!showAdvanced)}
+            className="w-full flex items-center justify-between p-4 bg-slate-50 hover:bg-slate-100 transition-colors"
+          >
+            <div className="flex items-center gap-2 text-sm font-semibold text-slate-700">
+              <Settings2 className="w-4 h-4 text-slate-500" />
+              Advanced Configuration
+            </div>
+            {showAdvanced ? <ChevronUp className="w-4 h-4 text-slate-400" /> : <ChevronDown className="w-4 h-4 text-slate-400" />}
+          </button>
+
+          {showAdvanced && (
+            <div className="p-6 space-y-6">
+              {/* Model Selectors */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <ModelSelector
+                  label="Execution Model"
+                  value={executionModel}
+                  onChange={setExecutionModel}
+                  disabled={isRunning}
+                />
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <label className="text-xs font-bold text-slate-500 uppercase tracking-wide">
+                      Judge Model
+                    </label>
+                    <label className="flex items-center gap-2 text-xs text-slate-500 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={enableJudge}
+                        onChange={(e) => setEnableJudge(e.target.checked)}
+                        disabled={isRunning}
+                        className="rounded border-slate-300 bg-white text-cyan-500 focus:ring-cyan-500"
+                      />
+                      Enable AI Judge
+                    </label>
+                  </div>
+                  <ModelSelector
+                    label=""
+                    value={judgeModel}
+                    onChange={setJudgeModel}
+                    disabled={isRunning || !enableJudge}
+                    className={!enableJudge ? 'opacity-50' : ''}
+                  />
+                </div>
+              </div>
+
+              {/* Toggles */}
+              <div className="flex flex-wrap gap-6 pt-4 border-t border-slate-100">
         <label className="flex items-center gap-2 text-sm text-slate-600 cursor-pointer">
-            <input
-              type="checkbox"
-              checked={toggles.allowPlaceholders}
-              onChange={(e) => setToggles(prev => ({ ...prev, allowPlaceholders: e.target.checked }))}
-              disabled={isRunning}
-              className="rounded border-slate-300 bg-white text-cyan-500 focus:ring-cyan-500"
-            />
-            Allow Placeholders
-          </label>
-          <label className="flex items-center gap-2 text-sm text-slate-600 cursor-pointer">
-            <input
-              type="checkbox"
-              checked={toggles.stripMeta}
-              onChange={(e) => setToggles(prev => ({ ...prev, stripMeta: e.target.checked }))}
-              disabled={isRunning}
-              className="rounded border-slate-300 bg-white text-cyan-500 focus:ring-cyan-500"
-            />
-            Strip Meta Commentary
-          </label>
-          <label className="flex items-center gap-2 text-sm text-slate-600 cursor-pointer">
-            <input
-              type="checkbox"
-              checked={toggles.aestheticMode}
-              onChange={(e) => setToggles(prev => ({ ...prev, aestheticMode: e.target.checked }))}
-              disabled={isRunning}
-              className="rounded border-slate-300 bg-white text-cyan-500 focus:ring-cyan-500"
-            />
-            Aesthetic Mode
-          </label>
+                  <input
+                    type="checkbox"
+                    checked={toggles.allowPlaceholders}
+                    onChange={(e) => setToggles(prev => ({ ...prev, allowPlaceholders: e.target.checked }))}
+                    disabled={isRunning}
+                    className="rounded border-slate-300 bg-white text-cyan-500 focus:ring-cyan-500"
+                  />
+                  Allow Placeholders
+                </label>
+                <label className="flex items-center gap-2 text-sm text-slate-600 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={toggles.stripMeta}
+                    onChange={(e) => setToggles(prev => ({ ...prev, stripMeta: e.target.checked }))}
+                    disabled={isRunning}
+                    className="rounded border-slate-300 bg-white text-cyan-500 focus:ring-cyan-500"
+                  />
+                  Strip Meta Commentary
+                </label>
+                <label className="flex items-center gap-2 text-sm text-slate-600 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={toggles.aestheticMode}
+                    onChange={(e) => setToggles(prev => ({ ...prev, aestheticMode: e.target.checked }))}
+                    disabled={isRunning}
+                    className="rounded border-slate-300 bg-white text-cyan-500 focus:ring-cyan-500"
+                  />
+                  Aesthetic Mode
+                </label>
+              </div>
+            </div>
+          )}
         </div>
 
       {/* Run Button */}

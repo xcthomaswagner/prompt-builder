@@ -928,7 +928,7 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
                 onClick={() => setAppMode('experiment')}
                 className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-medium transition-all ${
                   appMode === 'experiment'
-                    ? 'bg-white text-purple-700 shadow-sm'
+                    ? 'bg-white text-slate-800 shadow-sm'
                     : 'text-slate-500 hover:text-slate-700'
                 }`}
               >
@@ -979,6 +979,11 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
                 defaultOutputType={selectedOutputType}
                 db={db}
                 user={user}
+                apiKeys={{
+                  gemini: geminiApiKey,
+                  openai: chatgptApiKey,
+                  anthropic: claudeApiKey
+                }}
               />
             </div>
           ) : (
@@ -1329,7 +1334,7 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
       </div>
 
       {/* Sidebar - History */}
-      <div className="w-80 bg-white border-l border-slate-200 flex flex-col hidden md:flex z-10 shadow-sm">
+      <div className="w-80 bg-slate-50/50 border-l border-slate-200 flex flex-col hidden md:flex z-10 shadow-sm">
         <div className="p-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
           <div className="flex items-center gap-2 text-slate-700">
             <History className="w-4 h-4" />

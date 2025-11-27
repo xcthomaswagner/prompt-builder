@@ -57,10 +57,10 @@ export default function MultiSelectChips({ label, options, selected, onChange })
               type="button"
               onClick={() => toggle(option.id)}
               className={`
-                px-3 py-1.5 rounded-full text-sm font-medium transition-all
+                px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-200 border
                 ${isSelected
-                  ? 'bg-cyan-500 text-white shadow-sm'
-                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                  ? 'bg-cyan-50 border-cyan-500 text-cyan-700 shadow-sm ring-1 ring-cyan-200'
+                  : 'bg-white border-slate-200 text-slate-500 hover:bg-slate-50 hover:border-slate-300'
                 }
               `}
             >
