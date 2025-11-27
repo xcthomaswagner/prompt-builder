@@ -17,20 +17,20 @@ git commit -m "revert: Phase X - <reason>"
 
 ---
 
-## Phase 1: Prompt Spec Intermediate Format
+## Phase 1: Prompt Spec Intermediate Format ✅ COMPLETE
 
-**Branch:** `feat/phase1-prompt-spec-schema`
+**Branch:** `feat/phase1-prompt-spec-schema` (merged)
 
-- [ ] 1.1 Create base schema (`src/lib/promptSpecs/schema.js`)
-- [ ] 1.2 Create Deck template (`src/lib/promptSpecs/templates/deck.js`)
-- [ ] 1.3 Create Code template (`src/lib/promptSpecs/templates/code.js`)
-- [ ] 1.4 Create Doc template (`src/lib/promptSpecs/templates/doc.js`)
-- [ ] 1.5 Create Data template (`src/lib/promptSpecs/templates/data.js`)
-- [ ] 1.6 Create Copy template (`src/lib/promptSpecs/templates/copy.js`)
-- [ ] 1.7 Create Comms template (`src/lib/promptSpecs/templates/comms.js`)
-- [ ] 1.8 Create validator (`src/lib/promptSpecs/validator.js`)
-- [ ] 1.9 Create index exports (`src/lib/promptSpecs/index.js`)
-- [ ] 1.10 Merge to main
+- [x] 1.1 Create base schema (`src/lib/promptSpecs/schema.js`)
+- [x] 1.2 Create Deck template (`src/lib/promptSpecs/templates/deck.js`)
+- [x] 1.3 Create Code template (`src/lib/promptSpecs/templates/code.js`)
+- [x] 1.4 Create Doc template (`src/lib/promptSpecs/templates/doc.js`)
+- [x] 1.5 Create Data template (`src/lib/promptSpecs/templates/data.js`)
+- [x] 1.6 Create Copy template (`src/lib/promptSpecs/templates/copy.js`)
+- [x] 1.7 Create Comms template (`src/lib/promptSpecs/templates/comms.js`)
+- [x] 1.8 Create validator (`src/lib/promptSpecs/validator.js`)
+- [x] 1.9 Create index exports (`src/lib/promptSpecs/index.js`)
+- [x] 1.10 Merge to main
 
 ---
 
