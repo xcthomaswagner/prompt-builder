@@ -67,14 +67,20 @@ export function ButtonGroup({ options, value, onChange, size = 'md', className =
  * Checkbox with label - styled to match Output Type buttons
  */
 export function Checkbox({ label, checked, onChange, disabled = false, className = '' }) {
+  const handleClick = () => {
+    if (!disabled) {
+      onChange(!checked);
+    }
+  };
+
   return (
-    <label className={`flex items-center gap-2 cursor-pointer ${disabled ? 'opacity-50 cursor-not-allowed' : ''} ${className}`}>
-      <button
-        type="button"
-        onClick={() => !disabled && onChange(!checked)}
-        disabled={disabled}
+    <div 
+      className={`flex items-center gap-2 cursor-pointer ${disabled ? 'opacity-50 cursor-not-allowed' : ''} ${className}`}
+      onClick={handleClick}
+    >
+      <div
         className={`
-          w-5 h-5 rounded border-2 flex items-center justify-center transition-all
+          w-5 h-5 rounded border-2 flex items-center justify-center transition-all flex-shrink-0
           ${checked
             ? 'bg-cyan-50 border-cyan-500'
             : 'bg-white border-slate-300 hover:border-slate-400'
@@ -86,9 +92,9 @@ export function Checkbox({ label, checked, onChange, disabled = false, className
             <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
           </svg>
         )}
-      </button>
-      <span className="text-sm text-slate-700">{label}</span>
-    </label>
+      </div>
+      <span className="text-sm text-slate-700 select-none">{label}</span>
+    </div>
   );
 }
 
