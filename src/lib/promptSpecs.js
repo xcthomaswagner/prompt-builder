@@ -337,19 +337,22 @@ Conclude with 2-3 sentences acknowledging that both systems involve complex trad
   copy: createSpec({
     id: 'copy',
     metadata: {
-      persona: 'Brand Voice Strategist',
+      persona: 'Senior Copywriter & Brand Voice Strategist',
       guardrails: [
         'Focus ONLY on the specified copy type - do not produce other formats.',
         'Align tone with audience motivations and channel norms.',
-        'Provide alternates when messaging needs experimentation.'
+        'Include specific word counts and structural requirements for each section.',
+        'Ensure Flesch Reading Ease targets are met (60-70 for general, adjust per audience).'
       ],
       enrichment: [
         'Spell out CTA, offer details, and emotional triggers.',
-        'List must-have phrases, banned words, and compliance caveats.'
+        'Specify target audience demographics and psychographics.',
+        'Define success metrics and measurement criteria.'
       ],
       pipeline: [
         'Audience & Purpose: clarify persona, need-state, and action target.',
         'Message Architecture: craft hook, value proof, and CTA sequence.',
+        'Structural Blueprint: define exact section structure with word counts.',
         'Polish: ensure cadence, rhythm, and formatting cues are explicit.'
       ]
     },
@@ -357,42 +360,189 @@ Conclude with 2-3 sentences acknowledging that both systems involve complex trad
       {
         id: 'copy-type-context',
         channel: 'system',
-        template: `COPY TYPE SPECIFICATION:
-You are creating a blueprint for: {{typeSpecific.copy_type}} copy.
+        template: `COPY TYPE: {{typeSpecific.copy_type}}
+CRITICAL: Generate ONLY {{typeSpecific.copy_type}} copy with exact structural requirements below.`
+      },
+      {
+        id: 'copy-press-template',
+        channel: 'system',
+        conditions: [{ field: 'typeSpecific.copy_type', operator: '==', value: 'press' }],
+        template: `PRESS RELEASE BLUEPRINT:
 
-Copy Type Context:
-- ad: Short-form advertising copy (headlines, body, CTA)
-- landing: Landing page sections (hero, benefits, social proof, CTA)
-- email: Email marketing (subject line, preview, body, CTA)
-- social: Social media posts (platform-optimized, hashtags, engagement hooks)
-- press: Press release (headline, dateline, lead, body quotes, boilerplate)
-- tagline: Brand taglines and slogans (memorable, concise, brand essence)
-- product: Product descriptions (features, benefits, specifications)
+Instruct the LLM to produce:
 
-CRITICAL: Generate ONLY {{typeSpecific.copy_type}} copy. Do NOT produce other copy types.`
+1. **HEADLINE** (under 80 characters) - Newsworthy, includes product name + key differentiator
+2. **SUB-HEADLINE** (under 160 characters) - Expand with features/benefits
+3. **LEAD PARAGRAPH** (~75 words) - Who, What, When, Where, Why + significance
+4. **BODY** (3-4 paragraphs, 100-125 words each):
+   - P1: Core feature deep-dive with technical credibility
+   - P2: User benefits and experience improvements
+   - P3: Sustainability/innovation/differentiator angle
+   - P4: Ecosystem integration + availability details
+5. **EXECUTIVE QUOTE** (~50 words) - Vision + company values, make it quotable for journalists
+6. **COMPANY BOILERPLATE** (~75 words) - Background, mission, achievements, contact
+7. **CALL TO ACTION** - Pre-order details, pricing, website URL
+8. **SUCCESS METRICS** [Illustrative] - Define what success looks like (e.g., "placements in top-tier publications within one week")
+9. **TESTIMONIAL** [Illustrative] - Include customer quote placeholder like: "I was blown away by..."
+
+REQUIREMENTS:
+- Flesch Reading Ease: 60-70 (8th-grade level)
+- Professional yet enthusiastic tone
+- Benefit-driven language throughout
+- Suggested subject line for distribution`
+      },
+      {
+        id: 'copy-email-template',
+        channel: 'system',
+        conditions: [{ field: 'typeSpecific.copy_type', operator: '==', value: 'email' }],
+        template: `EMAIL MARKETING BLUEPRINT:
+
+1. **SUBJECT LINE** (40-60 chars) - Create urgency/curiosity + A/B variant
+2. **PREVIEW TEXT** (80-100 chars) - Complement subject, add hook
+3. **OPENING** (~30 words) - Personalized greeting + immediate value hook
+4. **BODY** (2-3 paragraphs, 50-75 words each):
+   - Problem/pain point acknowledgment
+   - Solution introduction
+   - Key benefits (bullet format optional)
+5. **CTA BUTTON** (2-5 words) - Action verb + urgency line
+6. **P.S. LINE** - Secondary offer or urgency element
+
+REQUIREMENTS:
+- Total: 200-300 words
+- Mobile-first, scannable format
+- Single clear CTA
+- Personalization tokens suggested`
+      },
+      {
+        id: 'copy-ad-template',
+        channel: 'system',
+        conditions: [{ field: 'typeSpecific.copy_type', operator: '==', value: 'ad' }],
+        template: `ADVERTISING COPY BLUEPRINT:
+
+1. **HEADLINE** (5-10 words) - Stop-scroll hook, 3 A/B variants
+2. **BODY COPY** (25-50 words) - Support claim + social proof element
+3. **CTA** (2-4 words) - Action verb + urgency
+4. **VISUAL DIRECTION** - Suggested image/video concept, text overlay guidance
+
+PLATFORM VARIANTS TO INCLUDE:
+- Facebook/Instagram (longer form allowed)
+- Google Ads (strict character limits: 30/30/90)
+- LinkedIn (professional angle)
+- Display (minimal text, high impact)`
+      },
+      {
+        id: 'copy-landing-template',
+        channel: 'system',
+        conditions: [{ field: 'typeSpecific.copy_type', operator: '==', value: 'landing' }],
+        template: `LANDING PAGE BLUEPRINT:
+
+1. **HERO SECTION**
+   - Headline (8-12 words): Clear value proposition
+   - Subheadline (15-25 words): Expand on promise
+   - Primary CTA button text
+   - Visual direction
+
+2. **PROBLEM/AGITATION** (~75 words) - Identify pain point + amplify consequences
+
+3. **SOLUTION/BENEFITS** (3-5 bullet points) - Feature → Benefit format, quantifiable
+
+4. **SOCIAL PROOF** - Testimonial template with attribution, stats, trust badges
+
+5. **HOW IT WORKS** (3-4 numbered steps) - Simple process, remove mental friction
+
+6. **FAQ SECTION** (3-5 questions) - Address top objections, reduce purchase anxiety
+
+7. **FINAL CTA** - Restate value + urgency + risk reversal (guarantee/trial)`
+      },
+      {
+        id: 'copy-social-template',
+        channel: 'system',
+        conditions: [{ field: 'typeSpecific.copy_type', operator: '==', value: 'social' }],
+        template: `SOCIAL MEDIA COPY BLUEPRINT:
+
+**LinkedIn** (professional)
+- Hook line (first 2 lines visible before "see more")
+- Story/insight body (150-200 words)
+- CTA or engagement question
+- 3-5 relevant hashtags
+
+**Twitter/X** (concise)
+- Main tweet (under 280 chars)
+- Thread format if needed (3-5 tweets)
+- Hashtag strategy (1-2 max)
+
+**Instagram** (visual-first)
+- Caption hook (first line critical)
+- Body with line breaks for readability
+- CTA
+- 20-30 hashtags (mix of sizes)
+
+**Facebook** (community)
+- Conversational opening
+- Story format preferred
+- Engagement question to drive comments
+
+INCLUDE: Posting time recommendations, engagement hooks, content pillar alignment`
+      },
+      {
+        id: 'copy-product-template',
+        channel: 'system',
+        conditions: [{ field: 'typeSpecific.copy_type', operator: '==', value: 'product' }],
+        template: `PRODUCT DESCRIPTION BLUEPRINT:
+
+1. **TITLE** (60-80 chars) - Include key identifier + primary benefit
+2. **TAGLINE** (under 15 words) - Memorable, benefit-focused
+3. **SHORT DESCRIPTION** (50-75 words) - Hook + key benefits for search/preview
+4. **LONG DESCRIPTION** (200-300 words):
+   - Problem it solves
+   - How it works
+   - Key features (5-7 bullets with benefits)
+   - Materials/construction quality
+   - Use cases/ideal customer
+5. **SPECIFICATIONS TABLE** - Dimensions, weight, materials, compatibility
+6. **SEO ELEMENTS** - Meta description (155 chars), primary keywords`
+      },
+      {
+        id: 'copy-tagline-template',
+        channel: 'system',
+        conditions: [{ field: 'typeSpecific.copy_type', operator: '==', value: 'tagline' }],
+        template: `TAGLINE/SLOGAN BLUEPRINT:
+
+Generate 10-15 tagline options across these categories:
+
+1. **BENEFIT-DRIVEN** (3-4 options) - Focus on what customer gains
+2. **EMOTIONAL** (3-4 options) - Tap into feelings/aspirations
+3. **CLEVER/WITTY** (2-3 options) - Wordplay, memorable twist
+4. **SIMPLE/DIRECT** (2-3 options) - Clear, no-nonsense
+5. **ASPIRATIONAL** (2-3 options) - Paint the vision
+
+REQUIREMENTS:
+- Each tagline: 2-8 words max
+- Include rationale for top 3 recommendations
+- Note which work best for different contexts (ads, packaging, social)`
       },
       {
         id: 'copy-emotional-appeal',
         channel: 'system',
         conditions: [{ field: 'typeSpecific.emotional_appeal', operator: 'exists' }],
-        template: 'PRIMARY EMOTIONAL DRIVER: {{typeSpecific.emotional_appeal}}\nLeverage this emotion throughout the messaging.'
+        template: 'EMOTIONAL DRIVER: {{typeSpecific.emotional_appeal}}\nWeave throughout with sensory language and outcome-focused benefits that trigger this feeling.'
       },
       {
         id: 'copy-brand-voice',
         channel: 'system',
         conditions: [{ field: 'typeSpecific.brand_voice', operator: 'exists' }],
-        template: 'BRAND VOICE: {{typeSpecific.brand_voice}}\nMaintain this personality in all copy elements.'
+        template: 'BRAND VOICE: {{typeSpecific.brand_voice}}\nMaintain consistently. Include voice descriptors and 2-3 sample phrases that exemplify this voice.'
       },
       {
         id: 'copy-cta',
         channel: 'system',
         conditions: [{ field: 'typeSpecific.cta_type', operator: 'exists' }],
-        template: 'CALL TO ACTION: {{typeSpecific.cta_type}}\nBuild messaging toward this action.'
+        template: 'CTA FOCUS: {{typeSpecific.cta_type}}\nBuild all messaging toward this action. Include urgency triggers and friction-reducers.'
       },
       {
         id: 'copy-testing',
         channel: 'system',
-        template: 'COPY PLAYBOOK:\n- Offer voice descriptors, sample phrases, and pacing cues.\n- Recommend experimentation ideas (A/B hooks, subject lines, CTAs).'
+        template: 'A/B TESTING: Include 2-3 variant headlines and CTAs. Note which elements to test first based on impact potential.'
       }
     ]
   }),
