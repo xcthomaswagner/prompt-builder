@@ -956,8 +956,24 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
     );
   }
 
+  // Helper for date formatting
+  const formatVersionDate = (ver) => {
+    try {
+      let date;
+      if (ver.createdAt?.seconds) {
+        date = new Date(ver.createdAt.seconds * 1000);
+      } else if (ver.createdAt) {
+        date = new Date(ver.createdAt);
+      }
+      if (date && !isNaN(date.getTime())) {
+        return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      }
+    } catch (e) { console.warn("Date parse error", e); }
+    return '';
+  };
+
   return (
-    <div className="flex h-screen bg-slate-50 text-slate-900 font-sans overflow-hidden">
+    <div className="min-h-screen bg-slate-50 flex font-sans text-slate-900 selection:bg-cyan-100 selection:text-cyan-900">
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col h-full overflow-hidden relative">
@@ -975,22 +991,20 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
             <div className="flex items-center bg-slate-100 rounded-lg p-1">
               <button
                 onClick={() => setAppMode('builder')}
-                className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-medium transition-all ${
-                  appMode === 'builder'
-                    ? 'bg-white text-slate-800 shadow-sm'
-                    : 'text-slate-500 hover:text-slate-700'
-                }`}
+                className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-medium transition-all ${appMode === 'builder'
+                  ? 'bg-white text-slate-800 shadow-sm'
+                  : 'text-slate-500 hover:text-slate-700'
+                  }`}
               >
                 <Wand2 className="w-4 h-4" />
                 Builder
               </button>
               <button
                 onClick={() => setAppMode('experiment')}
-                className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-medium transition-all ${
-                  appMode === 'experiment'
-                    ? 'bg-white text-slate-800 shadow-sm'
-                    : 'text-slate-500 hover:text-slate-700'
-                }`}
+                className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-medium transition-all ${appMode === 'experiment'
+                  ? 'bg-white text-slate-800 shadow-sm'
+                  : 'text-slate-500 hover:text-slate-700'
+                  }`}
               >
                 <Beaker className="w-4 h-4" />
                 Experiment
@@ -1049,435 +1063,434 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
               />
             </div>
           ) : (
-          <div className="max-w-6xl mx-auto space-y-6 pb-20">
+            <div className="max-w-6xl mx-auto space-y-6 pb-20">
 
-            {/* Quick Start Templates Toggle */}
-            <div className="flex items-center justify-between">
-              <button
-                onClick={() => setShowTemplates(!showTemplates)}
-                className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-                  showTemplates
+              {/* Quick Start Templates Toggle */}
+              <div className="flex items-center justify-between">
+                <button
+                  onClick={() => setShowTemplates(!showTemplates)}
+                  className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${showTemplates
                     ? 'bg-indigo-100 text-indigo-700'
                     : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50'
-                }`}
-              >
-                <Lightbulb className="w-4 h-4" />
-                Quick Start Templates
-                {showTemplates ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-              </button>
-              {selectedTemplate && (
-                <span className="text-xs text-indigo-600 bg-indigo-50 px-2 py-1 rounded">
-                  Using: {selectedTemplate.label}
-                </span>
-              )}
-            </div>
-
-            {/* Template Selector */}
-            {showTemplates && (
-              <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
-                <TemplateSelector
-                  onSelect={handleTemplateSelect}
-                  selectedId={selectedTemplate?.id}
-                />
-              </div>
-            )}
-
-            {/* Input Section */}
-            <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6 transition-all focus-within:ring-2 focus-within:ring-indigo-100 focus-within:border-indigo-400">
-              <div className="flex justify-end mb-2">
-                <button
-                  onClick={() => setShowSystemPrompt(!showSystemPrompt)}
-                  className="text-xs text-slate-500 hover:text-indigo-600 flex items-center gap-1"
+                    }`}
                 >
-                  {showSystemPrompt ? <EyeOff className="w-3 h-3" /> : <Eye className="w-3 h-3" />}
-                  {showSystemPrompt ? 'Hide System Prompt' : 'Show System Prompt'}
+                  <Lightbulb className="w-4 h-4" />
+                  Quick Start Templates
+                  {showTemplates ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
                 </button>
+                {selectedTemplate && (
+                  <span className="text-xs text-indigo-600 bg-indigo-50 px-2 py-1 rounded">
+                    Using: {selectedTemplate.label}
+                  </span>
+                )}
               </div>
 
-              {showSystemPrompt && (
-                <div className="mb-6 p-4 bg-slate-100 rounded-lg border border-slate-200 text-xs font-mono text-slate-600 overflow-auto max-h-64">
-                  <h3 className="font-bold mb-2 text-slate-700">System Prompt Preview:</h3>
-                  <pre className="whitespace-pre-wrap">
-                    {(() => {
-                      try {
-                        const toneObj = TONES.find(t => t.id === selectedTone);
-                        const typeObj = OUTPUT_TYPES.find(t => t.id === selectedOutputType);
-                        const formatObj = FORMATS.find(f => f.id === selectedFormat);
-                        const lengthObj = LENGTHS.find(t => t.id === selectedLength);
-
-                        const plan = buildPromptPlan({
-                          specId: selectedOutputType,
-                          userInput: inputText || "(User Input)",
-                          tone: toneObj,
-                          outputType: typeObj,
-                          format: formatObj,
-                          length: lengthObj,
-                          notes,
-                          toggles: { allowPlaceholders, stripMeta, aestheticMode }
-                        });
-                        return plan.systemPrompt;
-                      } catch (e) {
-                        return "Error generating preview: " + e.message;
-                      }
-                    })()}
-                  </pre>
+              {/* Template Selector */}
+              {showTemplates && (
+                <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+                  <TemplateSelector
+                    onSelect={handleTemplateSelect}
+                    selectedId={selectedTemplate?.id}
+                  />
                 </div>
               )}
 
-              <div className="flex justify-between items-center mb-3">
-                <label className="text-sm font-semibold text-slate-700">Your Original Prompt</label>
-                <div className="flex items-center gap-3 text-xs font-mono">
-                  <span className="text-slate-400">{inputText.length} chars</span>
-                  <span className="text-slate-300">•</span>
-                  <span className="text-cyan-600 font-semibold">{estimateTokens(inputText)} tokens</span>
-                  <span className="text-slate-300">•</span>
+              {/* Input Section */}
+              <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6 transition-all focus-within:ring-2 focus-within:ring-indigo-100 focus-within:border-indigo-400">
+                <div className="flex justify-end mb-2">
                   <button
-                    onClick={() => {
-                      setInputText('');
-                      setSelectedOutputType('doc');
-                      setSelectedTone('professional');
-                      setSelectedFormat('paragraph');
-                      setSelectedLength('medium');
-                      setNotes('');
-                      setAllowPlaceholders(false);
-                      setStripMeta(true);
-                      setAestheticMode(false);
-                      setGeneratedResult(null);
-                      setCurrentHistoryId(null);
-                      // Reset evolution state
-                      setPromptSpec(null);
-                      setQualityResult(null);
-                      setReasoning({});
-                      setSelectedTemplate(null);
-                      setShowTemplates(false);
-                      setLastGeneratedPromptId(null);
-                    }}
-                    className="text-slate-500 hover:text-slate-700 font-sans text-xs px-2 py-0.5 rounded hover:bg-slate-100 transition-colors"
+                    onClick={() => setShowSystemPrompt(!showSystemPrompt)}
+                    className="text-xs text-slate-500 hover:text-indigo-600 flex items-center gap-1"
                   >
-                    Reset
+                    {showSystemPrompt ? <EyeOff className="w-3 h-3" /> : <Eye className="w-3 h-3" />}
+                    {showSystemPrompt ? 'Hide System Prompt' : 'Show System Prompt'}
                   </button>
                 </div>
-              </div>
-              <textarea
-                value={inputText}
-                onChange={(e) => setInputText(e.target.value)}
-                placeholder="e.g., Make me a deck about Andrej Karpathy software 3.0"
-                className="w-full h-32 resize-none outline-none text-sm text-slate-700 placeholder:text-slate-300"
-              />
 
-              {/* Token Bar */}
-              <div className="mt-4 space-y-1">
-                <div className="flex justify-between items-center text-xs">
-                  <span className="text-slate-500 font-medium">Token Usage</span>
-                  <span className="text-slate-400">{estimateTokens(inputText)} / 2000 tokens</span>
-                </div>
-                <div className="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden">
-                  <div
-                    className={`h-full rounded-full transition-all duration-300 ${estimateTokens(inputText) > 1500 ? 'bg-amber-400' : 'bg-cyan-400'}`}
-                    style={{ width: `${Math.min(100, (estimateTokens(inputText) / 2000) * 100)}%` }}
-                  ></div>
-                </div>
-              </div>
-            </div>
+                {showSystemPrompt && (
+                  <div className="mb-6 p-4 bg-slate-100 rounded-lg border border-slate-200 text-xs font-mono text-slate-600 overflow-auto max-h-64">
+                    <h3 className="font-bold mb-2 text-slate-700">System Prompt Preview:</h3>
+                    <pre className="whitespace-pre-wrap">
+                      {(() => {
+                        try {
+                          const toneObj = TONES.find(t => t.id === selectedTone);
+                          const typeObj = OUTPUT_TYPES.find(t => t.id === selectedOutputType);
+                          const formatObj = FORMATS.find(f => f.id === selectedFormat);
+                          const lengthObj = LENGTHS.find(t => t.id === selectedLength);
 
-            {/* Output Type Selector */}
-            <div>
-              <label className="text-sm font-semibold text-slate-700 mb-3 block">Output Type</label>
-              <div className="grid grid-cols-3 md:grid-cols-6 gap-3">
-                {OUTPUT_TYPES.filter(type => type.id !== 'json').map((type) => {
-                  const Icon = type.icon;
-                  const isSelected = selectedOutputType === type.id;
-                  return (
-                    <button
-                      key={type.id}
-                      onClick={() => {
-                        if (type.id !== selectedOutputType) {
-                          setSelectedOutputType(type.id);
-                          // Reset spec when output type changes to avoid stale typeSpecific data
-                          setPromptSpec(createSpec(type.id));
+                          const plan = buildPromptPlan({
+                            specId: selectedOutputType,
+                            userInput: inputText || "(User Input)",
+                            tone: toneObj,
+                            outputType: typeObj,
+                            format: formatObj,
+                            length: lengthObj,
+                            notes,
+                            toggles: { allowPlaceholders, stripMeta, aestheticMode }
+                          });
+                          return plan.systemPrompt;
+                        } catch (e) {
+                          return "Error generating preview: " + e.message;
                         }
-                      }}
-                      className={`flex flex-col items-center justify-center p-3 rounded-lg border transition-all duration-200 ${isSelected
-                        ? 'bg-cyan-50 border-cyan-500 text-cyan-700 shadow-sm ring-1 ring-cyan-200'
-                        : 'bg-white border-slate-200 text-slate-500 hover:bg-slate-50 hover:border-slate-300'
-                        }`}
-                    >
-                      <Icon className={`w-5 h-5 mb-2 ${isSelected ? 'text-cyan-600' : 'text-slate-400'}`} />
-                      <span className="text-xs font-medium">{type.label}</span>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* Type-Specific Form */}
-            <TypeSpecificForm
-              outputType={selectedOutputType}
-              spec={promptSpec || createSpec(selectedOutputType)}
-              onChange={handleSpecChange}
-            />
-
-            {/* Action Button */}
-            <button
-              onClick={handleGenerate}
-              disabled={!inputText.trim() || isGenerating}
-              className={`w-full py-4 rounded-xl text-white font-bold text-lg shadow-lg flex items-center justify-center gap-3 transition-all transform active:scale-[0.99] ${!inputText.trim()
-                ? 'bg-slate-300 cursor-not-allowed shadow-none'
-                : 'bg-gradient-to-r from-cyan-500 to-blue-600 hover:shadow-cyan-200 hover:shadow-xl'
-                }`}
-            >
-              {isGenerating ? (
-                <>
-                  <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                  Processing...
-                </>
-              ) : (
-                <>
-                  <Zap className="w-5 h-5 text-yellow-300 fill-current" />
-                  Generate Expanded Prompt
-                </>
-              )}
-            </button>
-
-            {isSavingHistory && (
-              <div className="mt-3 flex items-center gap-2 text-xs text-slate-500">
-                <div className="w-4 h-4 border-2 border-slate-200 border-t-cyan-500 rounded-full animate-spin" />
-                Saving to history...
-              </div>
-            )}
-
-            {errorMsg && (
-              <div className="p-4 bg-red-50 text-red-600 rounded-lg text-sm border border-red-100 flex items-center gap-2">
-                <AlertCircle className="w-4 h-4" />
-                {errorMsg}
-              </div>
-            )}
-
-            {/* Advanced Settings */}
-            <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-              <button
-                onClick={() => setShowAdvanced(!showAdvanced)}
-                className="w-full flex items-center justify-between p-4 bg-slate-50 hover:bg-slate-100 transition-colors"
-              >
-                <div className="flex items-center gap-2 text-sm font-semibold text-slate-700">
-                  <Settings2 className="w-4 h-4 text-slate-500" />
-                  Advanced Configuration
-                </div>
-                {showAdvanced ? <ChevronUp className="w-4 h-4 text-slate-400" /> : <ChevronDown className="w-4 h-4 text-slate-400" />}
-              </button>
-
-              {showAdvanced && (
-                <div className="p-6 space-y-6">
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    {/* Tone */}
-                    <div className="space-y-2">
-                      <label className="text-xs font-bold text-slate-500 uppercase tracking-wide">Tone</label>
-                      <div className="relative">
-                        <select
-                          value={selectedTone}
-                          onChange={(e) => setSelectedTone(e.target.value)}
-                          className="w-full appearance-none bg-slate-50 border border-slate-200 text-sm text-slate-700 py-2.5 px-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
-                        >
-                          {TONES.map(t => <option key={t.id} value={t.id}>{t.label}</option>)}
-                        </select>
-                        <ChevronDown className="absolute right-3 top-3 w-4 h-4 text-slate-400 pointer-events-none" />
-                      </div>
-                    </div>
-                    {/* Length */}
-                    <div className="space-y-2">
-                      <label className="text-xs font-bold text-slate-500 uppercase tracking-wide">Length</label>
-                      <div className="relative">
-                        <select
-                          value={selectedLength}
-                          onChange={(e) => setSelectedLength(e.target.value)}
-                          className="w-full appearance-none bg-slate-50 border border-slate-200 text-sm text-slate-700 py-2.5 px-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
-                        >
-                          {LENGTHS.map(l => <option key={l.id} value={l.id}>{l.label}</option>)}
-                        </select>
-                        <ChevronDown className="absolute right-3 top-3 w-4 h-4 text-slate-400 pointer-events-none" />
-                      </div>
-                    </div>
-                    {/* Format */}
-                    <div className="space-y-2">
-                      <label className="text-xs font-bold text-slate-500 uppercase tracking-wide">Format</label>
-                      <div className="relative">
-                        <select
-                          value={selectedFormat}
-                          onChange={(e) => setSelectedFormat(e.target.value)}
-                          className="w-full appearance-none bg-slate-50 border border-slate-200 text-sm text-slate-700 py-2.5 px-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
-                        >
-                          {FORMATS.map(f => <option key={f.id} value={f.id}>{f.label}</option>)}
-                        </select>
-                        <ChevronDown className="absolute right-3 top-3 w-4 h-4 text-slate-400 pointer-events-none" />
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Notes */}
-                  <div className="space-y-2">
-                    <label className="text-xs font-bold text-slate-500 uppercase tracking-wide">Notes (Audience, Constraints)</label>
-                    <textarea
-                      value={notes}
-                      onChange={(e) => setNotes(e.target.value)}
-                      placeholder="Add any additional context, audience details, or specific links..."
-                      className="w-full h-20 bg-slate-50 border border-slate-200 rounded-lg p-3 text-sm text-slate-700 focus:ring-2 focus:ring-cyan-500 outline-none resize-none"
-                    />
-                  </div>
-
-                  {/* Toggles */}
-                  <div className="space-y-4 pt-2 border-t border-slate-100">
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm text-slate-700">Allow [Illustrative] placeholders</span>
-                      <button
-                        onClick={() => setAllowPlaceholders(!allowPlaceholders)}
-                        className={`w-11 h-6 rounded-full relative transition-colors ${allowPlaceholders ? 'bg-cyan-500' : 'bg-slate-300'}`}
-                      >
-                        <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-transform shadow-sm ${allowPlaceholders ? 'left-6' : 'left-1'}`} />
-                      </button>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm text-slate-700">Strip meta-commentary</span>
-                      <button
-                        onClick={() => !FORMATS.find(f => f.id === selectedFormat)?.isSafeJson && setStripMeta(!stripMeta)}
-                        disabled={FORMATS.find(f => f.id === selectedFormat)?.isSafeJson}
-                        className={`w-11 h-6 rounded-full relative transition-colors ${stripMeta ? 'bg-cyan-500' : 'bg-slate-300'} ${FORMATS.find(f => f.id === selectedFormat)?.isSafeJson ? 'opacity-50 cursor-not-allowed' : ''}`}
-                      >
-                        <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-transform shadow-sm ${stripMeta ? 'left-6' : 'left-1'}`} />
-                      </button>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm text-slate-700">Emphasize aesthetics</span>
-                      <button
-                        onClick={() => setAestheticMode(!aestheticMode)}
-                        className={`w-11 h-6 rounded-full relative transition-colors ${aestheticMode ? 'bg-cyan-500' : 'bg-slate-300'}`}
-                      >
-                        <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-transform shadow-sm ${aestheticMode ? 'left-6' : 'left-1'}`} />
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* Expanded Prompt Result - Inline Display */}
-            {generatedResult && (
-              <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-                {/* Header */}
-                <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <h3 className="text-lg font-bold text-slate-800">Expanded Prompt</h3>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    {/* Copy Button */}
-                    <button
-                      onClick={handleCopy}
-                      className="p-2 text-slate-500 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors"
-                      title="Copy to clipboard"
-                    >
-                      <Copy className="w-4 h-4" />
-                    </button>
-                    {/* Download Button */}
-                    <button
-                      onClick={() => {
-                        const blob = new Blob([generatedResult], { type: 'text/markdown' });
-                        const url = URL.createObjectURL(blob);
-                        const a = document.createElement('a');
-                        a.href = url;
-                        a.download = 'expanded-prompt.md';
-                        a.click();
-                        URL.revokeObjectURL(url);
-                      }}
-                      className="p-2 text-slate-500 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors"
-                      title="Download as markdown file"
-                    >
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                      </svg>
-                    </button>
-                    {/* ChatGPT Button */}
-                    <button
-                      onClick={() => {
-                        navigator.clipboard.writeText(generatedResult);
-                        setCopySuccess(true);
-                        setTimeout(() => setCopySuccess(false), 2000);
-                        window.open('https://chat.openai.com/', '_blank');
-                      }}
-                      className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors"
-                      title="Opens ChatGPT and copies prompt to clipboard"
-                    >
-                      <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M22.2819 9.8211a5.9847 5.9847 0 0 0-.5157-4.9108 6.0462 6.0462 0 0 0-6.5098-2.9A6.0651 6.0651 0 0 0 4.9807 4.1818a5.9847 5.9847 0 0 0-3.9977 2.9 6.0462 6.0462 0 0 0 .7427 7.0966 5.98 5.98 0 0 0 .511 4.9107 6.051 6.051 0 0 0 6.5146 2.9001A5.9847 5.9847 0 0 0 13.2599 24a6.0557 6.0557 0 0 0 5.7718-4.2058 5.9894 5.9894 0 0 0 3.9977-2.9001 6.0557 6.0557 0 0 0-.7475-7.0729zm-9.022 12.6081a4.4755 4.4755 0 0 1-2.8764-1.0408l.1419-.0804 4.7783-2.7582a.7948.7948 0 0 0 .3927-.6813v-6.7369l2.02 1.1686a.071.071 0 0 1 .038.052v5.5826a4.504 4.504 0 0 1-4.4945 4.4944zm-9.6607-4.1254a4.4708 4.4708 0 0 1-.5346-3.0137l.142.0852 4.783 2.7582a.7712.7712 0 0 0 .7806 0l5.8428-3.3685v2.3324a.0804.0804 0 0 1-.0332.0615L9.74 19.9502a4.4992 4.4992 0 0 1-6.1408-1.6464zM2.3408 7.8956a4.485 4.485 0 0 1 2.3655-1.9728V11.6a.7664.7664 0 0 0 .3879.6765l5.8144 3.3543-2.0201 1.1685a.0757.0757 0 0 1-.071 0l-4.8303-2.7865A4.504 4.504 0 0 1 2.3408 7.872zm16.5963 3.8558L13.1038 8.364 15.1192 7.2a.0757.0757 0 0 1 .071 0l4.8303 2.7913a4.4944 4.4944 0 0 1-.6765 8.1042v-5.6772a.79.79 0 0 0-.407-.667zm2.0107-3.0231l-.142-.0852-4.7735-2.7818a.7759.7759 0 0 0-.7854 0L9.409 9.2297V6.8974a.0662.0662 0 0 1 .0284-.0615l4.8303-2.7866a4.4992 4.4992 0 0 1 6.6802 4.66zM8.3065 12.863l-2.02-1.1638a.0804.0804 0 0 1-.038-.0567V6.0742a4.4992 4.4992 0 0 1 7.3757-3.4537l-.142.0805L8.704 5.459a.7948.7948 0 0 0-.3927.6813zm1.0976-2.3654l2.602-1.4998 2.6069 1.4998v2.9994l-2.5974 1.4997-2.6067-1.4997Z" />
-                      </svg>
-                      ChatGPT
-                    </button>
-                    {/* Claude Button */}
-                    <button
-                      onClick={() => {
-                        navigator.clipboard.writeText(generatedResult);
-                        setCopySuccess(true);
-                        setTimeout(() => setCopySuccess(false), 2000);
-                        window.open('https://claude.ai/new', '_blank');
-                      }}
-                      className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors"
-                      title="Opens Claude and copies prompt to clipboard"
-                    >
-                      <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M17.45 15.18l-5.45-9.45-5.45 9.45h10.9zm-5.45-11.18c.55 0 1.05.22 1.41.59l7.07 7.07c.37.36.59.86.59 1.41s-.22 1.05-.59 1.41l-7.07 7.07c-.36.37-.86.59-1.41.59s-1.05-.22-1.41-.59l-7.07-7.07c-.37-.36-.59-.86-.59-1.41s.22-1.05.59-1.41l7.07-7.07c.36-.37.86-.59 1.41-.59z" />
-                      </svg>
-                      Claude
-                    </button>
-                  </div>
-                </div>
-
-                {/* Prompt Content */}
-                <div className="p-6 bg-slate-50">
-                  <div className="bg-white rounded-lg border border-slate-200 p-5">
-                    <pre className="whitespace-pre-wrap font-mono text-sm text-slate-700 leading-relaxed">
-                      {generatedResult}
+                      })()}
                     </pre>
                   </div>
+                )}
+
+                <div className="flex justify-between items-center mb-3">
+                  <label className="text-sm font-semibold text-slate-700">Your Original Prompt</label>
+                  <div className="flex items-center gap-3 text-xs font-mono">
+                    <span className="text-slate-400">{inputText.length} chars</span>
+                    <span className="text-slate-300">•</span>
+                    <span className="text-cyan-600 font-semibold">{estimateTokens(inputText)} tokens</span>
+                    <span className="text-slate-300">•</span>
+                    <button
+                      onClick={() => {
+                        setInputText('');
+                        setSelectedOutputType('doc');
+                        setSelectedTone('professional');
+                        setSelectedFormat('paragraph');
+                        setSelectedLength('medium');
+                        setNotes('');
+                        setAllowPlaceholders(false);
+                        setStripMeta(true);
+                        setAestheticMode(false);
+                        setGeneratedResult(null);
+                        setCurrentHistoryId(null);
+                        // Reset evolution state
+                        setPromptSpec(null);
+                        setQualityResult(null);
+                        setReasoning({});
+                        setSelectedTemplate(null);
+                        setShowTemplates(false);
+                        setLastGeneratedPromptId(null);
+                      }}
+                      className="text-slate-500 hover:text-slate-700 font-sans text-xs px-2 py-0.5 rounded hover:bg-slate-100 transition-colors"
+                    >
+                      Reset
+                    </button>
+                  </div>
                 </div>
+                <textarea
+                  value={inputText}
+                  onChange={(e) => setInputText(e.target.value)}
+                  placeholder="e.g., Make me a deck about Andrej Karpathy software 3.0"
+                  className="w-full h-32 resize-none outline-none text-sm text-slate-700 placeholder:text-slate-300"
+                />
 
-                {/* Quality Feedback */}
-                {qualityResult && (
-                  <div className="px-6 pb-6">
-                    <QualityFeedback
-                      quality={qualityResult}
-                      onImprove={() => {
-                        // TODO: Implement auto-improve based on feedback
-                        console.log('Auto-improve requested');
-                      }}
-                    />
+                {/* Token Bar */}
+                <div className="mt-4 space-y-1">
+                  <div className="flex justify-between items-center text-xs">
+                    <span className="text-slate-500 font-medium">Token Usage</span>
+                    <span className="text-slate-400">{estimateTokens(inputText)} / 2000 tokens</span>
                   </div>
-                )}
-
-                {/* Reasoning Panel */}
-                {reasoning && Object.keys(reasoning).length > 0 && (
-                  <div className="px-6 pb-6">
-                    <ReasoningPanel
-                      reasoning={reasoning}
-                      inferredSettings={{
-                        tone: selectedTone,
-                        format: selectedFormat,
-                        length: selectedLength,
-                      }}
-                    />
+                  <div className="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden">
+                    <div
+                      className={`h-full rounded-full transition-all duration-300 ${estimateTokens(inputText) > 1500 ? 'bg-amber-400' : 'bg-cyan-400'}`}
+                      style={{ width: `${Math.min(100, (estimateTokens(inputText) / 2000) * 100)}%` }}
+                    ></div>
                   </div>
-                )}
-
-                {/* Feedback Button */}
-                <div className="px-6 pb-6 flex justify-end">
-                  <button
-                    onClick={() => setShowOutcomeFeedback(true)}
-                    className="text-sm text-slate-500 hover:text-indigo-600 flex items-center gap-1"
-                  >
-                    How did this work for you?
-                  </button>
                 </div>
               </div>
-            )}
 
-          </div>
+              {/* Output Type Selector */}
+              <div>
+                <label className="text-sm font-semibold text-slate-700 mb-3 block">Output Type</label>
+                <div className="grid grid-cols-3 md:grid-cols-6 gap-3">
+                  {OUTPUT_TYPES.filter(type => type.id !== 'json').map((type) => {
+                    const Icon = type.icon;
+                    const isSelected = selectedOutputType === type.id;
+                    return (
+                      <button
+                        key={type.id}
+                        onClick={() => {
+                          if (type.id !== selectedOutputType) {
+                            setSelectedOutputType(type.id);
+                            // Reset spec when output type changes to avoid stale typeSpecific data
+                            setPromptSpec(createSpec(type.id));
+                          }
+                        }}
+                        className={`flex flex-col items-center justify-center p-3 rounded-lg border transition-all duration-200 ${isSelected
+                          ? 'bg-cyan-50 border-cyan-500 text-cyan-700 shadow-sm ring-1 ring-cyan-200'
+                          : 'bg-white border-slate-200 text-slate-500 hover:bg-slate-50 hover:border-slate-300'
+                          }`}
+                      >
+                        <Icon className={`w-5 h-5 mb-2 ${isSelected ? 'text-cyan-600' : 'text-slate-400'}`} />
+                        <span className="text-xs font-medium">{type.label}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Type-Specific Form */}
+              <TypeSpecificForm
+                outputType={selectedOutputType}
+                spec={promptSpec || createSpec(selectedOutputType)}
+                onChange={handleSpecChange}
+              />
+
+              {/* Action Button */}
+              <button
+                onClick={handleGenerate}
+                disabled={!inputText.trim() || isGenerating}
+                className={`w-full py-4 rounded-xl text-white font-bold text-lg shadow-lg flex items-center justify-center gap-3 transition-all transform active:scale-[0.99] ${!inputText.trim()
+                  ? 'bg-slate-300 cursor-not-allowed shadow-none'
+                  : 'bg-gradient-to-r from-cyan-500 to-blue-600 hover:shadow-cyan-200 hover:shadow-xl'
+                  }`}
+              >
+                {isGenerating ? (
+                  <>
+                    <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    Processing...
+                  </>
+                ) : (
+                  <>
+                    <Zap className="w-5 h-5 text-yellow-300 fill-current" />
+                    Generate Expanded Prompt
+                  </>
+                )}
+              </button>
+
+              {isSavingHistory && (
+                <div className="mt-3 flex items-center gap-2 text-xs text-slate-500">
+                  <div className="w-4 h-4 border-2 border-slate-200 border-t-cyan-500 rounded-full animate-spin" />
+                  Saving to history...
+                </div>
+              )}
+
+              {errorMsg && (
+                <div className="p-4 bg-red-50 text-red-600 rounded-lg text-sm border border-red-100 flex items-center gap-2">
+                  <AlertCircle className="w-4 h-4" />
+                  {errorMsg}
+                </div>
+              )}
+
+              {/* Advanced Settings */}
+              <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                <button
+                  onClick={() => setShowAdvanced(!showAdvanced)}
+                  className="w-full flex items-center justify-between p-4 bg-slate-50 hover:bg-slate-100 transition-colors"
+                >
+                  <div className="flex items-center gap-2 text-sm font-semibold text-slate-700">
+                    <Settings2 className="w-4 h-4 text-slate-500" />
+                    Advanced Configuration
+                  </div>
+                  {showAdvanced ? <ChevronUp className="w-4 h-4 text-slate-400" /> : <ChevronDown className="w-4 h-4 text-slate-400" />}
+                </button>
+
+                {showAdvanced && (
+                  <div className="p-6 space-y-6">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                      {/* Tone */}
+                      <div className="space-y-2">
+                        <label className="text-xs font-bold text-slate-500 uppercase tracking-wide">Tone</label>
+                        <div className="relative">
+                          <select
+                            value={selectedTone}
+                            onChange={(e) => setSelectedTone(e.target.value)}
+                            className="w-full appearance-none bg-slate-50 border border-slate-200 text-sm text-slate-700 py-2.5 px-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
+                          >
+                            {TONES.map(t => <option key={t.id} value={t.id}>{t.label}</option>)}
+                          </select>
+                          <ChevronDown className="absolute right-3 top-3 w-4 h-4 text-slate-400 pointer-events-none" />
+                        </div>
+                      </div>
+                      {/* Length */}
+                      <div className="space-y-2">
+                        <label className="text-xs font-bold text-slate-500 uppercase tracking-wide">Length</label>
+                        <div className="relative">
+                          <select
+                            value={selectedLength}
+                            onChange={(e) => setSelectedLength(e.target.value)}
+                            className="w-full appearance-none bg-slate-50 border border-slate-200 text-sm text-slate-700 py-2.5 px-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
+                          >
+                            {LENGTHS.map(l => <option key={l.id} value={l.id}>{l.label}</option>)}
+                          </select>
+                          <ChevronDown className="absolute right-3 top-3 w-4 h-4 text-slate-400 pointer-events-none" />
+                        </div>
+                      </div>
+                      {/* Format */}
+                      <div className="space-y-2">
+                        <label className="text-xs font-bold text-slate-500 uppercase tracking-wide">Format</label>
+                        <div className="relative">
+                          <select
+                            value={selectedFormat}
+                            onChange={(e) => setSelectedFormat(e.target.value)}
+                            className="w-full appearance-none bg-slate-50 border border-slate-200 text-sm text-slate-700 py-2.5 px-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
+                          >
+                            {FORMATS.map(f => <option key={f.id} value={f.id}>{f.label}</option>)}
+                          </select>
+                          <ChevronDown className="absolute right-3 top-3 w-4 h-4 text-slate-400 pointer-events-none" />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Notes */}
+                    <div className="space-y-2">
+                      <label className="text-xs font-bold text-slate-500 uppercase tracking-wide">Notes (Audience, Constraints)</label>
+                      <textarea
+                        value={notes}
+                        onChange={(e) => setNotes(e.target.value)}
+                        placeholder="Add any additional context, audience details, or specific links..."
+                        className="w-full h-20 bg-slate-50 border border-slate-200 rounded-lg p-3 text-sm text-slate-700 focus:ring-2 focus:ring-cyan-500 outline-none resize-none"
+                      />
+                    </div>
+
+                    {/* Toggles */}
+                    <div className="space-y-4 pt-2 border-t border-slate-100">
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-slate-700">Allow [Illustrative] placeholders</span>
+                        <button
+                          onClick={() => setAllowPlaceholders(!allowPlaceholders)}
+                          className={`w-11 h-6 rounded-full relative transition-colors ${allowPlaceholders ? 'bg-cyan-500' : 'bg-slate-300'}`}
+                        >
+                          <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-transform shadow-sm ${allowPlaceholders ? 'left-6' : 'left-1'}`} />
+                        </button>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-slate-700">Strip meta-commentary</span>
+                        <button
+                          onClick={() => !FORMATS.find(f => f.id === selectedFormat)?.isSafeJson && setStripMeta(!stripMeta)}
+                          disabled={FORMATS.find(f => f.id === selectedFormat)?.isSafeJson}
+                          className={`w-11 h-6 rounded-full relative transition-colors ${stripMeta ? 'bg-cyan-500' : 'bg-slate-300'} ${FORMATS.find(f => f.id === selectedFormat)?.isSafeJson ? 'opacity-50 cursor-not-allowed' : ''}`}
+                        >
+                          <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-transform shadow-sm ${stripMeta ? 'left-6' : 'left-1'}`} />
+                        </button>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-slate-700">Emphasize aesthetics</span>
+                        <button
+                          onClick={() => setAestheticMode(!aestheticMode)}
+                          className={`w-11 h-6 rounded-full relative transition-colors ${aestheticMode ? 'bg-cyan-500' : 'bg-slate-300'}`}
+                        >
+                          <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-transform shadow-sm ${aestheticMode ? 'left-6' : 'left-1'}`} />
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Expanded Prompt Result - Inline Display */}
+              {generatedResult && (
+                <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                  {/* Header */}
+                  <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <h3 className="text-lg font-bold text-slate-800">Expanded Prompt</h3>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      {/* Copy Button */}
+                      <button
+                        onClick={handleCopy}
+                        className="p-2 text-slate-500 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors"
+                        title="Copy to clipboard"
+                      >
+                        <Copy className="w-4 h-4" />
+                      </button>
+                      {/* Download Button */}
+                      <button
+                        onClick={() => {
+                          const blob = new Blob([generatedResult], { type: 'text/markdown' });
+                          const url = URL.createObjectURL(blob);
+                          const a = document.createElement('a');
+                          a.href = url;
+                          a.download = 'expanded-prompt.md';
+                          a.click();
+                          URL.revokeObjectURL(url);
+                        }}
+                        className="p-2 text-slate-500 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors"
+                        title="Download as markdown file"
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                        </svg>
+                      </button>
+                      {/* ChatGPT Button */}
+                      <button
+                        onClick={() => {
+                          navigator.clipboard.writeText(generatedResult);
+                          setCopySuccess(true);
+                          setTimeout(() => setCopySuccess(false), 2000);
+                          window.open('https://chat.openai.com/', '_blank');
+                        }}
+                        className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors"
+                        title="Opens ChatGPT and copies prompt to clipboard"
+                      >
+                        <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor">
+                          <path d="M22.2819 9.8211a5.9847 5.9847 0 0 0-.5157-4.9108 6.0462 6.0462 0 0 0-6.5098-2.9A6.0651 6.0651 0 0 0 4.9807 4.1818a5.9847 5.9847 0 0 0-3.9977 2.9 6.0462 6.0462 0 0 0 .7427 7.0966 5.98 5.98 0 0 0 .511 4.9107 6.051 6.051 0 0 0 6.5146 2.9001A5.9847 5.9847 0 0 0 13.2599 24a6.0557 6.0557 0 0 0 5.7718-4.2058 5.9894 5.9894 0 0 0 3.9977-2.9001 6.0557 6.0557 0 0 0-.7475-7.0729zm-9.022 12.6081a4.4755 4.4755 0 0 1-2.8764-1.0408l.1419-.0804 4.7783-2.7582a.7948.7948 0 0 0 .3927-.6813v-6.7369l2.02 1.1686a.071.071 0 0 1 .038.052v5.5826a4.504 4.504 0 0 1-4.4945 4.4944zm-9.6607-4.1254a4.4708 4.4708 0 0 1-.5346-3.0137l.142.0852 4.783 2.7582a.7712.7712 0 0 0 .7806 0l5.8428-3.3685v2.3324a.0804.0804 0 0 1-.0332.0615L9.74 19.9502a4.4992 4.4992 0 0 1-6.1408-1.6464zM2.3408 7.8956a4.485 4.485 0 0 1 2.3655-1.9728V11.6a.7664.7664 0 0 0 .3879.6765l5.8144 3.3543-2.0201 1.1685a.0757.0757 0 0 1-.071 0l-4.8303-2.7865A4.504 4.504 0 0 1 2.3408 7.872zm16.5963 3.8558L13.1038 8.364 15.1192 7.2a.0757.0757 0 0 1 .071 0l4.8303 2.7913a4.4944 4.4944 0 0 1-.6765 8.1042v-5.6772a.79.79 0 0 0-.407-.667zm2.0107-3.0231l-.142-.0852-4.7735-2.7818a.7759.7759 0 0 0-.7854 0L9.409 9.2297V6.8974a.0662.0662 0 0 1 .0284-.0615l4.8303-2.7866a4.4992 4.4992 0 0 1 6.6802 4.66zM8.3065 12.863l-2.02-1.1638a.0804.0804 0 0 1-.038-.0567V6.0742a4.4992 4.4992 0 0 1 7.3757-3.4537l-.142.0805L8.704 5.459a.7948.7948 0 0 0-.3927.6813zm1.0976-2.3654l2.602-1.4998 2.6069 1.4998v2.9994l-2.5974 1.4997-2.6067-1.4997Z" />
+                        </svg>
+                        ChatGPT
+                      </button>
+                      {/* Claude Button */}
+                      <button
+                        onClick={() => {
+                          navigator.clipboard.writeText(generatedResult);
+                          setCopySuccess(true);
+                          setTimeout(() => setCopySuccess(false), 2000);
+                          window.open('https://claude.ai/new', '_blank');
+                        }}
+                        className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors"
+                        title="Opens Claude and copies prompt to clipboard"
+                      >
+                        <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor">
+                          <path d="M17.45 15.18l-5.45-9.45-5.45 9.45h10.9zm-5.45-11.18c.55 0 1.05.22 1.41.59l7.07 7.07c.37.36.59.86.59 1.41s-.22 1.05-.59 1.41l-7.07 7.07c-.36.37-.86.59-1.41.59s-1.05-.22-1.41-.59l-7.07-7.07c-.37-.36-.59-.86-.59-1.41s.22-1.05.59-1.41l7.07-7.07c.36-.37.86-.59 1.41-.59z" />
+                        </svg>
+                        Claude
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Prompt Content */}
+                  <div className="p-6 bg-slate-50">
+                    <div className="bg-white rounded-lg border border-slate-200 p-5">
+                      <pre className="whitespace-pre-wrap font-mono text-sm text-slate-700 leading-relaxed">
+                        {generatedResult}
+                      </pre>
+                    </div>
+                  </div>
+
+                  {/* Quality Feedback */}
+                  {qualityResult && (
+                    <div className="px-6 pb-6">
+                      <QualityFeedback
+                        quality={qualityResult}
+                        onImprove={() => {
+                          // TODO: Implement auto-improve based on feedback
+                          console.log('Auto-improve requested');
+                        }}
+                      />
+                    </div>
+                  )}
+
+                  {/* Reasoning Panel */}
+                  {reasoning && Object.keys(reasoning).length > 0 && (
+                    <div className="px-6 pb-6">
+                      <ReasoningPanel
+                        reasoning={reasoning}
+                        inferredSettings={{
+                          tone: selectedTone,
+                          format: selectedFormat,
+                          length: selectedLength,
+                        }}
+                      />
+                    </div>
+                  )}
+
+                  {/* Feedback Button */}
+                  <div className="px-6 pb-6 flex justify-end">
+                    <button
+                      onClick={() => setShowOutcomeFeedback(true)}
+                      className="text-sm text-slate-500 hover:text-indigo-600 flex items-center gap-1"
+                    >
+                      How did this work for you?
+                    </button>
+                  </div>
+                </div>
+              )}
+
+            </div>
           )}
         </div>
 
@@ -1485,311 +1498,298 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
 
       {/* Sidebar - History (only shown in Builder mode) */}
       {appMode !== 'experiment' && (
-      <div className="w-80 bg-slate-50/50 border-l border-slate-200 flex flex-col hidden md:flex z-10 shadow-sm">
-        <div className="p-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
-          <div className="flex items-center gap-2 text-slate-700">
-            <History className="w-4 h-4" />
-            <h2 className="font-bold text-sm">Prompt History</h2>
-          </div>
-          <span className="text-xs font-medium text-slate-400 bg-slate-100 px-2 py-0.5 rounded-full">
-            {promptHistory.length}
-          </span>
-        </div>
-
-        {/* Search Bar */}
-        <div className="p-3 border-b border-slate-100">
-          <div className="relative">
-            <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
-            <input
-              type="text"
-              placeholder="Search prompts..."
-              value={historySearchQuery}
-              onChange={(e) => setHistorySearchQuery(e.target.value)}
-              className="w-full pl-9 pr-3 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
-            />
-          </div>
-        </div>
-
-        <div className="flex-1 overflow-y-auto p-3 space-y-2">
-          {isHistoryLoading ? (
-            <div className="flex justify-center items-center py-10">
-              <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-indigo-500"></div>
+        <div className="w-80 bg-slate-50/50 border-l border-slate-200 flex flex-col hidden md:flex z-10 shadow-sm">
+          <div className="p-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+            <div className="flex items-center gap-2 text-slate-700">
+              <History className="w-4 h-4" />
+              <h2 className="font-bold text-sm">Prompt History</h2>
             </div>
-          ) : promptHistory.length === 0 ? (
-            <div className="text-center text-slate-400 mt-10 text-sm">No history yet.</div>
-          ) : (
-            promptHistory
-              .filter(item => {
-                if (!historySearchQuery) return true;
-                const query = historySearchQuery.toLowerCase();
+            <span className="text-xs font-medium text-slate-400 bg-slate-100 px-2 py-0.5 rounded-full">
+              {promptHistory.length}
+            </span>
+          </div>
 
-                // Check current version
-                const currentMatch = (
-                  item.originalText?.toLowerCase().includes(query) ||
-                  item.outputType?.toLowerCase().includes(query) ||
-                  item.tone?.toLowerCase().includes(query) ||
-                  item.format?.toLowerCase().includes(query)
-                );
-                if (currentMatch) return true;
+          {/* Search Bar */}
+          <div className="p-3 border-b border-slate-100">
+            <div className="relative">
+              <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+              <input
+                type="text"
+                placeholder="Search prompts..."
+                value={historySearchQuery}
+                onChange={(e) => setHistorySearchQuery(e.target.value)}
+                className="w-full pl-9 pr-3 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
+              />
+            </div>
+          </div>
 
-                // Check history versions
-                if (item.versions && item.versions.length > 0) {
-                  return item.versions.some(v => (
-                    v.originalText?.toLowerCase().includes(query) ||
-                    v.outputType?.toLowerCase().includes(query) ||
-                    v.tone?.toLowerCase().includes(query) ||
-                    v.format?.toLowerCase().includes(query)
-                  ));
-                }
-
-                return false;
-              })
-              .map((item) => {
-                // Calculate match details for display
-                let matchBadge = null;
-                if (historySearchQuery) {
+          <div className="flex-1 overflow-y-auto p-3 space-y-2">
+            {isHistoryLoading ? (
+              <div className="flex justify-center items-center py-10">
+                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-indigo-500"></div>
+              </div>
+            ) : promptHistory.length === 0 ? (
+              <div className="text-center text-slate-400 mt-10 text-sm">No history yet.</div>
+            ) : (
+              promptHistory
+                .filter(item => {
+                  if (!historySearchQuery) return true;
                   const query = historySearchQuery.toLowerCase();
+
+                  // Check current version
                   const currentMatch = (
                     item.originalText?.toLowerCase().includes(query) ||
                     item.outputType?.toLowerCase().includes(query) ||
                     item.tone?.toLowerCase().includes(query) ||
                     item.format?.toLowerCase().includes(query)
                   );
+                  if (currentMatch) return true;
 
-                  if (!currentMatch && item.versions) {
-                    const matchingVer = [...item.versions].reverse().find(v => (
+                  // Check history versions
+                  if (item.versions && item.versions.length > 0) {
+                    return item.versions.some(v => (
                       v.originalText?.toLowerCase().includes(query) ||
                       v.outputType?.toLowerCase().includes(query) ||
                       v.tone?.toLowerCase().includes(query) ||
                       v.format?.toLowerCase().includes(query)
                     ));
+                  }
 
-                    if (matchingVer) {
-                      // Find the index to calculate version number
-                      const verIndex = item.versions.indexOf(matchingVer);
-                      const verNum = verIndex + 1; // 1-based index
-                      matchBadge = (
-                        <span className="text-[10px] bg-amber-100 text-amber-700 px-1.5 py-0.5 rounded font-medium border border-amber-200">
-                          Found in v{verNum}
-                        </span>
-                      );
+                  return false;
+                })
+                .map((item) => {
+                  // Calculate match details for display
+                  let matchBadge = null;
+                  if (historySearchQuery) {
+                    const query = historySearchQuery.toLowerCase();
+                    const currentMatch = (
+                      item.originalText?.toLowerCase().includes(query) ||
+                      item.outputType?.toLowerCase().includes(query) ||
+                      item.tone?.toLowerCase().includes(query) ||
+                      item.format?.toLowerCase().includes(query)
+                    );
+
+                    if (!currentMatch && item.versions) {
+                      const matchingVer = [...item.versions].reverse().find(v => (
+                        v.originalText?.toLowerCase().includes(query) ||
+                        v.outputType?.toLowerCase().includes(query) ||
+                        v.tone?.toLowerCase().includes(query) ||
+                        v.format?.toLowerCase().includes(query)
+                      ));
+
+                      if (matchingVer) {
+                        // Find the index to calculate version number
+                        const verIndex = item.versions.indexOf(matchingVer);
+                        const verNum = verIndex + 1; // 1-based index
+                        matchBadge = (
+                          <span className="text-[10px] bg-amber-100 text-amber-700 px-1.5 py-0.5 rounded font-medium border border-amber-200">
+                            Found in v{verNum}
+                          </span>
+                        );
+                      }
                     }
                   }
-                }
 
-                return (
-                  <div key={item.id} className={`group p-3 rounded-lg border transition-all cursor-pointer relative ${item.isPrivate ? 'bg-slate-50 border-slate-100 opacity-75' : 'bg-white border-transparent hover:bg-slate-50 hover:border-slate-200'}`}>
-                    <div onClick={() => loadFromHistory(item)}>
-                      <div className="font-medium text-slate-800 text-sm truncate pr-16">{item.originalText || "Untitled Prompt"}</div>
+                  return (
+                    <div key={item.id} className={`group p-3 rounded-lg border transition-all cursor-pointer relative ${item.isPrivate ? 'bg-slate-50 border-slate-100 opacity-75' : 'bg-white border-transparent hover:bg-slate-50 hover:border-slate-200'}`}>
+                      <div onClick={() => loadFromHistory(item)}>
+                        <div className="font-medium text-slate-800 text-sm truncate pr-16">{item.originalText || "Untitled Prompt"}</div>
 
-                      {/* Metadata Tags */}
-                      <div className="flex flex-wrap gap-1 mt-1.5">
-                        <span className="text-[10px] text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded capitalize">{item.outputType}</span>
-                        <span className="text-[10px] text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded capitalize">{item.format}</span>
-                        <span className="text-[10px] text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded capitalize">{item.length}</span>
-                        <span className="text-[10px] text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded capitalize">{item.tone}</span>
-                        {matchBadge}
-                      </div>
+                        {/* Metadata Tags */}
+                        <div className="flex flex-wrap gap-1 mt-1.5">
+                          <span className="text-[10px] text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded capitalize">{item.outputType}</span>
+                          <span className="text-[10px] text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded capitalize">{item.format}</span>
+                          <span className="text-[10px] text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded capitalize">{item.length}</span>
+                          <span className="text-[10px] text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded capitalize">{item.tone}</span>
+                          {matchBadge}
+                        </div>
 
-                      {/* Date & Version */}
-                      <div className="text-[10px] text-slate-400 mt-2 flex items-center gap-1.5">
-                        <span>
-                          {item.createdAt?.seconds ? new Date(item.createdAt.seconds * 1000).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) : 'Just now'}
-                          {item.createdAt?.seconds && `, ${new Date(item.createdAt.seconds * 1000).toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' })}`}
-                        </span>
-                        <span>•</span>
-                        <span>•</span>
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setActiveVersionHistoryId(activeVersionHistoryId === item.id ? null : item.id);
-                          }}
-                          className="hover:text-indigo-600 hover:underline cursor-pointer transition-colors"
-                        >
-                          {item.version || 1} version{item.version !== 1 ? 's' : ''}
-                        </button>
-                        {item.isReversePrompted && (
-                          <>
-                            <span>•</span>
-                            <span className="text-amber-600 flex items-center gap-0.5" title="Reverse Prompting Used">
-                              <Sparkles className="w-2.5 h-2.5" />
-                              <span className="font-bold">RP</span>
-                            </span>
-                          </>
+                        {/* Date & Version */}
+                        <div className="text-[10px] text-slate-400 mt-2 flex items-center gap-1.5">
+                          <span>
+                            {item.createdAt?.seconds ? new Date(item.createdAt.seconds * 1000).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) : 'Just now'}
+                            {item.createdAt?.seconds && `, ${new Date(item.createdAt.seconds * 1000).toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' })}`}
+                          </span>
+                          <span>•</span>
+                          <span>•</span>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setActiveVersionHistoryId(activeVersionHistoryId === item.id ? null : item.id);
+                            }}
+                            className="hover:text-indigo-600 hover:underline cursor-pointer transition-colors"
+                          >
+                            {item.version || 1} version{item.version !== 1 ? 's' : ''}
+                          </button>
+                          {item.isReversePrompted && (
+                            <>
+                              <span>•</span>
+                              <span className="text-amber-600 flex items-center gap-0.5" title="Reverse Prompting Used">
+                                <Sparkles className="w-2.5 h-2.5" />
+                                <span className="font-bold">RP</span>
+                              </span>
+                            </>
+                          )}
+                        </div>
+
+                        {/* Version History Popover */}
+                        {activeVersionHistoryId === item.id && Array.isArray(item.versions) && item.versions.length > 0 && (
+                          <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-lg shadow-xl border border-slate-200 z-20 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+                            <div className="bg-slate-50 px-3 py-2 border-b border-slate-100 flex justify-between items-center">
+                              <span className="text-xs font-semibold text-slate-700">Version History</span>
+                              <button
+                                onClick={(e) => { e.stopPropagation(); setActiveVersionHistoryId(null); }}
+                                className="text-slate-400 hover:text-slate-600"
+                              >
+                                <X className="w-3 h-3" />
+                              </button>
+                            </div>
+                            <div className="max-h-48 overflow-y-auto">
+                              {[...item.versions].reverse().map((ver, idx) => {
+                                const verNum = item.versions.length - idx;
+                                const dateStr = formatVersionDate(ver);
+
+                                return (
+                                  <div
+                                    key={idx}
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      loadFromHistory(item, ver);
+                                      setActiveVersionHistoryId(null);
+                                    }}
+                                    className="px-3 py-2 hover:bg-slate-50 cursor-pointer border-b border-slate-50 last:border-0 flex items-center justify-between group/ver"
+                                  >
+                                    <div>
+                                      <div className="flex items-center gap-2">
+                                        <span className="text-xs font-medium text-slate-700">v{verNum}</span>
+                                        <span className="text-[10px] text-slate-400">
+                                          {dateStr}
+                                        </span>
+                                      </div>
+                                      <div className="flex gap-1 mt-0.5">
+                                        <span className="text-[9px] px-1 rounded bg-slate-100 text-slate-500">{ver.tone}</span>
+                                        <span className="text-[9px] px-1 rounded bg-slate-100 text-slate-500">{ver.format}</span>
+                                      </div>
+                                    </div>
+                                    <div className="opacity-0 group-hover/ver:opacity-100 text-indigo-600 text-[10px] font-medium">
+                                      Load
+                                    </div>
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          </div>
                         )}
                       </div>
 
-                      {/* Version History Popover */}
-                      {activeVersionHistoryId === item.id && Array.isArray(item.versions) && item.versions.length > 0 && (
-                        <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-lg shadow-xl border border-slate-200 z-20 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
-                          <div className="bg-slate-50 px-3 py-2 border-b border-slate-100 flex justify-between items-center">
-                            <span className="text-xs font-semibold text-slate-700">Version History</span>
-                            <button
-                              onClick={(e) => { e.stopPropagation(); setActiveVersionHistoryId(null); }}
-                              className="text-slate-400 hover:text-slate-600"
-                            >
-                              <X className="w-3 h-3" />
-                            </button>
-                          </div>
-                          <div className="max-h-48 overflow-y-auto">
-                            {[...item.versions].reverse().map((ver, idx) => {
-                              const verNum = item.versions.length - idx;
-                              // Robust date parsing
-                              let dateStr = '';
-                              try {
-                                let date;
-                                if (ver.createdAt?.seconds) {
-                                  date = new Date(ver.createdAt.seconds * 1000);
-                                } else if (ver.createdAt) {
-                                  date = new Date(ver.createdAt);
-                                }
-                                if (date && !isNaN(date.getTime())) {
-                                  dateStr = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-                                }
-                              } catch (e) { console.warn("Date parse error", e); }
-
-                              return (
-                                <div
-                                  key={idx}
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    loadFromHistory(item, ver);
-                                    setActiveVersionHistoryId(null);
-                                  }}
-                                  className="px-3 py-2 hover:bg-slate-50 cursor-pointer border-b border-slate-50 last:border-0 flex items-center justify-between group/ver"
-                                >
-                                  <div>
-                                    <div className="flex items-center gap-2">
-                                      <span className="text-xs font-medium text-slate-700">v{verNum}</span>
-                                      <span className="text-[10px] text-slate-400">
-                                        {dateStr}
-                                      </span>
-                                    </div>
-                                    <div className="flex gap-1 mt-0.5">
-                                      <span className="text-[9px] px-1 rounded bg-slate-100 text-slate-500">{ver.tone}</span>
-                                      <span className="text-[9px] px-1 rounded bg-slate-100 text-slate-500">{ver.format}</span>
-                                    </div>
-                                  </div>
-                                  <div className="opacity-0 group-hover/ver:opacity-100 text-indigo-600 text-[10px] font-medium">
-                                    Load
-                                  </div>
-                                </div>
-                              );
-                            })}
-                          </div>
-                        </div>
-                      )}
+                      {/* Action Buttons */}
+                      <div className="absolute top-2 right-2 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity bg-white/80 backdrop-blur-sm rounded-lg p-0.5">
+                        <button
+                          onClick={(e) => handleTogglePrivate(e, item)}
+                          className={`p-1 rounded hover:bg-slate-100 ${item.isPrivate ? 'text-indigo-500' : 'text-slate-400 hover:text-slate-600'}`}
+                          title="Private"
+                        >
+                          {item.isPrivate ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
+                        </button>
+                        <button
+                          onClick={(e) => handleDeleteHistory(e, item.id)}
+                          className="p-1 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded transition-colors"
+                          title="Delete"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
                     </div>
-
-                    {/* Action Buttons */}
-                    <div className="absolute top-2 right-2 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity bg-white/80 backdrop-blur-sm rounded-lg p-0.5">
-                      <button
-                        onClick={(e) => handleTogglePrivate(e, item)}
-                        className={`p-1 rounded hover:bg-slate-100 ${item.isPrivate ? 'text-indigo-500' : 'text-slate-400 hover:text-slate-600'}`}
-                        title="Private"
-                      >
-                        {item.isPrivate ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
-                      </button>
-                      <button
-                        onClick={(e) => handleDeleteHistory(e, item.id)}
-                        className="p-1 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded transition-colors"
-                        title="Delete"
-                      >
-                        <Trash2 className="w-3.5 h-3.5" />
-                      </button>
-                    </div>
-                  </div>
-                );
-              })
-          )}
-        </div>
-        <div className="p-4 border-t border-slate-100 flex items-center justify-between">
-          <div className="text-xs text-slate-400">
-            Signed in as: {user?.displayName || user?.email || 'User'}
+                  );
+                })
+            )}
           </div>
-          <button
-            onClick={() => setShowSettings(true)}
-            className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
-            title="Settings"
-          >
-            <Settings2 className="w-4 h-4" />
-          </button>
+          <div className="p-4 border-t border-slate-100 flex items-center justify-between">
+            <div className="text-xs text-slate-400">
+              Signed in as: {user?.displayName || user?.email || 'User'}
+            </div>
+            <button
+              onClick={() => setShowSettings(true)}
+              className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
+              title="Settings"
+            >
+              <Settings2 className="w-4 h-4" />
+            </button>
+          </div>
         </div>
-      </div>
       )}
 
       {/* Sidebar - Experiment History (only shown in Experiment mode) */}
       {appMode === 'experiment' && experimentHistory && (
-      <div className="w-80 bg-slate-50/50 border-l border-slate-200 flex flex-col hidden md:flex z-10 shadow-sm">
-        <div className="p-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
-          <div className="flex items-center gap-2 text-slate-700">
-            <History className="w-4 h-4" />
-            <h2 className="font-bold text-sm">Experiment History</h2>
-          </div>
-          <span className="text-xs font-medium text-slate-400 bg-slate-100 px-2 py-0.5 rounded-full">
-            {experimentHistory.experiments?.length || 0}
-          </span>
-        </div>
-
-        <div className="flex-1 overflow-y-auto p-3 space-y-2">
-          {experimentHistory.loadingHistory ? (
-            <div className="flex justify-center items-center py-10">
-              <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-cyan-500"></div>
+        <div className="w-80 bg-slate-50/50 border-l border-slate-200 flex flex-col hidden md:flex z-10 shadow-sm">
+          <div className="p-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+            <div className="flex items-center gap-2 text-slate-700">
+              <History className="w-4 h-4" />
+              <h2 className="font-bold text-sm">Experiment History</h2>
             </div>
-          ) : experimentHistory.experiments?.length === 0 ? (
-            <div className="text-center text-slate-400 mt-10 text-sm">No experiments yet.</div>
-          ) : (
-            experimentHistory.experiments?.map((exp) => (
-              <div
-                key={exp.id}
-                onClick={() => experimentHistory.handleLoadExperiment(exp.id)}
-                className={`p-3 rounded-lg border cursor-pointer transition-all group ${
-                  experimentHistory.currentExperimentId === exp.id
+            <span className="text-xs font-medium text-slate-400 bg-slate-100 px-2 py-0.5 rounded-full">
+              {experimentHistory.experiments?.length || 0}
+            </span>
+          </div>
+
+          <div className="flex-1 overflow-y-auto p-3 space-y-2">
+            {experimentHistory.loadingHistory ? (
+              <div className="flex justify-center items-center py-10">
+                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-cyan-500"></div>
+              </div>
+            ) : experimentHistory.experiments?.length === 0 ? (
+              <div className="text-center text-slate-400 mt-10 text-sm">No experiments yet.</div>
+            ) : (
+              experimentHistory.experiments?.map((exp) => (
+                <div
+                  key={exp.id}
+                  onClick={() => experimentHistory.handleLoadExperiment(exp.id)}
+                  className={`p-3 rounded-lg border cursor-pointer transition-all group ${experimentHistory.currentExperimentId === exp.id
                     ? 'bg-cyan-50 border-cyan-200'
                     : 'bg-white border-slate-100 hover:bg-slate-50 hover:border-slate-200'
-                }`}
-              >
-                <div className="flex items-start justify-between gap-2">
-                  <div className="flex-1 min-w-0">
-                    <div className="text-sm font-medium text-slate-700 truncate">
-                      {exp.originalPrompt?.substring(0, 40) || 'Untitled'}
-                      {exp.originalPrompt?.length > 40 ? '...' : ''}
-                    </div>
-                    <div className="flex items-center gap-2 mt-1 text-xs text-slate-400">
-                      <span>{exp.totalCells || 0} cells</span>
-                      <span>•</span>
-                      <span className={
-                        exp.status === 'complete' ? 'text-green-500' :
-                        exp.status === 'running' ? 'text-cyan-500' :
-                        exp.status === 'failed' ? 'text-red-500' : ''
-                      }>
-                        {exp.status || 'unknown'}
-                      </span>
-                    </div>
-                    <div className="text-xs text-slate-400 mt-1">
-                      {exp.createdAt?.seconds
-                        ? new Date(exp.createdAt.seconds * 1000).toLocaleDateString(undefined, {
+                    }`}
+                >
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="flex-1 min-w-0">
+                      <div className="text-sm font-medium text-slate-700 truncate">
+                        {exp.originalPrompt?.substring(0, 40) || 'Untitled'}
+                        {exp.originalPrompt?.length > 40 ? '...' : ''}
+                      </div>
+                      <div className="flex items-center gap-2 mt-1 text-xs text-slate-400">
+                        <span>{exp.totalCells || 0} cells</span>
+                        <span>•</span>
+                        <span className={
+                          exp.status === 'complete' ? 'text-green-500' :
+                            exp.status === 'running' ? 'text-cyan-500' :
+                              exp.status === 'failed' ? 'text-red-500' : ''
+                        }>
+                          {exp.status || 'unknown'}
+                        </span>
+                      </div>
+                      <div className="text-xs text-slate-400 mt-1">
+                        {exp.createdAt?.seconds
+                          ? new Date(exp.createdAt.seconds * 1000).toLocaleDateString(undefined, {
                             month: 'short',
                             day: 'numeric',
                             hour: 'numeric',
                             minute: '2-digit'
                           })
-                        : 'Just now'}
+                          : 'Just now'}
+                      </div>
                     </div>
+                    <button
+                      onClick={(e) => experimentHistory.handleDeleteExperiment(exp.id, e)}
+                      className="p-1 text-slate-300 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity"
+                      title="Delete experiment"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </button>
                   </div>
-                  <button
-                    onClick={(e) => experimentHistory.handleDeleteExperiment(exp.id, e)}
-                    className="p-1 text-slate-300 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity"
-                    title="Delete experiment"
-                  >
-                    <Trash2 className="w-3.5 h-3.5" />
-                  </button>
                 </div>
-              </div>
-            ))
-          )}
+              ))
+            )}
+          </div>
         </div>
-      </div>
       )}
 
       {/* Settings Modal */}

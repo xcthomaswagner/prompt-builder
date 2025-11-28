@@ -78,9 +78,7 @@ export {
   createCopySpec,
   copyDefaults,
   CTA_SUGGESTIONS,
-  WORD_COUNT_RANGES,
   getCTASuggestions,
-  getWordCountRange,
   validateCopySpec,
 } from './templates/copy.js';
 

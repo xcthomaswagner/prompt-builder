@@ -1,3 +1,12 @@
+/**
+ * @typedef {Object} PromptSpec
+ * @property {string} id - Unique identifier for the spec (e.g., 'doc', 'deck')
+ * @property {number} version - Version number of the spec
+ * @property {Object} metadata - Metadata including persona, mission, etc.
+ * @property {Array<Object>} systemSteps - Array of system prompt steps
+ * @property {Array<Object>} userSteps - Array of user prompt steps
+ */
+
 const BASE_PIPELINE = [
   'Domain Analysis: identify the precise domain, audience, and constraints implied by the brief.',
   'Sufficiency Check: when the brief is under 15 words or vague, synthesize a sharper reverse prompt that clarifies intent.',
@@ -67,6 +76,17 @@ const baseUserSteps = [
   }
 ];
 
+/**
+ * Creates a new prompt specification by merging base defaults with type-specific overrides.
+ * 
+ * @param {Object} options
+ * @param {string} options.id - The unique ID for this spec type
+ * @param {Object} [options.metadata] - Metadata overrides
+ * @param {Array<Object>} [options.systemExtensions] - Additional system steps
+ * @param {Array<Object>} [options.userExtensions] - Additional user steps
+ * @param {number} [options.version] - Spec version
+ * @returns {PromptSpec} The complete prompt specification
+ */
 const createSpec = ({ id, metadata = {}, systemExtensions = [], userExtensions = [], version = 1 }) => ({
   id,
   version,
