@@ -1504,7 +1504,7 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
                                       setSelectedTone(t.id);
                                       setToneDropdownOpen(false);
                                     }}
-                                    className={`w-full flex items-center gap-2 px-3 py-2.5 text-sm text-left transition-colors ${
+                                    className={`w-full flex items-center gap-2 px-3 py-1.5 text-sm text-left transition-colors ${
                                       isSelected 
                                         ? 'bg-cyan-50 text-cyan-700' 
                                         : darkMode 
@@ -1570,7 +1570,7 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
                                       setSelectedFormat(f.id);
                                       setFormatDropdownOpen(false);
                                     }}
-                                    className={`w-full flex items-center gap-2 px-3 py-2.5 text-sm text-left transition-colors ${
+                                    className={`w-full flex items-center gap-2 px-3 py-1.5 text-sm text-left transition-colors ${
                                       isSelected 
                                         ? 'bg-cyan-50 text-cyan-700' 
                                         : darkMode 
