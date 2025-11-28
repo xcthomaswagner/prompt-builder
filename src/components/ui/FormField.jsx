@@ -48,10 +48,10 @@ export function ButtonGroup({ options, value, onChange, size = 'md', className =
             onClick={() => onChange(optionValue)}
             className={`
               ${sizeClasses[size]}
-              rounded-md font-medium transition-colors capitalize
+              rounded-md font-medium transition-all capitalize border
               ${isSelected
-                ? 'bg-indigo-600 text-white'
-                : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                ? 'bg-cyan-50 border-cyan-500 text-cyan-700 shadow-sm ring-1 ring-cyan-200'
+                : 'bg-white border-slate-200 text-slate-500 hover:bg-slate-50 hover:border-slate-300'
               }
             `}
           >
