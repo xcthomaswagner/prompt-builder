@@ -475,7 +475,7 @@ export default function App() {
   const [isImproving, setIsImproving] = useState(false);
   const [promptVersions, setPromptVersions] = useState([]); // Array of { text, quality, timestamp }
   const [currentVersionIndex, setCurrentVersionIndex] = useState(-1);
-  const MAX_IMPROVE_ITERATIONS = 3;
+  const MAX_IMPROVE_ITERATIONS = 10;
 
   // Handle template selection
   const handleTemplateSelect = (template) => {
