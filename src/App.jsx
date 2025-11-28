@@ -26,7 +26,12 @@ import {
   PanelRightClose,
   PanelRight,
   Sun,
-  Moon
+  Moon,
+  Briefcase,
+  Smile,
+  Coffee,
+  Building,
+  GraduationCap
 } from 'lucide-react';
 import { initializeApp } from "firebase/app";
 import {
@@ -392,14 +397,14 @@ const extractExpandedPrompt = (response) => {
 // --- Lookup Data ---
 
 const TONES = [
-  { id: 'professional', label: 'Professional', prompt: 'formal, objective, and expert' },
-  { id: 'friendly', label: 'Friendly', prompt: 'warm, approachable, and conversational' },
-  { id: 'casual', label: 'Casual', prompt: 'relaxed, informal, and easy-going' },
-  { id: 'executive', label: 'Executive', prompt: 'concise, strategic, and high-level' },
-  { id: 'academic', label: 'Academic', prompt: 'rigorous, citation-focused, and analytical' },
-  { id: 'creative', label: 'Creative', prompt: 'imaginative, evocative, and storytelling' },
-  { id: 'helpful', label: 'Helpful', prompt: 'supportive, instructive, and solution-oriented' },
-  { id: 'technical', label: 'Technical', prompt: 'precise, detailed, and specification-focused' },
+  { id: 'professional', label: 'Professional', prompt: 'formal, objective, and expert', icon: Briefcase },
+  { id: 'friendly', label: 'Friendly', prompt: 'warm, approachable, and conversational', icon: Smile },
+  { id: 'casual', label: 'Casual', prompt: 'relaxed, informal, and easy-going', icon: Coffee },
+  { id: 'executive', label: 'Executive', prompt: 'concise, strategic, and high-level', icon: Building },
+  { id: 'academic', label: 'Academic', prompt: 'rigorous, citation-focused, and analytical', icon: GraduationCap },
+  { id: 'creative', label: 'Creative', prompt: 'imaginative, evocative, and storytelling', icon: Lightbulb },
+  { id: 'helpful', label: 'Helpful', prompt: 'supportive, instructive, and solution-oriented', icon: Smile },
+  { id: 'technical', label: 'Technical', prompt: 'precise, detailed, and specification-focused', icon: Building },
 ];
 
 const OUTPUT_TYPES = [
@@ -446,6 +451,7 @@ export default function App() {
   const [selectedOutputType, setSelectedOutputType] = useState('doc');
   const [hoveredOutputType, setHoveredOutputType] = useState(null);
   const [selectedTone, setSelectedTone] = useState('professional');
+  const [toneDropdownOpen, setToneDropdownOpen] = useState(false);
   const [selectedLength, setSelectedLength] = useState('medium');
   const [selectedFormat, setSelectedFormat] = useState('paragraph');
   const [notes, setNotes] = useState('');
@@ -1462,14 +1468,52 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
                       <div className="space-y-2">
                         <label className={`text-xs font-bold uppercase tracking-wide ${darkMode ? 'text-slate-400' : 'text-slate-500'}`}>Tone</label>
                         <div className="relative">
-                          <select
-                            value={selectedTone}
-                            onChange={(e) => setSelectedTone(e.target.value)}
-                            className={`w-full appearance-none border text-sm py-2.5 px-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent ${darkMode ? 'bg-slate-700 border-slate-600 text-slate-200' : 'bg-slate-50 border-slate-200 text-slate-700'}`}
+                          <button
+                            type="button"
+                            onClick={() => setToneDropdownOpen(!toneDropdownOpen)}
+                            onBlur={() => setTimeout(() => setToneDropdownOpen(false), 150)}
+                            className={`w-full flex items-center gap-2 border text-sm py-2.5 px-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent ${darkMode ? 'bg-slate-700 border-slate-600 text-slate-200' : 'bg-slate-50 border-slate-200 text-slate-700'}`}
                           >
-                            {TONES.map(t => <option key={t.id} value={t.id}>{t.label}</option>)}
-                          </select>
-                          <ChevronDown className={`absolute right-3 top-3 w-4 h-4 pointer-events-none ${darkMode ? 'text-slate-500' : 'text-slate-400'}`} />
+                            {(() => {
+                              const currentTone = TONES.find(t => t.id === selectedTone);
+                              const Icon = currentTone?.icon;
+                              return (
+                                <>
+                                  {Icon && <Icon className={`w-4 h-4 ${darkMode ? 'text-slate-400' : 'text-slate-500'}`} />}
+                                  <span className="flex-1 text-left">{currentTone?.label}</span>
+                                </>
+                              );
+                            })()}
+                            <ChevronDown className={`w-4 h-4 transition-transform ${toneDropdownOpen ? 'rotate-180' : ''} ${darkMode ? 'text-slate-500' : 'text-slate-400'}`} />
+                          </button>
+                          {toneDropdownOpen && (
+                            <div className={`absolute z-20 top-full left-0 right-0 mt-1 rounded-lg border shadow-lg overflow-hidden ${darkMode ? 'bg-slate-800 border-slate-600' : 'bg-white border-slate-200'}`}>
+                              {TONES.map(t => {
+                                const Icon = t.icon;
+                                const isSelected = t.id === selectedTone;
+                                return (
+                                  <button
+                                    key={t.id}
+                                    type="button"
+                                    onClick={() => {
+                                      setSelectedTone(t.id);
+                                      setToneDropdownOpen(false);
+                                    }}
+                                    className={`w-full flex items-center gap-2 px-3 py-2.5 text-sm text-left transition-colors ${
+                                      isSelected 
+                                        ? 'bg-cyan-50 text-cyan-700' 
+                                        : darkMode 
+                                          ? 'text-slate-200 hover:bg-cyan-900/30' 
+                                          : 'text-slate-700 hover:bg-cyan-50'
+                                    }`}
+                                  >
+                                    <Icon className={`w-4 h-4 ${isSelected ? 'text-cyan-600' : darkMode ? 'text-slate-400' : 'text-slate-500'}`} />
+                                    {t.label}
+                                  </button>
+                                );
+                              })}
+                            </div>
+                          )}
                         </div>
                       </div>
                       {/* Length */}
