@@ -1210,16 +1210,17 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
 
               {/* Template Selector */}
               {showTemplates && (
-                <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+                <div className={`rounded-xl shadow-sm border p-6 ${darkMode ? 'bg-slate-800 border-slate-700' : 'bg-white border-slate-200'}`}>
                   <TemplateSelector
                     onSelect={handleTemplateSelect}
                     selectedId={selectedTemplate?.id}
+                    darkMode={darkMode}
                   />
                 </div>
               )}
 
               {/* Input Section */}
-              <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6 transition-all focus-within:ring-2 focus-within:ring-indigo-100 focus-within:border-indigo-400">
+              <div className={`rounded-xl shadow-sm border p-6 transition-all focus-within:ring-2 focus-within:ring-indigo-100 focus-within:border-indigo-400 ${darkMode ? 'bg-slate-800 border-slate-700' : 'bg-white border-slate-200'}`}>
                 <div className="flex justify-end mb-2">
                   <button
                     onClick={() => setShowSystemPrompt(!showSystemPrompt)}
@@ -1299,16 +1300,16 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
                   value={inputText}
                   onChange={(e) => setInputText(e.target.value)}
                   placeholder="e.g., Make me a deck about Andrej Karpathy software 3.0"
-                  className="w-full h-32 resize-none outline-none text-sm text-slate-700 placeholder:text-slate-300"
+                  className={`w-full h-32 resize-none outline-none text-sm bg-transparent ${darkMode ? 'text-slate-200 placeholder:text-slate-500' : 'text-slate-700 placeholder:text-slate-300'}`}
                 />
 
                 {/* Token Bar */}
                 <div className="mt-4 space-y-1">
                   <div className="flex justify-between items-center text-xs">
-                    <span className="text-slate-500 font-medium">Token Usage</span>
-                    <span className="text-slate-400">{estimateTokens(inputText)} / 2000 tokens</span>
+                    <span className={`font-medium ${darkMode ? 'text-slate-400' : 'text-slate-500'}`}>Token Usage</span>
+                    <span className={darkMode ? 'text-slate-500' : 'text-slate-400'}>{estimateTokens(inputText)} / 2000 tokens</span>
                   </div>
-                  <div className="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden">
+                  <div className={`h-1.5 w-full rounded-full overflow-hidden ${darkMode ? 'bg-slate-700' : 'bg-slate-100'}`}>
                     <div
                       className={`h-full rounded-full transition-all duration-300 ${estimateTokens(inputText) > 1500 ? 'bg-amber-400' : 'bg-cyan-400'}`}
                       style={{ width: `${Math.min(100, (estimateTokens(inputText) / 2000) * 100)}%` }}
@@ -1319,7 +1320,7 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
 
               {/* Output Type Selector */}
               <div>
-                <label className="text-sm font-semibold text-slate-700 mb-3 block">Output Type</label>
+                <label className={`text-sm font-semibold mb-3 block ${darkMode ? 'text-slate-300' : 'text-slate-700'}`}>Output Type</label>
                 <div className="grid grid-cols-3 md:grid-cols-6 gap-3">
                   {OUTPUT_TYPES.filter(type => type.id !== 'json').map((type) => {
                     const Icon = type.icon;
@@ -1336,10 +1337,10 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
                         }}
                         className={`flex flex-col items-center justify-center p-3 rounded-lg border transition-all duration-200 ${isSelected
                           ? 'bg-cyan-50 border-cyan-500 text-cyan-700 shadow-sm ring-1 ring-cyan-200'
-                          : 'bg-white border-slate-200 text-slate-500 hover:bg-slate-50 hover:border-slate-300'
+                          : darkMode ? 'bg-slate-700 border-slate-600 text-slate-400 hover:bg-slate-600 hover:border-slate-500' : 'bg-white border-slate-200 text-slate-500 hover:bg-slate-50 hover:border-slate-300'
                           }`}
                       >
-                        <Icon className={`w-5 h-5 mb-2 ${isSelected ? 'text-cyan-600' : 'text-slate-400'}`} />
+                        <Icon className={`w-5 h-5 mb-2 ${isSelected ? 'text-cyan-600' : darkMode ? 'text-slate-500' : 'text-slate-400'}`} />
                         <span className="text-xs font-medium">{type.label}</span>
                       </button>
                     );
@@ -1352,6 +1353,7 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
                 outputType={selectedOutputType}
                 spec={promptSpec || createSpec(selectedOutputType)}
                 onChange={handleSpecChange}
+                darkMode={darkMode}
               />
 
               {/* Action Button */}
@@ -1498,11 +1500,11 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
 
               {/* Expanded Prompt Result - Inline Display */}
               {generatedResult && (
-                <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                <div className={`rounded-xl shadow-sm border overflow-hidden ${darkMode ? 'bg-slate-800 border-slate-700' : 'bg-white border-slate-200'}`}>
                   {/* Header */}
-                  <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
+                  <div className={`px-6 py-4 border-b flex items-center justify-between ${darkMode ? 'border-slate-700' : 'border-slate-100'}`}>
                     <div className="flex items-center gap-2">
-                      <h3 className="text-lg font-bold text-slate-800">Expanded Prompt</h3>
+                      <h3 className={`text-lg font-bold ${darkMode ? 'text-slate-200' : 'text-slate-800'}`}>Expanded Prompt</h3>
                     </div>
                     <div className="flex items-center gap-2">
                       {/* Copy Button */}
@@ -1567,22 +1569,22 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
                   </div>
 
                   {/* Prompt Content */}
-                  <div className="p-6 bg-slate-50">
+                  <div className={`p-6 ${darkMode ? 'bg-slate-900/50' : 'bg-slate-50'}`}>
                     {/* Version Info Bar */}
                     {promptVersions.length > 0 && (
                       <div className="flex items-center justify-between mb-3 px-2">
-                        <div className="flex items-center gap-2 text-sm text-slate-500">
+                        <div className={`flex items-center gap-2 text-sm ${darkMode ? 'text-slate-400' : 'text-slate-500'}`}>
                           <RefreshCw className="w-4 h-4 text-indigo-500" />
                           <span>
                             Version {promptVersions.length + 1} 
-                            <span className="text-slate-400 ml-1">
+                            <span className={`ml-1 ${darkMode ? 'text-slate-500' : 'text-slate-400'}`}>
                               (improved {promptVersions.length} time{promptVersions.length > 1 ? 's' : ''})
                             </span>
                           </span>
                         </div>
                         <button
                           onClick={handleUndoImprove}
-                          className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 rounded-lg transition-colors"
+                          className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg transition-colors ${darkMode ? 'text-slate-300 bg-slate-700 border border-slate-600 hover:bg-slate-600' : 'text-slate-600 bg-white border border-slate-200 hover:bg-slate-50'}`}
                           title="Revert to previous version"
                         >
                           <Undo2 className="w-3.5 h-3.5" />
@@ -1590,8 +1592,8 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
                         </button>
                       </div>
                     )}
-                    <div className="bg-white rounded-lg border border-slate-200 p-5">
-                      <pre className="whitespace-pre-wrap font-mono text-sm text-slate-700 leading-relaxed">
+                    <div className={`rounded-lg border p-5 ${darkMode ? 'bg-slate-800 border-slate-700' : 'bg-white border-slate-200'}`}>
+                      <pre className={`whitespace-pre-wrap font-mono text-sm leading-relaxed ${darkMode ? 'text-slate-300' : 'text-slate-700'}`}>
                         {generatedResult}
                       </pre>
                     </div>
@@ -1656,29 +1658,29 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
 
       {/* Sidebar - History (only shown in Builder mode) */}
       {appMode !== 'experiment' && (
-        <div className={`${sidebarCollapsed ? 'w-12' : 'w-[335px]'} bg-slate-50/50 border-l border-slate-200 flex flex-col hidden md:flex z-10 shadow-sm transition-all duration-300`}>
-          <div className="p-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+        <div className={`${sidebarCollapsed ? 'w-12' : 'w-[335px]'} border-l flex flex-col hidden md:flex z-10 shadow-sm transition-all duration-300 ${darkMode ? 'bg-slate-800/50 border-slate-700' : 'bg-slate-50/50 border-slate-200'}`}>
+          <div className={`p-4 border-b flex items-center justify-between ${darkMode ? 'border-slate-700 bg-slate-800/50' : 'border-slate-100 bg-slate-50/50'}`}>
             {!sidebarCollapsed && (
-              <div className="flex items-center gap-2 text-slate-700">
+              <div className={`flex items-center gap-2 ${darkMode ? 'text-slate-300' : 'text-slate-700'}`}>
                 <History className="w-4 h-4" />
                 <h2 className="font-bold text-sm">Prompt History</h2>
               </div>
             )}
             <div className={`flex items-center gap-2 ${sidebarCollapsed ? 'w-full justify-center' : ''}`}>
               {!sidebarCollapsed && (
-                <span className="text-xs font-medium text-slate-400 bg-slate-100 px-2 py-0.5 rounded-full">
+                <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${darkMode ? 'text-slate-400 bg-slate-700' : 'text-slate-400 bg-slate-100'}`}>
                   {promptHistory.length}
                 </span>
               )}
               <button
                 onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-                className="p-1 hover:bg-slate-200 rounded transition-colors"
+                className={`p-1 rounded transition-colors ${darkMode ? 'hover:bg-slate-700' : 'hover:bg-slate-200'}`}
                 title={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
               >
                 {sidebarCollapsed ? (
-                  <PanelRight className="w-4 h-4 text-slate-500" />
+                  <PanelRight className={`w-4 h-4 ${darkMode ? 'text-slate-400' : 'text-slate-500'}`} />
                 ) : (
-                  <PanelRightClose className="w-4 h-4 text-slate-500" />
+                  <PanelRightClose className={`w-4 h-4 ${darkMode ? 'text-slate-400' : 'text-slate-500'}`} />
                 )}
               </button>
             </div>
@@ -1687,15 +1689,15 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
           {!sidebarCollapsed && (
             <>
               {/* Search Bar */}
-              <div className="p-3 border-b border-slate-100">
+              <div className={`p-3 border-b ${darkMode ? 'border-slate-700' : 'border-slate-100'}`}>
                 <div className="relative">
-                  <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                  <Search className={`w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 ${darkMode ? 'text-slate-500' : 'text-slate-400'}`} />
                   <input
                     type="text"
                     placeholder="Search prompts..."
                     value={historySearchQuery}
                     onChange={(e) => setHistorySearchQuery(e.target.value)}
-                    className="w-full pl-9 pr-3 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
+                    className={`w-full pl-9 pr-3 py-1.5 text-xs border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all ${darkMode ? 'bg-slate-700 border-slate-600 text-slate-200 placeholder:text-slate-500' : 'bg-slate-50 border-slate-200'}`}
                   />
                 </div>
               </div>
