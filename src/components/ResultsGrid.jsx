@@ -173,10 +173,12 @@ export default function ResultsGrid({ results, darkMode = false }) {
               className={`rounded-lg overflow-hidden ${darkMode ? 'bg-slate-700 border border-slate-600' : 'bg-slate-50 border border-slate-100'}`}
             >
               {/* Header Row */}
-              <button
-                type="button"
+              <div
+                role="button"
+                tabIndex={0}
                 onClick={() => toggleRow(index)}
-                className={`w-full flex items-center justify-between p-3 transition-colors text-left ${darkMode ? 'hover:bg-slate-600' : 'hover:bg-slate-100'}`}
+                onKeyDown={(e) => e.key === 'Enter' && toggleRow(index)}
+                className={`w-full flex items-center justify-between p-3 transition-colors text-left cursor-pointer ${darkMode ? 'hover:bg-slate-600' : 'hover:bg-slate-100'}`}
               >
                 <div className="flex items-center gap-2">
                   {renderStatusIndicator(result)}
@@ -209,7 +211,7 @@ export default function ResultsGrid({ results, darkMode = false }) {
                     <ChevronDown size={18} className={darkMode ? 'text-slate-500' : 'text-slate-400'} />
                   )}
                 </div>
-              </button>
+              </div>
 
               {/* Expanded Content */}
               {isExpanded && (
