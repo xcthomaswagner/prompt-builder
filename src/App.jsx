@@ -825,6 +825,7 @@ Generate an improved version of the prompt that addresses all the feedback point
     let generationFailed = false;
 
     try {
+      const currentSpec = promptSpec || createSpec(selectedOutputType);
       const toneObj = TONES.find(t => t.id === selectedTone);
       const typeObj = OUTPUT_TYPES.find(t => t.id === selectedOutputType);
       const formatObj = FORMATS.find(f => f.id === selectedFormat);
@@ -897,8 +898,7 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
       setReversePromptTriggered(isReverse);
       setGeneratedResult(finalPromptText);
 
-      // Run quality assessment
-      const currentSpec = promptSpec || createSpec(selectedOutputType);
+      // Run quality assessment (currentSpec already defined at top of try block)
       const quickCheck = quickQualityCheck(finalPromptText, currentSpec);
       
       if (enableQualityAssessment) {
