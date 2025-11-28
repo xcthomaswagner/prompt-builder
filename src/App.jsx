@@ -2158,7 +2158,7 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
       {/* Settings Modal */}
       {
         showSettings && (
-          <div className="absolute inset-0 z-50 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4">
             <div className={`w-full max-w-md rounded-2xl shadow-2xl flex flex-col overflow-hidden ${darkMode ? 'bg-slate-800' : 'bg-white'}`}>
               {/* Header */}
               <div className={`p-6 border-b flex items-center justify-between ${darkMode ? 'border-slate-700' : 'border-slate-100'}`}>
