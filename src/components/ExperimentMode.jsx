@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { Beaker, Play, Loader2, AlertCircle, Zap, Settings2, ChevronDown, ChevronUp, Layout, FileText, Database, Code, Copy, MessageSquare } from 'lucide-react';
+import { useState, useEffect, useRef } from 'react';
+import { Beaker, Play, Loader2, AlertCircle, Zap, Settings2, ChevronDown, ChevronUp, Layout, FileText, Database, Code, Copy, MessageSquare, XCircle } from 'lucide-react';
 import MatrixSelector from './MatrixSelector';
 import ModelSelector from './ModelSelector';
 import ResultsGrid from './ResultsGrid';
@@ -58,6 +58,7 @@ export default function ExperimentMode({ callLLM, defaultOutputType = 'doc', db,
   const [results, setResults] = useState([]);
   const [error, setError] = useState('');
   const [currentExperimentId, setCurrentExperimentId] = useState(null);
+  const abortControllerRef = useRef(null);
 
   // History state
   const [experiments, setExperiments] = useState([]);
@@ -127,8 +128,25 @@ export default function ExperimentMode({ callLLM, defaultOutputType = 'doc', db,
 
   const canRun = originalPrompt.trim().length > 0 && totalCombos > 0 && !isRunning;
 
+  const handleCancelExperiment = () => {
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
+    setIsRunning(false);
+    setError('Experiment cancelled');
+    // Mark remaining pending items as cancelled
+    setResults(prev => prev.map(r => 
+      r.status === 'pending' || r.status === 'running' 
+        ? { ...r, status: 'cancelled', error: 'Cancelled by user' } 
+        : r
+    ));
+  };
+
   const handleRunExperiment = async () => {
     if (!canRun) return;
+
+    // Create new AbortController for this run
+    abortControllerRef.current = new AbortController();
 
     setIsRunning(true);
     setError('');
@@ -185,6 +203,7 @@ export default function ExperimentMode({ callLLM, defaultOutputType = 'doc', db,
           baselines, // Pass baselines for anchored judging
           judgeOptions // Pass judge options for dual-judge and rubric enforcement
         },
+        signal: abortControllerRef.current?.signal,
         onProgress: async (completed, total, result) => {
           setProgress({ completed, total });
           setResults(prev => {
@@ -478,29 +497,41 @@ export default function ExperimentMode({ callLLM, defaultOutputType = 'doc', db,
           )}
         </div>
 
-      {/* Run Button */}
-        <button
-          type="button"
-          onClick={handleRunExperiment}
-          disabled={!canRun}
-          className={`w-full py-4 rounded-xl text-white font-bold text-lg shadow-lg flex items-center justify-center gap-3 transition-all transform active:scale-[0.99] ${
-            !canRun
-              ? 'bg-slate-300 cursor-not-allowed shadow-none'
-              : 'bg-gradient-to-r from-cyan-500 to-blue-600 hover:shadow-cyan-200 hover:shadow-xl'
-          }`}
-        >
-          {isRunning ? (
-            <>
-              <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-              Running {progress.completed}/{progress.total}...
-            </>
-          ) : (
-            <>
-              <Zap className="w-5 h-5 text-yellow-300 fill-current" />
-              Run Experiment ({totalCombos} combination{totalCombos !== 1 ? 's' : ''})
-            </>
+      {/* Run / Cancel Buttons */}
+        <div className="flex gap-3">
+          <button
+            type="button"
+            onClick={handleRunExperiment}
+            disabled={!canRun}
+            className={`flex-1 py-4 rounded-xl text-white font-bold text-lg shadow-lg flex items-center justify-center gap-3 transition-all transform active:scale-[0.99] ${
+              !canRun
+                ? 'bg-slate-300 cursor-not-allowed shadow-none'
+                : 'bg-gradient-to-r from-cyan-500 to-blue-600 hover:shadow-cyan-200 hover:shadow-xl'
+            }`}
+          >
+            {isRunning ? (
+              <>
+                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                Running {progress.completed}/{progress.total}...
+              </>
+            ) : (
+              <>
+                <Zap className="w-5 h-5 text-yellow-300 fill-current" />
+                Run Experiment ({totalCombos} combination{totalCombos !== 1 ? 's' : ''})
+              </>
+            )}
+          </button>
+          {isRunning && (
+            <button
+              type="button"
+              onClick={handleCancelExperiment}
+              className="px-6 py-4 rounded-xl bg-red-500 hover:bg-red-600 text-white font-bold text-lg shadow-lg flex items-center justify-center gap-2 transition-all transform active:scale-[0.99]"
+            >
+              <XCircle className="w-5 h-5" />
+              Cancel
+            </button>
           )}
-        </button>
+        </div>
 
         {isRunning && (
           <div className="space-y-1">

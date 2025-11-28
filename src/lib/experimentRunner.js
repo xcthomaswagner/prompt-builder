@@ -488,7 +488,8 @@ export async function runMatrixExperiment({
   callLLM,
   toggles = {},
   models = {},
-  onProgress
+  onProgress,
+  signal // AbortSignal for cancellation
 }) {
   const combos = buildMatrixCombos(matrixConfig);
   if (combos.length === 0) {
@@ -499,6 +500,11 @@ export async function runMatrixExperiment({
   let completed = 0;
 
   for (const combo of combos) {
+    // Check for cancellation before each cell
+    if (signal?.aborted) {
+      break;
+    }
+
     try {
       const result = await runExperimentCell(combo, prompt, outputType, callLLM, toggles, models);
       results.push(result);
