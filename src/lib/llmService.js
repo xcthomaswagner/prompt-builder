@@ -286,16 +286,9 @@ export async function callModel(modelId, userPrompt, systemPrompt, apiKeys, file
     throw new Error(`Unknown model: ${modelId}`);
   }
 
-  // Note: File attachments are currently logged but not fully implemented.
+  // Note: File attachments are not yet implemented.
   // Full multimodal support requires fetching file content and formatting for each provider.
   // For now, we proceed with text-only calls.
-  if (fileAttachments && fileAttachments.length > 0) {
-    console.log(`[callModel] ${fileAttachments.length} file attachment(s) provided for ${modelId}`);
-    // TODO: Implement multimodal API calls for each provider:
-    // - Gemini: Add inline_data parts with base64 content
-    // - OpenAI: Add image_url content type to messages
-    // - Anthropic: Add image content blocks with base64 data
-  }
 
   switch (model.provider) {
     case 'google':

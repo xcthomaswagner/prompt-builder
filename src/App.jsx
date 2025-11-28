@@ -1435,13 +1435,7 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
                   {/* Quality Feedback */}
                   {qualityResult && (
                     <div className="px-6 pb-6">
-                      <QualityFeedback
-                        quality={qualityResult}
-                        onImprove={() => {
-                          // TODO: Implement auto-improve based on feedback
-                          console.log('Auto-improve requested');
-                        }}
-                      />
+                      <QualityFeedback quality={qualityResult} />
                     </div>
                   )}
 
