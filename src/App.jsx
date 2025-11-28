@@ -22,7 +22,9 @@ import {
   Beaker,
   Lightbulb,
   Undo2,
-  RefreshCw
+  RefreshCw,
+  PanelRightClose,
+  PanelRight
 } from 'lucide-react';
 import { initializeApp } from "firebase/app";
 import {
@@ -458,6 +460,9 @@ export default function App() {
 
   // Mode toggle: 'builder' or 'experiment'
   const [appMode, setAppMode] = useState('builder');
+
+  // Sidebar collapsed state
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
   // Experiment history state (lifted from ExperimentMode for sidebar rendering)
   const [experimentHistory, setExperimentHistory] = useState(null);
@@ -1638,32 +1643,51 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
 
       {/* Sidebar - History (only shown in Builder mode) */}
       {appMode !== 'experiment' && (
-        <div className="w-80 bg-slate-50/50 border-l border-slate-200 flex flex-col hidden md:flex z-10 shadow-sm">
+        <div className={`${sidebarCollapsed ? 'w-12' : 'w-[335px]'} bg-slate-50/50 border-l border-slate-200 flex flex-col hidden md:flex z-10 shadow-sm transition-all duration-300`}>
           <div className="p-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
-            <div className="flex items-center gap-2 text-slate-700">
-              <History className="w-4 h-4" />
-              <h2 className="font-bold text-sm">Prompt History</h2>
+            {!sidebarCollapsed && (
+              <div className="flex items-center gap-2 text-slate-700">
+                <History className="w-4 h-4" />
+                <h2 className="font-bold text-sm">Prompt History</h2>
+              </div>
+            )}
+            <div className={`flex items-center gap-2 ${sidebarCollapsed ? 'w-full justify-center' : ''}`}>
+              {!sidebarCollapsed && (
+                <span className="text-xs font-medium text-slate-400 bg-slate-100 px-2 py-0.5 rounded-full">
+                  {promptHistory.length}
+                </span>
+              )}
+              <button
+                onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+                className="p-1 hover:bg-slate-200 rounded transition-colors"
+                title={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+              >
+                {sidebarCollapsed ? (
+                  <PanelRight className="w-4 h-4 text-slate-500" />
+                ) : (
+                  <PanelRightClose className="w-4 h-4 text-slate-500" />
+                )}
+              </button>
             </div>
-            <span className="text-xs font-medium text-slate-400 bg-slate-100 px-2 py-0.5 rounded-full">
-              {promptHistory.length}
-            </span>
           </div>
 
-          {/* Search Bar */}
-          <div className="p-3 border-b border-slate-100">
-            <div className="relative">
-              <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
-              <input
-                type="text"
-                placeholder="Search prompts..."
-                value={historySearchQuery}
-                onChange={(e) => setHistorySearchQuery(e.target.value)}
-                className="w-full pl-9 pr-3 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
-              />
-            </div>
-          </div>
+          {!sidebarCollapsed && (
+            <>
+              {/* Search Bar */}
+              <div className="p-3 border-b border-slate-100">
+                <div className="relative">
+                  <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                  <input
+                    type="text"
+                    placeholder="Search prompts..."
+                    value={historySearchQuery}
+                    onChange={(e) => setHistorySearchQuery(e.target.value)}
+                    className="w-full pl-9 pr-3 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
+                  />
+                </div>
+              </div>
 
-          <div className="flex-1 overflow-y-auto p-3 space-y-2">
+              <div className="flex-1 overflow-y-auto p-3 space-y-2">
             {isHistoryLoading ? (
               <div className="flex justify-center items-center py-10">
                 <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-indigo-500"></div>
@@ -1843,36 +1867,56 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
                   );
                 })
             )}
-          </div>
-          <div className="p-4 border-t border-slate-100 flex items-center justify-between">
-            <div className="text-xs text-slate-400">
-              Signed in as: {user?.displayName || user?.email || 'User'}
-            </div>
-            <button
-              onClick={() => setShowSettings(true)}
-              className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
-              title="Settings"
-            >
-              <Settings2 className="w-4 h-4" />
-            </button>
-          </div>
+              </div>
+              <div className="p-4 border-t border-slate-100 flex items-center justify-between">
+                <div className="text-xs text-slate-400">
+                  Signed in as: {user?.displayName || user?.email || 'User'}
+                </div>
+                <button
+                  onClick={() => setShowSettings(true)}
+                  className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
+                  title="Settings"
+                >
+                  <Settings2 className="w-4 h-4" />
+                </button>
+              </div>
+            </>
+          )}
         </div>
       )}
 
       {/* Sidebar - Experiment History (only shown in Experiment mode) */}
       {appMode === 'experiment' && experimentHistory && (
-        <div className="w-80 bg-slate-50/50 border-l border-slate-200 flex flex-col hidden md:flex z-10 shadow-sm">
+        <div className={`${sidebarCollapsed ? 'w-12' : 'w-[335px]'} bg-slate-50/50 border-l border-slate-200 flex flex-col hidden md:flex z-10 shadow-sm transition-all duration-300`}>
           <div className="p-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
-            <div className="flex items-center gap-2 text-slate-700">
-              <History className="w-4 h-4" />
-              <h2 className="font-bold text-sm">Experiment History</h2>
+            {!sidebarCollapsed && (
+              <div className="flex items-center gap-2 text-slate-700">
+                <History className="w-4 h-4" />
+                <h2 className="font-bold text-sm">Experiment History</h2>
+              </div>
+            )}
+            <div className={`flex items-center gap-2 ${sidebarCollapsed ? 'w-full justify-center' : ''}`}>
+              {!sidebarCollapsed && (
+                <span className="text-xs font-medium text-slate-400 bg-slate-100 px-2 py-0.5 rounded-full">
+                  {experimentHistory.experiments?.length || 0}
+                </span>
+              )}
+              <button
+                onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+                className="p-1 hover:bg-slate-200 rounded transition-colors"
+                title={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+              >
+                {sidebarCollapsed ? (
+                  <PanelRight className="w-4 h-4 text-slate-500" />
+                ) : (
+                  <PanelRightClose className="w-4 h-4 text-slate-500" />
+                )}
+              </button>
             </div>
-            <span className="text-xs font-medium text-slate-400 bg-slate-100 px-2 py-0.5 rounded-full">
-              {experimentHistory.experiments?.length || 0}
-            </span>
           </div>
 
-          <div className="flex-1 overflow-y-auto p-3 space-y-2">
+          {!sidebarCollapsed && (
+            <div className="flex-1 overflow-y-auto p-3 space-y-2">
             {experimentHistory.loadingHistory ? (
               <div className="flex justify-center items-center py-10">
                 <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-cyan-500"></div>
@@ -1928,7 +1972,8 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
                 </div>
               ))
             )}
-          </div>
+            </div>
+          )}
         </div>
       )}
 
