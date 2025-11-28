@@ -58,7 +58,7 @@ import OutcomeFeedback from './components/OutcomeFeedback.jsx';
 // Note: runPipeline is available for future split-pipeline mode
 // import { runPipeline } from './lib/pipeline/index.js';
 import { createSpec, mergeSpec } from './lib/promptSpecs/index.js';
-import { quickQualityCheck } from './lib/quality/index.js';
+import { assessQuality, quickQualityCheck } from './lib/quality/index.js';
 import { recordOutcome, learnFromOutcome } from './lib/learning/index.js';
 
 // --- Firebase Configuration ---
@@ -584,9 +584,12 @@ Generate an improved version of the prompt that addresses all the feedback point
       // Update to improved version
       setGeneratedResult(improvedText.trim());
 
-      // Re-run quality check on improved version
-      const newQuality = quickQualityCheck(improvedText.trim(), currentSpec);
-      setQualityResult(newQuality);
+      // Re-run quality assessment on improved version
+      setQualityResult({ ...quickQualityCheck(improvedText.trim(), currentSpec), assessing: true });
+      const callLLM = (prompt, systemPrompt) => callGeminiText(prompt, systemPrompt, geminiApiKey);
+      assessQuality(improvedText.trim(), currentSpec, callLLM)
+        .then(newQuality => setQualityResult(newQuality))
+        .catch(() => setQualityResult(quickQualityCheck(improvedText.trim(), currentSpec)));
 
     } catch (err) {
       console.error('Auto-improve failed:', err);
@@ -851,10 +854,20 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
       setReversePromptTriggered(isReverse);
       setGeneratedResult(finalPromptText);
 
-      // Run quick quality check
+      // Run LLM-based quality assessment
       const currentSpec = promptSpec || createSpec(selectedOutputType);
-      const qualityCheck = quickQualityCheck(finalPromptText, currentSpec);
-      setQualityResult(qualityCheck);
+      // Start with quick check while LLM assesses
+      setQualityResult({ ...quickQualityCheck(finalPromptText, currentSpec), assessing: true });
+      
+      // Run full LLM assessment in background
+      const callLLM = (prompt, systemPrompt) => callGeminiText(prompt, systemPrompt, geminiApiKey);
+      assessQuality(finalPromptText, currentSpec, callLLM)
+        .then(qualityCheck => setQualityResult(qualityCheck))
+        .catch(err => {
+          console.error('Quality assessment failed:', err);
+          // Fall back to quick check on error
+          setQualityResult(quickQualityCheck(finalPromptText, currentSpec));
+        });
 
       // Set reasoning from analysis if available
       if (aiData.reverse_prompting?.reasoning) {

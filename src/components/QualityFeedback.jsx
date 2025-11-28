@@ -91,7 +91,7 @@ export default function QualityFeedback({
 
   if (!quality) return null;
 
-  const { overall_score, interpretation, dimensions, strengths, improvements } = quality;
+  const { overall_score, interpretation, dimensions, strengths, improvements, assessing } = quality;
 
   const scoreColor = overall_score >= 80
     ? 'text-green-600'
@@ -124,9 +124,16 @@ export default function QualityFeedback({
             {overall_score}%
           </span>
           
-          <span className={`text-xs px-2 py-0.5 rounded-full ${getInterpretationColor(interpretation?.color, darkMode)}`}>
-            {interpretation?.label}
-          </span>
+          {assessing ? (
+            <span className={`text-xs px-2 py-0.5 rounded-full flex items-center gap-1 ${darkMode ? 'bg-indigo-900/50 text-indigo-300' : 'bg-indigo-100 text-indigo-700'}`}>
+              <span className="animate-spin w-3 h-3 border-2 border-current border-t-transparent rounded-full"></span>
+              Assessing...
+            </span>
+          ) : (
+            <span className={`text-xs px-2 py-0.5 rounded-full ${getInterpretationColor(interpretation?.color, darkMode)}`}>
+              {interpretation?.label}
+            </span>
+          )}
         </div>
 
         <div className="flex items-center gap-2">
