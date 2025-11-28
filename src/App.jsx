@@ -2239,136 +2239,116 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
               </div>
 
               {/* Body */}
-              <div className="p-6 space-y-6 max-h-[70vh] overflow-y-auto">
+              <div className="p-6 space-y-5">
                 {/* AI Provider Selection */}
-                <div className="space-y-3">
-                  <label className={`text-sm font-bold ${darkMode ? 'text-slate-300' : 'text-slate-700'}`}>AI Provider</label>
+                <div className="space-y-2">
+                  <label className={`text-sm font-medium ${darkMode ? 'text-slate-300' : 'text-slate-700'}`}>Provider</label>
                   <div className="grid grid-cols-3 gap-2">
                     <button
                       onClick={() => setSelectedProvider('chatgpt')}
-                      className={`p-3 rounded-lg border-2 transition-all ${selectedProvider === 'chatgpt'
-                        ? 'border-green-500 bg-green-50 text-green-700'
+                      className={`py-2.5 px-3 rounded-lg border-2 transition-all text-sm font-medium ${selectedProvider === 'chatgpt'
+                        ? 'border-indigo-500 bg-indigo-50 text-indigo-700'
                         : darkMode ? 'border-slate-600 bg-slate-700 text-slate-300 hover:border-slate-500' : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300'
                         }`}
                     >
-                      <div className="text-xs font-semibold text-left leading-tight">OpenAI GPT-5.1</div>
+                      OpenAI
                     </button>
                     <button
                       onClick={() => setSelectedProvider('claude')}
-                      className={`p-3 rounded-lg border-2 transition-all ${selectedProvider === 'claude'
-                        ? 'border-purple-500 bg-purple-50 text-purple-700'
+                      className={`py-2.5 px-3 rounded-lg border-2 transition-all text-sm font-medium ${selectedProvider === 'claude'
+                        ? 'border-indigo-500 bg-indigo-50 text-indigo-700'
                         : darkMode ? 'border-slate-600 bg-slate-700 text-slate-300 hover:border-slate-500' : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300'
                         }`}
                     >
-                      <div className="text-xs font-semibold">Claude</div>
+                      Claude
                     </button>
                     <button
                       onClick={() => setSelectedProvider('gemini')}
-                      className={`p-3 rounded-lg border-2 transition-all ${selectedProvider === 'gemini'
-                        ? 'border-blue-500 bg-blue-50 text-blue-700'
+                      className={`py-2.5 px-3 rounded-lg border-2 transition-all text-sm font-medium ${selectedProvider === 'gemini'
+                        ? 'border-indigo-500 bg-indigo-50 text-indigo-700'
                         : darkMode ? 'border-slate-600 bg-slate-700 text-slate-300 hover:border-slate-500' : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300'
                         }`}
                     >
-                      <div className="text-xs font-semibold">Gemini</div>
+                      Gemini
                     </button>
                   </div>
                 </div>
 
-                {/* API Keys */}
-                <div className="space-y-4">
-                  <h3 className={`text-sm font-bold ${darkMode ? 'text-slate-300' : 'text-slate-700'}`}>API Keys</h3>
-
-                  {/* OpenAI Settings */}
-                  <div className={`p-3 rounded-lg border ${darkMode ? 'border-slate-600 bg-slate-700/50' : 'border-green-100 bg-green-50/50'}`}>
-                    <div className="space-y-3">
-                      <div className="space-y-1.5">
-                        <label className={`text-xs font-medium ${darkMode ? 'text-slate-400' : 'text-slate-600'}`}>OpenAI API Key</label>
-                        <input
-                          type="password"
-                          value={chatgptApiKey}
-                          onChange={(e) => setChatgptApiKey(e.target.value)}
-                          placeholder="sk-..."
-                          className={`w-full px-3 py-2 text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent ${darkMode ? 'bg-slate-700 border-slate-600 text-slate-200 placeholder:text-slate-500' : 'border-slate-200 bg-white'}`}
-                        />
-                      </div>
-                      <div className="space-y-1.5">
-                        <label className={`text-xs font-medium ${darkMode ? 'text-slate-400' : 'text-slate-600'}`}>Model</label>
-                        <select
-                          value={selectedOpenAIModel}
-                          onChange={(e) => setSelectedOpenAIModel(e.target.value)}
-                          className={`w-full px-3 py-2 text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent ${darkMode ? 'bg-slate-700 border-slate-600 text-slate-200' : 'border-slate-200 bg-white'}`}
-                        >
-                          {OPENAI_MODELS.map(m => (
-                            <option key={m.id} value={m.id}>{m.label}</option>
-                          ))}
-                        </select>
-                      </div>
-                    </div>
+                {/* Dynamic settings for selected provider */}
+                <div className="space-y-3">
+                  <div className="space-y-1.5">
+                    <label className={`text-sm font-medium ${darkMode ? 'text-slate-300' : 'text-slate-700'}`}>API Key</label>
+                    {selectedProvider === 'chatgpt' && (
+                      <input
+                        type="password"
+                        value={chatgptApiKey}
+                        onChange={(e) => setChatgptApiKey(e.target.value)}
+                        placeholder="sk-..."
+                        className={`w-full px-3 py-2.5 text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent ${darkMode ? 'bg-slate-700 border-slate-600 text-slate-200 placeholder:text-slate-500' : 'border-slate-200 bg-white'}`}
+                      />
+                    )}
+                    {selectedProvider === 'claude' && (
+                      <input
+                        type="password"
+                        value={claudeApiKey}
+                        onChange={(e) => setClaudeApiKey(e.target.value)}
+                        placeholder="sk-ant-..."
+                        className={`w-full px-3 py-2.5 text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent ${darkMode ? 'bg-slate-700 border-slate-600 text-slate-200 placeholder:text-slate-500' : 'border-slate-200 bg-white'}`}
+                      />
+                    )}
+                    {selectedProvider === 'gemini' && (
+                      <input
+                        type="password"
+                        value={geminiApiKey}
+                        onChange={(e) => setGeminiApiKey(e.target.value)}
+                        placeholder="AIza..."
+                        className={`w-full px-3 py-2.5 text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent ${darkMode ? 'bg-slate-700 border-slate-600 text-slate-200 placeholder:text-slate-500' : 'border-slate-200 bg-white'}`}
+                      />
+                    )}
                   </div>
 
-                  {/* Claude Settings */}
-                  <div className={`p-3 rounded-lg border ${darkMode ? 'border-slate-600 bg-slate-700/50' : 'border-purple-100 bg-purple-50/50'}`}>
-                    <div className="space-y-3">
-                      <div className="space-y-1.5">
-                        <label className={`text-xs font-medium ${darkMode ? 'text-slate-400' : 'text-slate-600'}`}>Claude API Key</label>
-                        <input
-                          type="password"
-                          value={claudeApiKey}
-                          onChange={(e) => setClaudeApiKey(e.target.value)}
-                          placeholder="sk-ant-..."
-                          className={`w-full px-3 py-2 text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent ${darkMode ? 'bg-slate-700 border-slate-600 text-slate-200 placeholder:text-slate-500' : 'border-slate-200 bg-white'}`}
-                        />
-                      </div>
-                      <div className="space-y-1.5">
-                        <label className={`text-xs font-medium ${darkMode ? 'text-slate-400' : 'text-slate-600'}`}>Model</label>
-                        <select
-                          value={selectedClaudeModel}
-                          onChange={(e) => setSelectedClaudeModel(e.target.value)}
-                          className={`w-full px-3 py-2 text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent ${darkMode ? 'bg-slate-700 border-slate-600 text-slate-200' : 'border-slate-200 bg-white'}`}
-                        >
-                          {CLAUDE_MODELS.map(m => (
-                            <option key={m.id} value={m.id}>{m.label}</option>
-                          ))}
-                        </select>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Gemini Settings */}
-                  <div className={`p-3 rounded-lg border ${darkMode ? 'border-slate-600 bg-slate-700/50' : 'border-blue-100 bg-blue-50/50'}`}>
-                    <div className="space-y-3">
-                      <div className="space-y-1.5">
-                        <label className={`text-xs font-medium ${darkMode ? 'text-slate-400' : 'text-slate-600'}`}>Gemini API Key</label>
-                        <input
-                          type="password"
-                          value={geminiApiKey}
-                          onChange={(e) => setGeminiApiKey(e.target.value)}
-                          placeholder="AIza..."
-                          className={`w-full px-3 py-2 text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${darkMode ? 'bg-slate-700 border-slate-600 text-slate-200 placeholder:text-slate-500' : 'border-slate-200 bg-white'}`}
-                        />
-                      </div>
-                      <div className="space-y-1.5">
-                        <label className={`text-xs font-medium ${darkMode ? 'text-slate-400' : 'text-slate-600'}`}>Model</label>
-                        <select
-                          value={selectedGeminiModel}
-                          onChange={(e) => setSelectedGeminiModel(e.target.value)}
-                          className={`w-full px-3 py-2 text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${darkMode ? 'bg-slate-700 border-slate-600 text-slate-200' : 'border-slate-200 bg-white'}`}
-                        >
-                          {GEMINI_MODELS.map(m => (
-                            <option key={m.id} value={m.id}>{m.label}</option>
-                          ))}
-                        </select>
-                      </div>
-                    </div>
+                  <div className="space-y-1.5">
+                    <label className={`text-sm font-medium ${darkMode ? 'text-slate-300' : 'text-slate-700'}`}>Model</label>
+                    {selectedProvider === 'chatgpt' && (
+                      <select
+                        value={selectedOpenAIModel}
+                        onChange={(e) => setSelectedOpenAIModel(e.target.value)}
+                        className={`w-full px-3 py-2.5 text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent ${darkMode ? 'bg-slate-700 border-slate-600 text-slate-200' : 'border-slate-200 bg-white'}`}
+                      >
+                        {OPENAI_MODELS.map(m => (
+                          <option key={m.id} value={m.id}>{m.label}</option>
+                        ))}
+                      </select>
+                    )}
+                    {selectedProvider === 'claude' && (
+                      <select
+                        value={selectedClaudeModel}
+                        onChange={(e) => setSelectedClaudeModel(e.target.value)}
+                        className={`w-full px-3 py-2.5 text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent ${darkMode ? 'bg-slate-700 border-slate-600 text-slate-200' : 'border-slate-200 bg-white'}`}
+                      >
+                        {CLAUDE_MODELS.map(m => (
+                          <option key={m.id} value={m.id}>{m.label}</option>
+                        ))}
+                      </select>
+                    )}
+                    {selectedProvider === 'gemini' && (
+                      <select
+                        value={selectedGeminiModel}
+                        onChange={(e) => setSelectedGeminiModel(e.target.value)}
+                        className={`w-full px-3 py-2.5 text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent ${darkMode ? 'bg-slate-700 border-slate-600 text-slate-200' : 'border-slate-200 bg-white'}`}
+                      >
+                        {GEMINI_MODELS.map(m => (
+                          <option key={m.id} value={m.id}>{m.label}</option>
+                        ))}
+                      </select>
+                    )}
                   </div>
                 </div>
 
                 {/* Info */}
-                <div className={`p-3 rounded-lg border ${darkMode ? 'bg-blue-900/30 border-blue-800' : 'bg-blue-50 border-blue-100'}`}>
-                  <p className={`text-xs ${darkMode ? 'text-blue-300' : 'text-blue-700'}`}>
-                    <strong>Note:</strong> API keys are stored locally in your browser and never sent to our servers.
-                  </p>
-                </div>
+                <p className={`text-xs ${darkMode ? 'text-slate-500' : 'text-slate-400'}`}>
+                  API keys are stored locally and never sent to our servers.
+                </p>
               </div>
 
               {/* Footer */}
