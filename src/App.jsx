@@ -1394,16 +1394,16 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
               )}
 
               {/* Advanced Settings */}
-              <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+              <div className={`rounded-xl shadow-sm border overflow-hidden ${darkMode ? 'bg-slate-800 border-slate-700' : 'bg-white border-slate-200'}`}>
                 <button
                   onClick={() => setShowAdvanced(!showAdvanced)}
-                  className="w-full flex items-center justify-between p-4 bg-slate-50 hover:bg-slate-100 transition-colors"
+                  className={`w-full flex items-center justify-between p-4 transition-colors ${darkMode ? 'bg-slate-700 hover:bg-slate-600' : 'bg-slate-50 hover:bg-slate-100'}`}
                 >
-                  <div className="flex items-center gap-2 text-sm font-semibold text-slate-700">
-                    <Settings2 className="w-4 h-4 text-slate-500" />
+                  <div className={`flex items-center gap-2 text-sm font-semibold ${darkMode ? 'text-slate-200' : 'text-slate-700'}`}>
+                    <Settings2 className={`w-4 h-4 ${darkMode ? 'text-slate-400' : 'text-slate-500'}`} />
                     Advanced Configuration
                   </div>
-                  {showAdvanced ? <ChevronUp className="w-4 h-4 text-slate-400" /> : <ChevronDown className="w-4 h-4 text-slate-400" />}
+                  {showAdvanced ? <ChevronUp className={`w-4 h-4 ${darkMode ? 'text-slate-500' : 'text-slate-400'}`} /> : <ChevronDown className={`w-4 h-4 ${darkMode ? 'text-slate-500' : 'text-slate-400'}`} />}
                 </button>
 
                 {showAdvanced && (
@@ -1411,63 +1411,63 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                       {/* Tone */}
                       <div className="space-y-2">
-                        <label className="text-xs font-bold text-slate-500 uppercase tracking-wide">Tone</label>
+                        <label className={`text-xs font-bold uppercase tracking-wide ${darkMode ? 'text-slate-400' : 'text-slate-500'}`}>Tone</label>
                         <div className="relative">
                           <select
                             value={selectedTone}
                             onChange={(e) => setSelectedTone(e.target.value)}
-                            className="w-full appearance-none bg-slate-50 border border-slate-200 text-sm text-slate-700 py-2.5 px-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
+                            className={`w-full appearance-none border text-sm py-2.5 px-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent ${darkMode ? 'bg-slate-700 border-slate-600 text-slate-200' : 'bg-slate-50 border-slate-200 text-slate-700'}`}
                           >
                             {TONES.map(t => <option key={t.id} value={t.id}>{t.label}</option>)}
                           </select>
-                          <ChevronDown className="absolute right-3 top-3 w-4 h-4 text-slate-400 pointer-events-none" />
+                          <ChevronDown className={`absolute right-3 top-3 w-4 h-4 pointer-events-none ${darkMode ? 'text-slate-500' : 'text-slate-400'}`} />
                         </div>
                       </div>
                       {/* Length */}
                       <div className="space-y-2">
-                        <label className="text-xs font-bold text-slate-500 uppercase tracking-wide">Length</label>
+                        <label className={`text-xs font-bold uppercase tracking-wide ${darkMode ? 'text-slate-400' : 'text-slate-500'}`}>Length</label>
                         <div className="relative">
                           <select
                             value={selectedLength}
                             onChange={(e) => setSelectedLength(e.target.value)}
-                            className="w-full appearance-none bg-slate-50 border border-slate-200 text-sm text-slate-700 py-2.5 px-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
+                            className={`w-full appearance-none border text-sm py-2.5 px-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent ${darkMode ? 'bg-slate-700 border-slate-600 text-slate-200' : 'bg-slate-50 border-slate-200 text-slate-700'}`}
                           >
                             {LENGTHS.map(l => <option key={l.id} value={l.id}>{l.label}</option>)}
                           </select>
-                          <ChevronDown className="absolute right-3 top-3 w-4 h-4 text-slate-400 pointer-events-none" />
+                          <ChevronDown className={`absolute right-3 top-3 w-4 h-4 pointer-events-none ${darkMode ? 'text-slate-500' : 'text-slate-400'}`} />
                         </div>
                       </div>
                       {/* Format */}
                       <div className="space-y-2">
-                        <label className="text-xs font-bold text-slate-500 uppercase tracking-wide">Format</label>
+                        <label className={`text-xs font-bold uppercase tracking-wide ${darkMode ? 'text-slate-400' : 'text-slate-500'}`}>Format</label>
                         <div className="relative">
                           <select
                             value={selectedFormat}
                             onChange={(e) => setSelectedFormat(e.target.value)}
-                            className="w-full appearance-none bg-slate-50 border border-slate-200 text-sm text-slate-700 py-2.5 px-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
+                            className={`w-full appearance-none border text-sm py-2.5 px-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent ${darkMode ? 'bg-slate-700 border-slate-600 text-slate-200' : 'bg-slate-50 border-slate-200 text-slate-700'}`}
                           >
                             {FORMATS.map(f => <option key={f.id} value={f.id}>{f.label}</option>)}
                           </select>
-                          <ChevronDown className="absolute right-3 top-3 w-4 h-4 text-slate-400 pointer-events-none" />
+                          <ChevronDown className={`absolute right-3 top-3 w-4 h-4 pointer-events-none ${darkMode ? 'text-slate-500' : 'text-slate-400'}`} />
                         </div>
                       </div>
                     </div>
 
                     {/* Notes */}
                     <div className="space-y-2">
-                      <label className="text-xs font-bold text-slate-500 uppercase tracking-wide">Notes (Audience, Constraints)</label>
+                      <label className={`text-xs font-bold uppercase tracking-wide ${darkMode ? 'text-slate-400' : 'text-slate-500'}`}>Notes (Audience, Constraints)</label>
                       <textarea
                         value={notes}
                         onChange={(e) => setNotes(e.target.value)}
                         placeholder="Add any additional context, audience details, or specific links..."
-                        className="w-full h-20 bg-slate-50 border border-slate-200 rounded-lg p-3 text-sm text-slate-700 focus:ring-2 focus:ring-cyan-500 outline-none resize-none"
+                        className={`w-full h-20 border rounded-lg p-3 text-sm focus:ring-2 focus:ring-cyan-500 outline-none resize-none ${darkMode ? 'bg-slate-700 border-slate-600 text-slate-200 placeholder:text-slate-400' : 'bg-slate-50 border-slate-200 text-slate-700'}`}
                       />
                     </div>
 
                     {/* Toggles */}
-                    <div className="space-y-4 pt-2 border-t border-slate-100">
+                    <div className={`space-y-4 pt-2 border-t ${darkMode ? 'border-slate-600' : 'border-slate-100'}`}>
                       <div className="flex items-center justify-between">
-                        <span className="text-sm text-slate-700">Allow [Illustrative] placeholders</span>
+                        <span className={`text-sm ${darkMode ? 'text-slate-300' : 'text-slate-700'}`}>Allow [Illustrative] placeholders</span>
                         <button
                           onClick={() => setAllowPlaceholders(!allowPlaceholders)}
                           className={`w-11 h-6 rounded-full relative transition-colors ${allowPlaceholders ? 'bg-cyan-500' : 'bg-slate-300'}`}
@@ -1476,7 +1476,7 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
                         </button>
                       </div>
                       <div className="flex items-center justify-between">
-                        <span className="text-sm text-slate-700">Strip meta-commentary</span>
+                        <span className={`text-sm ${darkMode ? 'text-slate-300' : 'text-slate-700'}`}>Strip meta-commentary</span>
                         <button
                           onClick={() => !FORMATS.find(f => f.id === selectedFormat)?.isSafeJson && setStripMeta(!stripMeta)}
                           disabled={FORMATS.find(f => f.id === selectedFormat)?.isSafeJson}
@@ -1486,7 +1486,7 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
                         </button>
                       </div>
                       <div className="flex items-center justify-between">
-                        <span className="text-sm text-slate-700">Emphasize aesthetics</span>
+                        <span className={`text-sm ${darkMode ? 'text-slate-300' : 'text-slate-700'}`}>Emphasize aesthetics</span>
                         <button
                           onClick={() => setAestheticMode(!aestheticMode)}
                           className={`w-11 h-6 rounded-full relative transition-colors ${aestheticMode ? 'bg-cyan-500' : 'bg-slate-300'}`}
@@ -1772,21 +1772,21 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
                   }
 
                   return (
-                    <div key={item.id} className={`group p-3 rounded-lg border transition-all cursor-pointer relative ${item.isPrivate ? 'bg-slate-50 border-slate-100 opacity-75' : 'bg-white border-transparent hover:bg-slate-50 hover:border-slate-200'}`}>
+                    <div key={item.id} className={`group p-3 rounded-lg border transition-all cursor-pointer relative ${item.isPrivate ? (darkMode ? 'bg-slate-700 border-slate-600 opacity-75' : 'bg-slate-50 border-slate-100 opacity-75') : (darkMode ? 'bg-slate-700 border-slate-600 hover:bg-slate-600 hover:border-slate-500' : 'bg-white border-transparent hover:bg-slate-50 hover:border-slate-200')}`}>
                       <div onClick={() => loadFromHistory(item)}>
-                        <div className="font-medium text-slate-800 text-sm truncate pr-16">{item.originalText || "Untitled Prompt"}</div>
+                        <div className={`font-medium text-sm truncate pr-16 ${darkMode ? 'text-slate-200' : 'text-slate-800'}`}>{item.originalText || "Untitled Prompt"}</div>
 
                         {/* Metadata Tags */}
                         <div className="flex flex-wrap gap-1 mt-1.5">
-                          <span className="text-[10px] text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded capitalize">{item.outputType}</span>
-                          <span className="text-[10px] text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded capitalize">{item.format}</span>
-                          <span className="text-[10px] text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded capitalize">{item.length}</span>
-                          <span className="text-[10px] text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded capitalize">{item.tone}</span>
+                          <span className={`text-[10px] px-1.5 py-0.5 rounded capitalize ${darkMode ? 'text-slate-400 bg-slate-600' : 'text-slate-500 bg-slate-100'}`}>{item.outputType}</span>
+                          <span className={`text-[10px] px-1.5 py-0.5 rounded capitalize ${darkMode ? 'text-slate-400 bg-slate-600' : 'text-slate-500 bg-slate-100'}`}>{item.format}</span>
+                          <span className={`text-[10px] px-1.5 py-0.5 rounded capitalize ${darkMode ? 'text-slate-400 bg-slate-600' : 'text-slate-500 bg-slate-100'}`}>{item.length}</span>
+                          <span className={`text-[10px] px-1.5 py-0.5 rounded capitalize ${darkMode ? 'text-slate-400 bg-slate-600' : 'text-slate-500 bg-slate-100'}`}>{item.tone}</span>
                           {matchBadge}
                         </div>
 
                         {/* Date & Version */}
-                        <div className="text-[10px] text-slate-400 mt-2 flex items-center gap-1.5">
+                        <div className={`text-[10px] mt-2 flex items-center gap-1.5 ${darkMode ? 'text-slate-500' : 'text-slate-400'}`}>
                           <span>
                             {item.createdAt?.seconds ? new Date(item.createdAt.seconds * 1000).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) : 'Just now'}
                             {item.createdAt?.seconds && `, ${new Date(item.createdAt.seconds * 1000).toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' })}`}
@@ -1815,12 +1815,12 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
 
                         {/* Version History Popover */}
                         {activeVersionHistoryId === item.id && Array.isArray(item.versions) && item.versions.length > 0 && (
-                          <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-lg shadow-xl border border-slate-200 z-20 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
-                            <div className="bg-slate-50 px-3 py-2 border-b border-slate-100 flex justify-between items-center">
-                              <span className="text-xs font-semibold text-slate-700">Version History</span>
+                          <div className={`absolute top-full left-0 right-0 mt-2 rounded-lg shadow-xl border z-20 overflow-hidden animate-in fade-in zoom-in-95 duration-200 ${darkMode ? 'bg-slate-800 border-slate-600' : 'bg-white border-slate-200'}`}>
+                            <div className={`px-3 py-2 border-b flex justify-between items-center ${darkMode ? 'bg-slate-700 border-slate-600' : 'bg-slate-50 border-slate-100'}`}>
+                              <span className={`text-xs font-semibold ${darkMode ? 'text-slate-200' : 'text-slate-700'}`}>Version History</span>
                               <button
                                 onClick={(e) => { e.stopPropagation(); setActiveVersionHistoryId(null); }}
-                                className="text-slate-400 hover:text-slate-600"
+                                className={darkMode ? 'text-slate-500 hover:text-slate-300' : 'text-slate-400 hover:text-slate-600'}
                               >
                                 <X className="w-3 h-3" />
                               </button>
@@ -1838,18 +1838,18 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
                                       loadFromHistory(item, ver);
                                       setActiveVersionHistoryId(null);
                                     }}
-                                    className="px-3 py-2 hover:bg-slate-50 cursor-pointer border-b border-slate-50 last:border-0 flex items-center justify-between group/ver"
+                                    className={`px-3 py-2 cursor-pointer border-b last:border-0 flex items-center justify-between group/ver ${darkMode ? 'hover:bg-slate-700 border-slate-700' : 'hover:bg-slate-50 border-slate-50'}`}
                                   >
                                     <div>
                                       <div className="flex items-center gap-2">
-                                        <span className="text-xs font-medium text-slate-700">v{verNum}</span>
-                                        <span className="text-[10px] text-slate-400">
+                                        <span className={`text-xs font-medium ${darkMode ? 'text-slate-200' : 'text-slate-700'}`}>v{verNum}</span>
+                                        <span className={`text-[10px] ${darkMode ? 'text-slate-500' : 'text-slate-400'}`}>
                                           {dateStr}
                                         </span>
                                       </div>
                                       <div className="flex gap-1 mt-0.5">
-                                        <span className="text-[9px] px-1 rounded bg-slate-100 text-slate-500">{ver.tone}</span>
-                                        <span className="text-[9px] px-1 rounded bg-slate-100 text-slate-500">{ver.format}</span>
+                                        <span className={`text-[9px] px-1 rounded ${darkMode ? 'bg-slate-600 text-slate-400' : 'bg-slate-100 text-slate-500'}`}>{ver.tone}</span>
+                                        <span className={`text-[9px] px-1 rounded ${darkMode ? 'bg-slate-600 text-slate-400' : 'bg-slate-100 text-slate-500'}`}>{ver.format}</span>
                                       </div>
                                     </div>
                                     <div className="opacity-0 group-hover/ver:opacity-100 text-indigo-600 text-[10px] font-medium">
@@ -1864,17 +1864,17 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
                       </div>
 
                       {/* Action Buttons */}
-                      <div className="absolute top-2 right-2 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity bg-white/80 backdrop-blur-sm rounded-lg p-0.5">
+                      <div className={`absolute top-2 right-2 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity backdrop-blur-sm rounded-lg p-0.5 ${darkMode ? 'bg-slate-700/80' : 'bg-white/80'}`}>
                         <button
                           onClick={(e) => handleTogglePrivate(e, item)}
-                          className={`p-1 rounded hover:bg-slate-100 ${item.isPrivate ? 'text-indigo-500' : 'text-slate-400 hover:text-slate-600'}`}
+                          className={`p-1 rounded ${item.isPrivate ? 'text-indigo-500' : darkMode ? 'text-slate-400 hover:text-slate-200 hover:bg-slate-600' : 'text-slate-400 hover:text-slate-600 hover:bg-slate-100'}`}
                           title="Private"
                         >
                           {item.isPrivate ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
                         </button>
                         <button
                           onClick={(e) => handleDeleteHistory(e, item.id)}
-                          className="p-1 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded transition-colors"
+                          className={`p-1 rounded transition-colors ${darkMode ? 'text-slate-400 hover:text-red-400 hover:bg-red-900/30' : 'text-slate-400 hover:text-red-500 hover:bg-red-50'}`}
                           title="Delete"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
