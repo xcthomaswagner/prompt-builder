@@ -1820,18 +1820,13 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
                         </svg>
                         Claude
                       </a>
-                      {/* Gemini Button - Copies to clipboard and opens (no URL param support) */}
+                      {/* Gemini Button - Uses ?prompt= parameter to prefill prompt */}
                       <a
-                        href="https://gemini.google.com/app"
+                        href={`https://gemini.google.com/app?prompt=${encodeURIComponent(generatedResult)}`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        onClick={() => {
-                          navigator.clipboard.writeText(generatedResult);
-                          setCopySuccess(true);
-                          setTimeout(() => setCopySuccess(false), 2000);
-                        }}
                         className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors cursor-pointer"
-                        title="Opens Gemini and copies prompt to clipboard"
+                        title="Opens Gemini with prompt pre-filled"
                       >
                         <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor">
                           <path d="M12 0C9.284 3.478 5.522 5.463 0 5.463v2.182C5.522 7.645 9.284 9.63 12 13.108c2.716-3.478 6.478-5.463 12-5.463V5.463C18.478 5.463 14.716 3.478 12 0zm0 10.892C9.284 14.37 5.522 16.355 0 16.355v2.182C5.522 18.537 9.284 20.522 12 24c2.716-3.478 6.478-5.463 12-5.463v-2.182c-5.522 0-9.284-1.985-12-5.463z" />
