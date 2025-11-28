@@ -42,7 +42,7 @@ const OUTPUT_TYPES = [
  * @param {Object} props.firebaseApp - Firebase app instance for storage
  * @param {string} props.userId - Current user ID
  */
-export default function ExperimentSettings({ isOpen, onClose, baselines = {}, judgeOptions = {}, onSave, firebaseApp, userId }) {
+export default function ExperimentSettings({ isOpen, onClose, baselines = {}, judgeOptions = {}, onSave, firebaseApp, userId, darkMode = false }) {
   const [activeTab, setActiveTab] = useState('deck');
   const [activeSection, setActiveSection] = useState('baselines'); // 'baselines' or 'options'
   const [localBaselines, setLocalBaselines] = useState({});
@@ -200,18 +200,18 @@ export default function ExperimentSettings({ isOpen, onClose, baselines = {}, ju
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] flex flex-col">
+      <div className={`rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] flex flex-col ${darkMode ? 'bg-slate-800' : 'bg-white'}`}>
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-slate-200">
+        <div className={`flex items-center justify-between p-6 border-b ${darkMode ? 'border-slate-700' : 'border-slate-200'}`}>
           <div>
-            <h2 className="text-xl font-bold text-slate-800">Experiment Settings</h2>
-            <p className="text-sm text-slate-500 mt-1">
+            <h2 className={`text-xl font-bold ${darkMode ? 'text-slate-200' : 'text-slate-800'}`}>Experiment Settings</h2>
+            <p className={`text-sm mt-1 ${darkMode ? 'text-slate-400' : 'text-slate-500'}`}>
               Configure baseline examples for calibrated judging
             </p>
           </div>
           <button
             onClick={onClose}
-            className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
+            className={`p-2 rounded-lg transition-colors ${darkMode ? 'text-slate-500 hover:text-slate-300 hover:bg-slate-700' : 'text-slate-400 hover:text-slate-600 hover:bg-slate-100'}`}
           >
             <X size={20} />
           </button>
@@ -220,10 +220,10 @@ export default function ExperimentSettings({ isOpen, onClose, baselines = {}, ju
         {/* Content */}
         <div className="flex-1 flex overflow-hidden">
           {/* Left Sidebar */}
-          <div className="w-48 border-r border-slate-200 p-4 space-y-4 bg-slate-50">
+          <div className={`w-48 border-r p-4 space-y-4 ${darkMode ? 'border-slate-700 bg-slate-900' : 'border-slate-200 bg-slate-50'}`}>
             {/* Baselines Section */}
             <div>
-              <div className="text-xs font-bold text-slate-500 uppercase tracking-wide mb-3">
+              <div className={`text-xs font-bold uppercase tracking-wide mb-3 ${darkMode ? 'text-slate-400' : 'text-slate-500'}`}>
                 Baseline Examples
               </div>
               {OUTPUT_TYPES.map(type => {
@@ -237,14 +237,14 @@ export default function ExperimentSettings({ isOpen, onClose, baselines = {}, ju
                     className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all ${
                       isActive
                         ? 'bg-cyan-50 text-cyan-700 border border-cyan-200'
-                        : 'text-slate-600 hover:bg-slate-100'
+                        : darkMode ? 'text-slate-400 hover:bg-slate-800' : 'text-slate-600 hover:bg-slate-100'
                     }`}
                   >
                     <Icon size={16} />
                     <span className="flex-1 text-left">{type.label}</span>
                     {count > 0 && (
                       <span className={`text-xs px-1.5 py-0.5 rounded-full ${
-                        isActive ? 'bg-cyan-200 text-cyan-800' : 'bg-slate-200 text-slate-600'
+                        isActive ? 'bg-cyan-200 text-cyan-800' : darkMode ? 'bg-slate-700 text-slate-400' : 'bg-slate-200 text-slate-600'
                       }`}>
                         {count}
                       </span>
@@ -255,11 +255,11 @@ export default function ExperimentSettings({ isOpen, onClose, baselines = {}, ju
             </div>
 
             {/* Divider */}
-            <div className="border-t border-slate-200" />
+            <div className={`border-t ${darkMode ? 'border-slate-700' : 'border-slate-200'}`} />
 
             {/* Judge Options Section */}
             <div>
-              <div className="text-xs font-bold text-slate-500 uppercase tracking-wide mb-3">
+              <div className={`text-xs font-bold uppercase tracking-wide mb-3 ${darkMode ? 'text-slate-400' : 'text-slate-500'}`}>
                 Judge Options
               </div>
               <button
@@ -267,7 +267,7 @@ export default function ExperimentSettings({ isOpen, onClose, baselines = {}, ju
                 className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all ${
                   activeSection === 'options'
                     ? 'bg-cyan-50 text-cyan-700 border border-cyan-200'
-                    : 'text-slate-600 hover:bg-slate-100'
+                    : darkMode ? 'text-slate-400 hover:bg-slate-800' : 'text-slate-600 hover:bg-slate-100'
                 }`}
               >
                 <Settings size={16} />
@@ -278,13 +278,13 @@ export default function ExperimentSettings({ isOpen, onClose, baselines = {}, ju
 
           {/* Baselines Panel (Right) */}
           {activeSection === 'baselines' && (
-          <div className="flex-1 p-6 overflow-y-auto">
+          <div className={`flex-1 p-6 overflow-y-auto ${darkMode ? 'bg-slate-800' : ''}`}>
             <div className="flex items-start justify-between mb-4">
               <div className="flex-1 pr-4">
-                <h3 className="text-lg font-semibold text-slate-800">
+                <h3 className={`text-lg font-semibold ${darkMode ? 'text-slate-200' : 'text-slate-800'}`}>
                   {OUTPUT_TYPES.find(t => t.id === activeTab)?.label} Baselines
                 </h3>
-                <p className="text-sm text-slate-500 mt-1">
+                <p className={`text-sm mt-1 ${darkMode ? 'text-slate-400' : 'text-slate-500'}`}>
                   Provide reference examples to anchor the judge's scoring. Score 7 = baseline quality.
                 </p>
               </div>
@@ -306,7 +306,7 @@ export default function ExperimentSettings({ isOpen, onClose, baselines = {}, ju
             )}
 
             {currentExamples.length === 0 ? (
-              <div className="text-center py-12 text-slate-400 border-2 border-dashed border-slate-200 rounded-xl">
+              <div className={`text-center py-12 border-2 border-dashed rounded-xl ${darkMode ? 'text-slate-500 border-slate-600' : 'text-slate-400 border-slate-200'}`}>
                 <p className="mb-2">No baseline examples for this output type.</p>
                 <p className="text-sm">The judge will proceed without anchored scoring.</p>
               </div>
@@ -320,12 +320,12 @@ export default function ExperimentSettings({ isOpen, onClose, baselines = {}, ju
                   return (
                     <div
                       key={index}
-                      className="border border-slate-200 rounded-xl p-4 bg-white shadow-sm"
+                      className={`border rounded-xl p-4 shadow-sm ${darkMode ? 'border-slate-600 bg-slate-700' : 'border-slate-200 bg-white'}`}
                     >
                       <div className="flex items-start gap-4 mb-3">
                         {/* Score Input */}
                         <div className="flex flex-col items-center">
-                          <label className="text-xs text-slate-500 mb-1">Score</label>
+                          <label className={`text-xs mb-1 ${darkMode ? 'text-slate-400' : 'text-slate-500'}`}>Score</label>
                           <input
                             type="number"
                             min="0"
@@ -338,23 +338,23 @@ export default function ExperimentSettings({ isOpen, onClose, baselines = {}, ju
 
                         {/* Label Input */}
                         <div className="flex-1">
-                          <label className="text-xs text-slate-500 mb-1 block">Label</label>
+                          <label className={`text-xs mb-1 block ${darkMode ? 'text-slate-400' : 'text-slate-500'}`}>Label</label>
                           <input
                             type="text"
                             value={example.label || ''}
                             onChange={(e) => updateExample(index, 'label', e.target.value)}
                             placeholder="e.g., 'Good email with minor issues'"
-                            className="w-full px-3 py-1.5 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                            className={`w-full px-3 py-1.5 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500 ${darkMode ? 'bg-slate-600 border-slate-500 text-slate-200 placeholder:text-slate-400' : 'border-slate-200'}`}
                           />
                         </div>
 
                         {/* Content Type Selector */}
                         <div>
-                          <label className="text-xs text-slate-500 mb-1 block">Type</label>
+                          <label className={`text-xs mb-1 block ${darkMode ? 'text-slate-400' : 'text-slate-500'}`}>Type</label>
                           <select
                             value={example.contentType || defaultContentType}
                             onChange={(e) => updateExample(index, 'contentType', e.target.value)}
-                            className="px-2 py-1.5 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                            className={`px-2 py-1.5 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500 ${darkMode ? 'bg-slate-600 border-slate-500 text-slate-200' : 'border-slate-200'}`}
                           >
                             {allowedContentTypes.map(type => (
                               <option key={type} value={type}>
@@ -367,7 +367,7 @@ export default function ExperimentSettings({ isOpen, onClose, baselines = {}, ju
                         {/* Delete Button */}
                         <button
                           onClick={() => deleteExample(index)}
-                          className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors mt-4"
+                          className={`p-2 rounded-lg transition-colors mt-4 ${darkMode ? 'text-slate-500 hover:text-red-400 hover:bg-red-900/30' : 'text-slate-400 hover:text-red-500 hover:bg-red-50'}`}
                         >
                           <Trash2 size={16} />
                         </button>
@@ -376,7 +376,7 @@ export default function ExperimentSettings({ isOpen, onClose, baselines = {}, ju
                       {/* Content Area - varies by type */}
                       <div>
                         <div className="flex items-center justify-between mb-1">
-                          <label className="text-xs text-slate-500 flex items-center gap-1">
+                          <label className={`text-xs flex items-center gap-1 ${darkMode ? 'text-slate-400' : 'text-slate-500'}`}>
                             <ContentIcon size={12} />
                             Example Content
                           </label>
@@ -400,11 +400,11 @@ export default function ExperimentSettings({ isOpen, onClose, baselines = {}, ju
 
                         {/* Show file info if uploaded */}
                         {example.fileUrl ? (
-                          <div className="flex items-center gap-3 p-3 bg-slate-50 rounded-lg border border-slate-200">
-                            <ContentIcon size={24} className="text-slate-400" />
+                          <div className={`flex items-center gap-3 p-3 rounded-lg border ${darkMode ? 'bg-slate-600 border-slate-500' : 'bg-slate-50 border-slate-200'}`}>
+                            <ContentIcon size={24} className={darkMode ? 'text-slate-400' : 'text-slate-400'} />
                             <div className="flex-1">
-                              <div className="text-sm font-medium text-slate-700">{example.fileName}</div>
-                              <div className="text-xs text-slate-500">
+                              <div className={`text-sm font-medium ${darkMode ? 'text-slate-200' : 'text-slate-700'}`}>{example.fileName}</div>
+                              <div className={`text-xs ${darkMode ? 'text-slate-400' : 'text-slate-500'}`}>
                                 {example.contentType === 'pdf' ? 'PDF Document' : 'Image'} • Uploaded
                               </div>
                             </div>
@@ -429,7 +429,7 @@ export default function ExperimentSettings({ isOpen, onClose, baselines = {}, ju
                                 : 'Paste an example output that represents this score level...'
                             }
                             rows={4}
-                            className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm font-mono focus:outline-none focus:ring-2 focus:ring-cyan-500 resize-none"
+                            className={`w-full px-3 py-2 border rounded-lg text-sm font-mono focus:outline-none focus:ring-2 focus:ring-cyan-500 resize-none ${darkMode ? 'bg-slate-600 border-slate-500 text-slate-200 placeholder:text-slate-400' : 'border-slate-200'}`}
                           />
                         )}
 
@@ -451,24 +451,24 @@ export default function ExperimentSettings({ isOpen, onClose, baselines = {}, ju
 
           {/* Judge Options Panel */}
           {activeSection === 'options' && (
-            <div className="flex-1 p-6 overflow-y-auto">
+            <div className={`flex-1 p-6 overflow-y-auto ${darkMode ? 'bg-slate-800' : ''}`}>
               <div className="mb-6">
-                <h3 className="text-lg font-semibold text-slate-800">Advanced Judge Options</h3>
-                <p className="text-sm text-slate-500">
+                <h3 className={`text-lg font-semibold ${darkMode ? 'text-slate-200' : 'text-slate-800'}`}>Advanced Judge Options</h3>
+                <p className={`text-sm ${darkMode ? 'text-slate-400' : 'text-slate-500'}`}>
                   Configure how the AI judge evaluates outputs.
                 </p>
               </div>
 
               <div className="space-y-6">
                 {/* Dual Judge Committee */}
-                <div className="border border-slate-200 rounded-xl p-4 bg-white">
+                <div className={`border rounded-xl p-4 ${darkMode ? 'border-slate-600 bg-slate-700' : 'border-slate-200 bg-white'}`}>
                   <div className="flex items-start gap-4">
-                    <div className="p-2 bg-purple-50 rounded-lg">
+                    <div className={`p-2 rounded-lg ${darkMode ? 'bg-purple-900/30' : 'bg-purple-50'}`}>
                       <Users size={20} className="text-purple-600" />
                     </div>
                     <div className="flex-1">
                       <div className="flex items-center justify-between">
-                        <h4 className="font-medium text-slate-800">Dual-Judge Committee</h4>
+                        <h4 className={`font-medium ${darkMode ? 'text-slate-200' : 'text-slate-800'}`}>Dual-Judge Committee</h4>
                         <button
                           onClick={() => updateJudgeOption('dualJudge', !localJudgeOptions.dualJudge)}
                           className={`relative w-12 h-6 rounded-full transition-colors ${
@@ -480,16 +480,16 @@ export default function ExperimentSettings({ isOpen, onClose, baselines = {}, ju
                           }`} />
                         </button>
                       </div>
-                      <p className="text-sm text-slate-500 mt-1">
+                      <p className={`text-sm mt-1 ${darkMode ? 'text-slate-400' : 'text-slate-500'}`}>
                         Use two independent judges with different perspectives and average their scores.
                       </p>
-                      <div className="mt-3 text-xs text-slate-400 space-y-1">
+                      <div className={`mt-3 text-xs space-y-1 ${darkMode ? 'text-slate-500' : 'text-slate-400'}`}>
                         <div className="flex items-center gap-2">
-                          <span className="font-medium text-slate-600">Judge A (Strict):</span>
+                          <span className={`font-medium ${darkMode ? 'text-slate-400' : 'text-slate-600'}`}>Judge A (Strict):</span>
                           <span>Focuses on accuracy, completeness, and technical correctness</span>
                         </div>
                         <div className="flex items-center gap-2">
-                          <span className="font-medium text-slate-600">Judge B (Style):</span>
+                          <span className={`font-medium ${darkMode ? 'text-slate-400' : 'text-slate-600'}`}>Judge B (Style):</span>
                           <span>Focuses on readability, tone, and user experience</span>
                         </div>
                       </div>
@@ -504,14 +504,14 @@ export default function ExperimentSettings({ isOpen, onClose, baselines = {}, ju
                 </div>
 
                 {/* Rubric Enforcement Mode */}
-                <div className="border border-slate-200 rounded-xl p-4 bg-white">
+                <div className={`border rounded-xl p-4 ${darkMode ? 'border-slate-600 bg-slate-700' : 'border-slate-200 bg-white'}`}>
                   <div className="flex items-start gap-4">
-                    <div className="p-2 bg-blue-50 rounded-lg">
+                    <div className={`p-2 rounded-lg ${darkMode ? 'bg-blue-900/30' : 'bg-blue-50'}`}>
                       <Shield size={20} className="text-blue-600" />
                     </div>
                     <div className="flex-1">
-                      <h4 className="font-medium text-slate-800 mb-2">Rubric Enforcement Mode</h4>
-                      <p className="text-sm text-slate-500 mb-3">
+                      <h4 className={`font-medium mb-2 ${darkMode ? 'text-slate-200' : 'text-slate-800'}`}>Rubric Enforcement Mode</h4>
+                      <p className={`text-sm mb-3 ${darkMode ? 'text-slate-400' : 'text-slate-500'}`}>
                         Control how strictly the judge applies the scoring rubric.
                       </p>
                       <div className="space-y-2">
@@ -526,7 +526,7 @@ export default function ExperimentSettings({ isOpen, onClose, baselines = {}, ju
                             className={`w-full flex items-center gap-3 p-3 rounded-lg border transition-all text-left ${
                               localJudgeOptions.rubricEnforcement === mode.id
                                 ? 'bg-blue-50 border-blue-300 text-blue-800'
-                                : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50'
+                                : darkMode ? 'bg-slate-600 border-slate-500 text-slate-300 hover:bg-slate-500' : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50'
                             }`}
                           >
                             <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${
@@ -540,7 +540,7 @@ export default function ExperimentSettings({ isOpen, onClose, baselines = {}, ju
                             </div>
                             <div>
                               <div className="font-medium text-sm">{mode.label}</div>
-                              <div className="text-xs text-slate-500">{mode.desc}</div>
+                              <div className={`text-xs ${localJudgeOptions.rubricEnforcement === mode.id ? '' : darkMode ? 'text-slate-400' : 'text-slate-500'}`}>{mode.desc}</div>
                             </div>
                           </button>
                         ))}
@@ -554,8 +554,8 @@ export default function ExperimentSettings({ isOpen, onClose, baselines = {}, ju
         </div>
 
         {/* Footer */}
-        <div className="flex items-center justify-between p-6 border-t border-slate-200 bg-slate-50">
-          <p className="text-sm text-slate-500">
+        <div className={`flex items-center justify-between p-6 border-t ${darkMode ? 'border-slate-700 bg-slate-900' : 'border-slate-200 bg-slate-50'}`}>
+          <p className={`text-sm ${darkMode ? 'text-slate-400' : 'text-slate-500'}`}>
             {hasChanges ? (
               <span className="text-amber-600">You have unsaved changes</span>
             ) : (
@@ -565,7 +565,7 @@ export default function ExperimentSettings({ isOpen, onClose, baselines = {}, ju
           <div className="flex gap-3">
             <button
               onClick={onClose}
-              className="px-4 py-2 text-slate-600 hover:bg-slate-100 rounded-lg text-sm font-medium transition-colors"
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${darkMode ? 'text-slate-400 hover:bg-slate-700' : 'text-slate-600 hover:bg-slate-100'}`}
             >
               Cancel
             </button>
