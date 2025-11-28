@@ -6,17 +6,16 @@
 [build.environment]
   NODE_VERSION = "20"
 
-# SPA redirects - all routes go to index.html
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
-  conditions = {Role = ["admin", "visitor"]}
-
-# But not for API routes
+# API routes first (more specific)
 [[redirects]]
   from = "/api/*"
   to = "/.netlify/functions/:splat"
+  status = 200
+
+# SPA fallback - all other routes go to index.html
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
   status = 200
 
 # Headers for security
