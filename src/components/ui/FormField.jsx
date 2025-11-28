@@ -50,7 +50,7 @@ export function ButtonGroup({ options, value, onChange, size = 'md', className =
               ${sizeClasses[size]}
               rounded-md font-medium transition-colors capitalize
               ${isSelected
-                ? 'bg-indigo-600 text-white'
+                ? 'bg-[#007BFF] text-white'
                 : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
               }
             `}
