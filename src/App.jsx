@@ -960,10 +960,7 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
           setIsSavingHistory(false);
           return;
         }
-        console.error("Failed to save to history:", dbError);
-        console.error("Error code:", dbError.code);
-        console.error("Error message:", dbError.message);
-        console.error("Full error:", JSON.stringify(dbError, null, 2));
+        console.error("Failed to save to history:", dbError.code || dbError.message);
         setIsSavingHistory(false);
       });
   };
@@ -974,6 +971,7 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
     const data = versionData || item;
     setCurrentHistoryId(item.id); // Always keep the parent ID
     setInputText(data.originalText);
+    resetVersionHistory(); // Clear auto-improve version history
     setSelectedOutputType(data.outputType || 'doc');
     setSelectedTone(data.tone || 'professional');
     setSelectedFormat(data.format || 'paragraph');
