@@ -481,6 +481,7 @@ export default function App() {
   const [activeVersionHistoryId, setActiveVersionHistoryId] = useState(null);
   const [isHistoryLoading, setIsHistoryLoading] = useState(true);
   const generationRunRef = useRef(0);
+  const generationAbortRef = useRef(null);
 
   // Mode toggle: 'builder' or 'experiment'
   const [appMode, setAppMode] = useState('builder');
@@ -785,8 +786,21 @@ Generate an improved version of the prompt that addresses all the feedback point
     }
   }, [selectedFormat]);
 
+  // --- Cancel Generation ---
+  const handleCancelGeneration = () => {
+    if (generationAbortRef.current) {
+      generationAbortRef.current.abort();
+    }
+    generationRunRef.current = 0; // Invalidate current run
+    setIsGenerating(false);
+    setErrorMsg('Generation cancelled');
+  };
+
   // --- Core Logic: Prompt Construction ---
   const handleGenerate = async () => {
+    // Create new AbortController for this generation
+    generationAbortRef.current = new AbortController();
+
     const requestState = {
       originalText: inputText,
       outputType: selectedOutputType,
@@ -1417,19 +1431,24 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
                 darkMode={darkMode}
               />
 
-              {/* Action Button */}
+              {/* Action Button (clickable to cancel when generating) */}
               <button
-                onClick={handleGenerate}
-                disabled={!inputText.trim() || isGenerating}
-                className={`w-full py-4 rounded-xl text-white font-bold text-lg shadow-lg flex items-center justify-center gap-3 transition-all transform active:scale-[0.99] ${!inputText.trim()
-                  ? 'bg-slate-300 cursor-not-allowed shadow-none'
-                  : 'bg-gradient-to-r from-cyan-500 to-blue-600 hover:shadow-cyan-200 hover:shadow-xl'
-                  }`}
+                onClick={isGenerating ? handleCancelGeneration : handleGenerate}
+                disabled={!inputText.trim() && !isGenerating}
+                title={isGenerating ? 'Click to cancel' : undefined}
+                className={`w-full py-4 rounded-xl text-white font-bold text-lg shadow-lg flex items-center justify-center gap-3 transition-all transform active:scale-[0.99] ${
+                  isGenerating
+                    ? 'bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 cursor-pointer'
+                    : !inputText.trim()
+                      ? 'bg-slate-300 cursor-not-allowed shadow-none'
+                      : 'bg-gradient-to-r from-cyan-500 to-blue-600 hover:shadow-cyan-200 hover:shadow-xl'
+                }`}
               >
                 {isGenerating ? (
                   <>
                     <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                     Processing...
+                    <span className="text-sm font-normal opacity-75">(click to cancel)</span>
                   </>
                 ) : (
                   <>
