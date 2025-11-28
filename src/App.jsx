@@ -1606,6 +1606,7 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
                         quality={qualityResult} 
                         onImprove={qualityResult.improvements?.length > 0 ? handleAutoImprove : undefined}
                         isImproving={isImproving}
+                        darkMode={darkMode}
                       />
                       {/* Distinctiveness warning after improvements */}
                       {promptVersions.length > 0 && promptVersions.length < MAX_IMPROVE_ITERATIONS && (
