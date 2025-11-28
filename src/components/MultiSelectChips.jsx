@@ -7,7 +7,7 @@
  * @param {string[]} props.selected - Array of selected option IDs.
  * @param {(selected: string[]) => void} props.onChange - Callback when selection changes.
  */
-export default function MultiSelectChips({ label, options, selected, onChange }) {
+export default function MultiSelectChips({ label, options, selected, onChange, darkMode = false }) {
   const toggle = (id) => {
     if (selected.includes(id)) {
       onChange(selected.filter(s => s !== id));
@@ -27,7 +27,7 @@ export default function MultiSelectChips({ label, options, selected, onChange })
   return (
     <div className="space-y-2">
       <div className="flex items-center justify-between">
-        <span className="text-sm font-medium text-slate-700">{label}</span>
+        <span className={`text-sm font-medium ${darkMode ? 'text-slate-300' : 'text-slate-700'}`}>{label}</span>
         <div className="flex gap-2 text-xs">
           <button
             type="button"
@@ -36,11 +36,11 @@ export default function MultiSelectChips({ label, options, selected, onChange })
           >
             All
           </button>
-          <span className="text-slate-300">|</span>
+          <span className={darkMode ? 'text-slate-600' : 'text-slate-300'}>|</span>
           <button
             type="button"
             onClick={clearAll}
-            className="text-slate-500 hover:text-slate-700 transition-colors"
+            className={`transition-colors ${darkMode ? 'text-slate-400 hover:text-slate-300' : 'text-slate-500 hover:text-slate-700'}`}
           >
             Clear
           </button>
@@ -58,7 +58,7 @@ export default function MultiSelectChips({ label, options, selected, onChange })
                 px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-200 border
                 ${isSelected
                   ? 'bg-cyan-50 border-cyan-500 text-cyan-700 shadow-sm ring-1 ring-cyan-200'
-                  : 'bg-white border-slate-200 text-slate-500 hover:bg-slate-50 hover:border-slate-300'
+                  : darkMode ? 'bg-slate-700 border-slate-600 text-slate-400 hover:bg-slate-600 hover:border-slate-500' : 'bg-white border-slate-200 text-slate-500 hover:bg-slate-50 hover:border-slate-300'
                 }
               `}
             >
@@ -67,7 +67,7 @@ export default function MultiSelectChips({ label, options, selected, onChange })
           );
         })}
       </div>
-      <div className="text-xs text-slate-400">
+      <div className={`text-xs ${darkMode ? 'text-slate-500' : 'text-slate-400'}`}>
         {selected.length} of {options.length} selected
       </div>
     </div>

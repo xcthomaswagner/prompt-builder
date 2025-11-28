@@ -11,7 +11,7 @@ import { getModelsByProvider } from '../lib/llmService';
  * @param {boolean} [props.disabled] - Whether the selector is disabled
  * @param {string} [props.className] - Additional CSS classes
  */
-export default function ModelSelector({ label, value, onChange, disabled = false, className = '' }) {
+export default function ModelSelector({ label, value, onChange, disabled = false, className = '', darkMode = false }) {
   const modelsByProvider = getModelsByProvider();
   const providerLabels = {
     google: 'Google',
@@ -21,7 +21,7 @@ export default function ModelSelector({ label, value, onChange, disabled = false
 
   return (
     <div className={`space-y-2 ${className}`}>
-      <label className="text-xs font-bold text-slate-500 uppercase tracking-wide">
+      <label className={`text-xs font-bold uppercase tracking-wide ${darkMode ? 'text-slate-400' : 'text-slate-500'}`}>
         {label}
       </label>
       <div className="relative">
@@ -29,7 +29,7 @@ export default function ModelSelector({ label, value, onChange, disabled = false
           value={value}
           onChange={(e) => onChange(e.target.value)}
           disabled={disabled}
-          className="w-full appearance-none bg-slate-50 border border-slate-200 text-sm text-slate-700 py-2.5 px-3 pr-8 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed"
+          className={`w-full appearance-none border text-sm py-2.5 px-3 pr-8 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed ${darkMode ? 'bg-slate-700 border-slate-600 text-slate-200' : 'bg-slate-50 border-slate-200 text-slate-700'}`}
         >
           {Object.entries(modelsByProvider).map(([provider, models]) => (
             <optgroup key={provider} label={providerLabels[provider] || provider}>
@@ -41,7 +41,7 @@ export default function ModelSelector({ label, value, onChange, disabled = false
             </optgroup>
           ))}
         </select>
-        <ChevronDown className="absolute right-3 top-3 w-4 h-4 text-slate-400 pointer-events-none" />
+        <ChevronDown className={`absolute right-3 top-3 w-4 h-4 pointer-events-none ${darkMode ? 'text-slate-500' : 'text-slate-400'}`} />
       </div>
     </div>
   );

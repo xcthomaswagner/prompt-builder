@@ -17,13 +17,13 @@ const DIMENSION_LABELS = [
  * @param {Object} props
  * @param {Array<{ config: { tone: string, length: string, format: string }, blueprintResult: string, status?: string, error?: string }>} props.results
  */
-export default function ResultsGrid({ results }) {
+export default function ResultsGrid({ results, darkMode = false }) {
   const [expandedRows, setExpandedRows] = useState(new Set());
   const [copiedId, setCopiedId] = useState(null);
 
   if (!results || results.length === 0) {
     return (
-      <div className="text-center py-12 text-slate-400">
+      <div className={`text-center py-12 ${darkMode ? 'text-slate-500' : 'text-slate-400'}`}>
         No results yet. Configure your matrix and run an experiment.
       </div>
     );
@@ -109,16 +109,16 @@ export default function ResultsGrid({ results }) {
     const score = ai.composite || ai.score;
     if (!score) return null;
     return (
-      <span className="text-xs text-slate-400 font-medium">
+      <span className={`text-xs font-medium ${darkMode ? 'text-slate-500' : 'text-slate-400'}`}>
         {score}/10
       </span>
     );
   };
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6 space-y-4">
+    <div className={`rounded-xl shadow-sm border p-6 space-y-4 ${darkMode ? 'bg-slate-800 border-slate-700' : 'bg-white border-slate-200'}`}>
       <div className="flex items-center justify-between">
-        <h3 className="text-sm font-semibold text-slate-700">
+        <h3 className={`text-sm font-semibold ${darkMode ? 'text-slate-200' : 'text-slate-700'}`}>
           Results ({results.length})
         </h3>
         <div className="flex items-center gap-3">
@@ -150,11 +150,11 @@ export default function ResultsGrid({ results }) {
             >
               Expand All
             </button>
-            <span className="text-slate-300">|</span>
+            <span className={darkMode ? 'text-slate-600' : 'text-slate-300'}>|</span>
             <button
               type="button"
               onClick={collapseAll}
-              className="text-slate-500 hover:text-slate-700 transition-colors"
+              className={`transition-colors ${darkMode ? 'text-slate-400 hover:text-slate-300' : 'text-slate-500 hover:text-slate-700'}`}
             >
               Collapse All
             </button>
@@ -170,17 +170,17 @@ export default function ResultsGrid({ results }) {
           return (
             <div
               key={index}
-              className="bg-slate-50 border border-slate-100 rounded-lg overflow-hidden"
+              className={`rounded-lg overflow-hidden ${darkMode ? 'bg-slate-700 border border-slate-600' : 'bg-slate-50 border border-slate-100'}`}
             >
               {/* Header Row */}
               <button
                 type="button"
                 onClick={() => toggleRow(index)}
-                className="w-full flex items-center justify-between p-3 hover:bg-slate-100 transition-colors text-left"
+                className={`w-full flex items-center justify-between p-3 transition-colors text-left ${darkMode ? 'hover:bg-slate-600' : 'hover:bg-slate-100'}`}
               >
                 <div className="flex items-center gap-2">
                   {renderStatusIndicator(result)}
-                  <span className="text-sm font-medium text-slate-700">
+                  <span className={`text-sm font-medium ${darkMode ? 'text-slate-200' : 'text-slate-700'}`}>
                     {configLabel}
                   </span>
                 </div>
@@ -204,16 +204,16 @@ export default function ResultsGrid({ results }) {
                     </button>
                   )}
                   {isExpanded ? (
-                    <ChevronUp size={18} className="text-slate-400" />
+                    <ChevronUp size={18} className={darkMode ? 'text-slate-500' : 'text-slate-400'} />
                   ) : (
-                    <ChevronDown size={18} className="text-slate-400" />
+                    <ChevronDown size={18} className={darkMode ? 'text-slate-500' : 'text-slate-400'} />
                   )}
                 </div>
               </button>
 
               {/* Expanded Content */}
               {isExpanded && (
-                <div className="border-t border-slate-200 p-4 bg-white space-y-4">
+                <div className={`border-t p-4 space-y-4 ${darkMode ? 'border-slate-600 bg-slate-800' : 'border-slate-200 bg-white'}`}>
                   {result.error ? (
                     <div className="text-sm text-red-600 bg-red-50 p-3 rounded border border-red-100">
                       Error: {result.error}
@@ -223,8 +223,8 @@ export default function ResultsGrid({ results }) {
                       {/* Blueprint */}
                       {result.blueprintResult && (
                         <div>
-                          <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Blueprint</h4>
-                          <pre className="text-sm text-slate-700 whitespace-pre-wrap font-mono bg-slate-50 p-4 rounded-lg max-h-64 overflow-auto border border-slate-100">
+                          <h4 className={`text-xs font-bold uppercase tracking-wide mb-2 ${darkMode ? 'text-slate-400' : 'text-slate-500'}`}>Blueprint</h4>
+                          <pre className={`text-sm whitespace-pre-wrap font-mono p-4 rounded-lg max-h-64 overflow-auto border ${darkMode ? 'text-slate-300 bg-slate-700 border-slate-600' : 'text-slate-700 bg-slate-50 border-slate-100'}`}>
                             {result.blueprintResult}
                           </pre>
                         </div>
@@ -233,13 +233,13 @@ export default function ResultsGrid({ results }) {
                       {/* Execution Result */}
                       {result.executionResult && (
                         <div>
-                          <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">
+                          <h4 className={`text-xs font-bold uppercase tracking-wide mb-2 ${darkMode ? 'text-slate-400' : 'text-slate-500'}`}>
                             Execution Result
                             {result.executionModelId && (
-                              <span className="ml-2 font-normal text-slate-400">({result.executionModelId})</span>
+                              <span className={`ml-2 font-normal ${darkMode ? 'text-slate-500' : 'text-slate-400'}`}>({result.executionModelId})</span>
                             )}
                           </h4>
-                          <pre className="text-sm text-slate-700 whitespace-pre-wrap font-mono bg-blue-50 p-4 rounded-lg max-h-64 overflow-auto border border-blue-100">
+                          <pre className={`text-sm whitespace-pre-wrap font-mono p-4 rounded-lg max-h-64 overflow-auto border ${darkMode ? 'text-slate-300 bg-blue-900/30 border-blue-800' : 'text-slate-700 bg-blue-50 border-blue-100'}`}>
                             {result.executionResult}
                           </pre>
                         </div>
@@ -248,13 +248,13 @@ export default function ResultsGrid({ results }) {
                       {/* AI Evaluation */}
                       {result.evaluation?.ai && (
                         <div>
-                          <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">
+                          <h4 className={`text-xs font-bold uppercase tracking-wide mb-2 ${darkMode ? 'text-slate-400' : 'text-slate-500'}`}>
                             AI Evaluation
                             {result.judgeModelId && (
-                              <span className="ml-2 font-normal text-slate-400">({result.judgeModelId})</span>
+                              <span className={`ml-2 font-normal ${darkMode ? 'text-slate-500' : 'text-slate-400'}`}>({result.judgeModelId})</span>
                             )}
                           </h4>
-                          <div className="p-4 bg-purple-50 rounded-lg border border-purple-100 space-y-3">
+                          <div className={`p-4 rounded-lg border space-y-3 ${darkMode ? 'bg-purple-900/30 border-purple-800' : 'bg-purple-50 border-purple-100'}`}>
                             {/* Composite Score + Summary */}
                             <div className="flex items-start gap-4">
                               <div className="flex flex-col items-center">
@@ -314,7 +314,7 @@ export default function ResultsGrid({ results }) {
                       )}
 
                       {!result.blueprintResult && (
-                        <div className="text-sm text-slate-400 italic">
+                        <div className={`text-sm italic ${darkMode ? 'text-slate-500' : 'text-slate-400'}`}>
                           Waiting for result...
                         </div>
                       )}

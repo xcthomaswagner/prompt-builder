@@ -29,7 +29,7 @@ import {
  * @param {Object} [props.firebaseApp] - Firebase app instance (for storage uploads)
  * @param {Function} [props.onHistoryChange] - Callback with history state for parent rendering
  */
-export default function ExperimentMode({ callLLM, defaultOutputType = 'doc', db, user, apiKeys = {}, firebaseApp, onHistoryChange }) {
+export default function ExperimentMode({ callLLM, defaultOutputType = 'doc', db, user, apiKeys = {}, firebaseApp, onHistoryChange, darkMode = false }) {
   // Form state
   const [originalPrompt, setOriginalPrompt] = useState('');
   const [outputType, setOutputType] = useState(defaultOutputType);
@@ -323,8 +323,8 @@ export default function ExperimentMode({ callLLM, defaultOutputType = 'doc', db,
           <div className="flex items-center gap-3">
             <Beaker className="text-cyan-500" size={28} />
             <div>
-              <h2 className="text-xl font-bold text-slate-800">Experiment Mode</h2>
-              <p className="text-sm text-slate-500">
+              <h2 className={`text-xl font-bold ${darkMode ? 'text-slate-200' : 'text-slate-800'}`}>Experiment Mode</h2>
+              <p className={`text-sm ${darkMode ? 'text-slate-400' : 'text-slate-500'}`}>
                 Test prompt variations across multiple settings
               </p>
             </div>
@@ -335,7 +335,7 @@ export default function ExperimentMode({ callLLM, defaultOutputType = 'doc', db,
               <button
                 type="button"
                 onClick={() => setShowSettings(true)}
-                className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium bg-slate-100 text-slate-600 hover:bg-slate-200 transition-all"
+                className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all ${darkMode ? 'bg-slate-700 text-slate-300 hover:bg-slate-600' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}
                 title="Experiment Settings"
               >
                 <Settings2 size={16} />
@@ -345,20 +345,20 @@ export default function ExperimentMode({ callLLM, defaultOutputType = 'doc', db,
         </div>
 
       {/* Original Prompt Input */}
-        <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6 transition-all focus-within:ring-2 focus-within:ring-cyan-100 focus-within:border-cyan-400">
-          <label className="text-sm font-semibold text-slate-700 mb-3 block">Your Original Prompt</label>
+        <div className={`rounded-xl shadow-sm border p-6 transition-all focus-within:ring-2 focus-within:ring-cyan-100 focus-within:border-cyan-400 ${darkMode ? 'bg-slate-800 border-slate-700' : 'bg-white border-slate-200'}`}>
+          <label className={`text-sm font-semibold mb-3 block ${darkMode ? 'text-slate-300' : 'text-slate-700'}`}>Your Original Prompt</label>
           <textarea
             value={originalPrompt}
             onChange={(e) => setOriginalPrompt(e.target.value)}
             placeholder="e.g., Make me a deck about Andrej Karpathy software 3.0"
-            className="w-full h-32 resize-none outline-none text-sm text-slate-700 placeholder:text-slate-300"
+            className={`w-full h-32 resize-none outline-none text-sm bg-transparent ${darkMode ? 'text-slate-200 placeholder:text-slate-500' : 'text-slate-700 placeholder:text-slate-300'}`}
             disabled={isRunning}
           />
         </div>
 
       {/* Output Type Selector */}
         <div>
-          <label className="text-sm font-semibold text-slate-700 mb-3 block">Output Type</label>
+          <label className={`text-sm font-semibold mb-3 block ${darkMode ? 'text-slate-300' : 'text-slate-700'}`}>Output Type</label>
           <div className="grid grid-cols-3 md:grid-cols-6 gap-3">
             {OUTPUT_TYPE_OPTIONS.map(opt => {
               const Icon = opt.icon;
@@ -371,7 +371,7 @@ export default function ExperimentMode({ callLLM, defaultOutputType = 'doc', db,
                   className={`flex flex-col items-center justify-center p-3 min-h-[60px] rounded-lg border transition-all duration-200 ${
                     outputType === opt.id
                       ? 'bg-cyan-50 border-cyan-500 text-cyan-700 shadow-sm ring-1 ring-cyan-200'
-                      : 'bg-white border-slate-200 text-slate-500 hover:bg-slate-50 hover:border-slate-300'
+                      : darkMode ? 'bg-slate-700 border-slate-600 text-slate-400 hover:bg-slate-600 hover:border-slate-500' : 'bg-white border-slate-200 text-slate-500 hover:bg-slate-50 hover:border-slate-300'
                   } ${isRunning ? 'opacity-50 cursor-not-allowed' : ''}`}
                 >
                   <Icon size={20} className="mb-1" />
@@ -386,20 +386,21 @@ export default function ExperimentMode({ callLLM, defaultOutputType = 'doc', db,
         <MatrixSelector
           value={matrixConfig}
           onChange={setMatrixConfig}
+          darkMode={darkMode}
         />
 
         {/* Advanced Settings (Model Selection) */}
-        <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+        <div className={`rounded-xl shadow-sm border overflow-hidden ${darkMode ? 'bg-slate-800 border-slate-700' : 'bg-white border-slate-200'}`}>
           <button
             type="button"
             onClick={() => setShowAdvanced(!showAdvanced)}
-            className="w-full flex items-center justify-between p-4 bg-slate-50 hover:bg-slate-100 transition-colors"
+            className={`w-full flex items-center justify-between p-4 transition-colors ${darkMode ? 'bg-slate-700 hover:bg-slate-600' : 'bg-slate-50 hover:bg-slate-100'}`}
           >
-            <div className="flex items-center gap-2 text-sm font-semibold text-slate-700">
-              <Settings2 className="w-4 h-4 text-slate-500" />
+            <div className={`flex items-center gap-2 text-sm font-semibold ${darkMode ? 'text-slate-200' : 'text-slate-700'}`}>
+              <Settings2 className={`w-4 h-4 ${darkMode ? 'text-slate-400' : 'text-slate-500'}`} />
               Advanced Configuration
             </div>
-            {showAdvanced ? <ChevronUp className="w-4 h-4 text-slate-400" /> : <ChevronDown className="w-4 h-4 text-slate-400" />}
+            {showAdvanced ? <ChevronUp className={`w-4 h-4 ${darkMode ? 'text-slate-500' : 'text-slate-400'}`} /> : <ChevronDown className={`w-4 h-4 ${darkMode ? 'text-slate-500' : 'text-slate-400'}`} />}
           </button>
 
           {showAdvanced && (
@@ -411,19 +412,20 @@ export default function ExperimentMode({ callLLM, defaultOutputType = 'doc', db,
                   value={executionModel}
                   onChange={setExecutionModel}
                   disabled={isRunning}
+                  darkMode={darkMode}
                 />
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
-                    <label className="text-xs font-bold text-slate-500 uppercase tracking-wide">
+                    <label className={`text-xs font-bold uppercase tracking-wide ${darkMode ? 'text-slate-400' : 'text-slate-500'}`}>
                       Judge Model
                     </label>
-                    <label className="flex items-center gap-2 text-xs text-slate-500 cursor-pointer">
+                    <label className={`flex items-center gap-2 text-xs cursor-pointer ${darkMode ? 'text-slate-400' : 'text-slate-500'}`}>
                       <input
                         type="checkbox"
                         checked={enableJudge}
                         onChange={(e) => setEnableJudge(e.target.checked)}
                         disabled={isRunning}
-                        className="rounded border-slate-300 bg-white text-cyan-500 focus:ring-cyan-500"
+                        className={`rounded text-cyan-500 focus:ring-cyan-500 ${darkMode ? 'border-slate-500 bg-slate-600' : 'border-slate-300 bg-white'}`}
                       />
                       Enable AI Judge
                     </label>
@@ -434,39 +436,40 @@ export default function ExperimentMode({ callLLM, defaultOutputType = 'doc', db,
                     onChange={setJudgeModel}
                     disabled={isRunning || !enableJudge}
                     className={!enableJudge ? 'opacity-50' : ''}
+                    darkMode={darkMode}
                   />
                 </div>
               </div>
 
               {/* Toggles */}
-              <div className="flex flex-wrap gap-6 pt-4 border-t border-slate-100">
-                <label className="flex items-center gap-2 text-sm text-slate-600 cursor-pointer">
+              <div className={`flex flex-wrap gap-6 pt-4 border-t ${darkMode ? 'border-slate-600' : 'border-slate-100'}`}>
+                <label className={`flex items-center gap-2 text-sm cursor-pointer ${darkMode ? 'text-slate-300' : 'text-slate-600'}`}>
                   <input
                     type="checkbox"
                     checked={toggles.allowPlaceholders}
                     onChange={(e) => setToggles(prev => ({ ...prev, allowPlaceholders: e.target.checked }))}
                     disabled={isRunning}
-                    className="rounded border-slate-300 bg-white text-cyan-500 focus:ring-cyan-500"
+                    className={`rounded text-cyan-500 focus:ring-cyan-500 ${darkMode ? 'border-slate-500 bg-slate-600' : 'border-slate-300 bg-white'}`}
                   />
                   Allow Placeholders
                 </label>
-                <label className="flex items-center gap-2 text-sm text-slate-600 cursor-pointer">
+                <label className={`flex items-center gap-2 text-sm cursor-pointer ${darkMode ? 'text-slate-300' : 'text-slate-600'}`}>
                   <input
                     type="checkbox"
                     checked={toggles.stripMeta}
                     onChange={(e) => setToggles(prev => ({ ...prev, stripMeta: e.target.checked }))}
                     disabled={isRunning}
-                    className="rounded border-slate-300 bg-white text-cyan-500 focus:ring-cyan-500"
+                    className={`rounded text-cyan-500 focus:ring-cyan-500 ${darkMode ? 'border-slate-500 bg-slate-600' : 'border-slate-300 bg-white'}`}
                   />
                   Strip Meta Commentary
                 </label>
-                <label className="flex items-center gap-2 text-sm text-slate-600 cursor-pointer">
+                <label className={`flex items-center gap-2 text-sm cursor-pointer ${darkMode ? 'text-slate-300' : 'text-slate-600'}`}>
                   <input
                     type="checkbox"
                     checked={toggles.aestheticMode}
                     onChange={(e) => setToggles(prev => ({ ...prev, aestheticMode: e.target.checked }))}
                     disabled={isRunning}
-                    className="rounded border-slate-300 bg-white text-cyan-500 focus:ring-cyan-500"
+                    className={`rounded text-cyan-500 focus:ring-cyan-500 ${darkMode ? 'border-slate-500 bg-slate-600' : 'border-slate-300 bg-white'}`}
                   />
                   Aesthetic Mode
                 </label>
@@ -502,10 +505,10 @@ export default function ExperimentMode({ callLLM, defaultOutputType = 'doc', db,
         {isRunning && (
           <div className="space-y-1">
             <div className="flex justify-between items-center text-xs">
-              <span className="text-slate-500 font-medium">Progress</span>
-              <span className="text-slate-400">{progress.completed} / {progress.total}</span>
+              <span className={`font-medium ${darkMode ? 'text-slate-400' : 'text-slate-500'}`}>Progress</span>
+              <span className={darkMode ? 'text-slate-500' : 'text-slate-400'}>{progress.completed} / {progress.total}</span>
             </div>
-            <div className="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden">
+            <div className={`h-1.5 w-full rounded-full overflow-hidden ${darkMode ? 'bg-slate-700' : 'bg-slate-100'}`}>
               <div
                 className="h-full rounded-full transition-all duration-300 bg-cyan-400"
                 style={{ width: `${progress.total > 0 ? (progress.completed / progress.total) * 100 : 0}%` }}
@@ -524,7 +527,7 @@ export default function ExperimentMode({ callLLM, defaultOutputType = 'doc', db,
 
       {/* Results Grid */}
       {results.length > 0 && (
-        <ResultsGrid results={results} />
+        <ResultsGrid results={results} darkMode={darkMode} />
       )}
 
       {/* Settings Modal */}
@@ -536,6 +539,7 @@ export default function ExperimentMode({ callLLM, defaultOutputType = 'doc', db,
         onSave={handleSaveSettings}
         firebaseApp={firebaseApp}
         userId={user?.uid}
+        darkMode={darkMode}
       />
     </div>
   );

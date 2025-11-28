@@ -34,7 +34,7 @@ const DEFAULT_FORMATS = [
  * @param {(config: { tones: string[], lengths: string[], formats: string[] }) => void} props.onChange
  * @param {{ tones?: Array, lengths?: Array, formats?: Array }} [props.options] - Override default options.
  */
-export default function MatrixSelector({ value, onChange, options = {} }) {
+export default function MatrixSelector({ value, onChange, options = {}, darkMode = false }) {
   const toneOptions = options.tones || DEFAULT_TONES;
   const lengthOptions = options.lengths || DEFAULT_LENGTHS;
   const formatOptions = options.formats || DEFAULT_FORMATS;
@@ -54,10 +54,10 @@ export default function MatrixSelector({ value, onChange, options = {} }) {
   const totalCombos = (value.tones?.length || 0) * (value.lengths?.length || 0) * (value.formats?.length || 0);
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6 space-y-4">
+    <div className={`rounded-xl shadow-sm border p-6 space-y-4 ${darkMode ? 'bg-slate-800 border-slate-700' : 'bg-white border-slate-200'}`}>
       <div className="flex items-center justify-between">
-        <h3 className="text-sm font-semibold text-slate-700">Matrix Configuration</h3>
-        <span className="text-sm text-slate-500">
+        <h3 className={`text-sm font-semibold ${darkMode ? 'text-slate-200' : 'text-slate-700'}`}>Matrix Configuration</h3>
+        <span className={`text-sm ${darkMode ? 'text-slate-400' : 'text-slate-500'}`}>
           {totalCombos} combination{totalCombos !== 1 ? 's' : ''}
         </span>
       </div>
@@ -67,6 +67,7 @@ export default function MatrixSelector({ value, onChange, options = {} }) {
         options={toneOptions}
         selected={value.tones || []}
         onChange={handleTonesChange}
+        darkMode={darkMode}
       />
 
       <MultiSelectChips
@@ -74,6 +75,7 @@ export default function MatrixSelector({ value, onChange, options = {} }) {
         options={lengthOptions}
         selected={value.lengths || []}
         onChange={handleLengthsChange}
+        darkMode={darkMode}
       />
 
       <MultiSelectChips
@@ -81,6 +83,7 @@ export default function MatrixSelector({ value, onChange, options = {} }) {
         options={formatOptions}
         selected={value.formats || []}
         onChange={handleFormatsChange}
+        darkMode={darkMode}
       />
 
       {totalCombos > 20 && (
