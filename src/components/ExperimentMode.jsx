@@ -497,41 +497,31 @@ export default function ExperimentMode({ callLLM, defaultOutputType = 'doc', db,
           )}
         </div>
 
-      {/* Run / Cancel Buttons */}
-        <div className="flex gap-3">
+      {/* Run / Cancel Button */}
+        {isRunning ? (
+          <button
+            type="button"
+            onClick={handleCancelExperiment}
+            className="w-full py-4 rounded-xl bg-slate-500 hover:bg-slate-600 text-white font-bold text-lg shadow-lg flex items-center justify-center gap-3 transition-all transform active:scale-[0.99]"
+          >
+            <XCircle className="w-5 h-5" />
+            Cancel ({progress.completed}/{progress.total} completed)
+          </button>
+        ) : (
           <button
             type="button"
             onClick={handleRunExperiment}
             disabled={!canRun}
-            className={`flex-1 py-4 rounded-xl text-white font-bold text-lg shadow-lg flex items-center justify-center gap-3 transition-all transform active:scale-[0.99] ${
+            className={`w-full py-4 rounded-xl text-white font-bold text-lg shadow-lg flex items-center justify-center gap-3 transition-all transform active:scale-[0.99] ${
               !canRun
                 ? 'bg-slate-300 cursor-not-allowed shadow-none'
                 : 'bg-gradient-to-r from-cyan-500 to-blue-600 hover:shadow-cyan-200 hover:shadow-xl'
             }`}
           >
-            {isRunning ? (
-              <>
-                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                Running {progress.completed}/{progress.total}...
-              </>
-            ) : (
-              <>
-                <Zap className="w-5 h-5 text-yellow-300 fill-current" />
-                Run Experiment ({totalCombos} combination{totalCombos !== 1 ? 's' : ''})
-              </>
-            )}
+            <Zap className="w-5 h-5 text-yellow-300 fill-current" />
+            Run Experiment ({totalCombos} combination{totalCombos !== 1 ? 's' : ''})
           </button>
-          {isRunning && (
-            <button
-              type="button"
-              onClick={handleCancelExperiment}
-              className="px-6 py-4 rounded-xl bg-red-500 hover:bg-red-600 text-white font-bold text-lg shadow-lg flex items-center justify-center gap-2 transition-all transform active:scale-[0.99]"
-            >
-              <XCircle className="w-5 h-5" />
-              Cancel
-            </button>
-          )}
-        </div>
+        )}
 
         {isRunning && (
           <div className="space-y-1">
