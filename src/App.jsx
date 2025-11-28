@@ -1195,7 +1195,7 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
                   onClick={() => setShowTemplates(!showTemplates)}
                   className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${showTemplates
                     ? 'bg-indigo-100 text-indigo-700'
-                    : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50'
+                    : darkMode ? 'bg-slate-700 border border-slate-600 text-slate-300 hover:bg-slate-600' : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50'
                     }`}
                 >
                   <Lightbulb className="w-4 h-4" />
