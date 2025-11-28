@@ -579,7 +579,6 @@ export default function App() {
   useEffect(() => {
     if (!user || !db) return;
     setIsHistoryLoading(true);
-    console.log("Setting up history listener for user:", user.uid);
 
     // REMOVED orderBy to avoid index issues. Sorting client-side instead.
     const q = query(
@@ -587,7 +586,6 @@ export default function App() {
     );
 
     const unsubscribe = onSnapshot(q, (snapshot) => {
-      console.log("History snapshot received. Size:", snapshot.size);
       const items = snapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data()
@@ -605,7 +603,6 @@ export default function App() {
         return getMillis(b) - getMillis(a);
       });
 
-      console.log("History items sorted:", items.length);
       setPromptHistory(items);
       setIsHistoryLoading(false);
     }, (error) => {
