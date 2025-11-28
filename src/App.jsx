@@ -1045,12 +1045,12 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
             </div>
 
             {/* Sign-in Card */}
-            <div className="bg-white rounded-2xl shadow-xl border border-slate-200 p-8">
-              <h2 className="text-xl font-bold text-slate-800 mb-2 text-center">Sign in to continue</h2>
-              <p className="text-sm text-slate-500 mb-6 text-center">Choose your preferred authentication method</p>
+            <div className={`rounded-2xl shadow-xl border p-8 ${darkMode ? 'bg-slate-800 border-slate-700' : 'bg-white border-slate-200'}`}>
+              <h2 className={`text-xl font-bold mb-2 text-center ${darkMode ? 'text-slate-100' : 'text-slate-800'}`}>Sign in to continue</h2>
+              <p className={`text-sm mb-6 text-center ${darkMode ? 'text-slate-400' : 'text-slate-500'}`}>Choose your preferred authentication method</p>
 
               {errorMsg && (
-                <div className="mb-4 p-3 bg-red-50 text-red-600 rounded-lg text-sm border border-red-100 flex items-center gap-2">
+                <div className={`mb-4 p-3 rounded-lg text-sm border flex items-center gap-2 ${darkMode ? 'bg-red-900/30 text-red-400 border-red-800' : 'bg-red-50 text-red-600 border-red-100'}`}>
                   <AlertCircle className="w-4 h-4" />
                   {errorMsg}
                 </div>
@@ -1060,7 +1060,7 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
                 {/* Google Sign-in */}
                 <button
                   onClick={handleGoogleSignIn}
-                  className="w-full flex items-center justify-center gap-3 px-6 py-3 bg-white border-2 border-slate-200 rounded-lg font-semibold text-slate-700 hover:bg-slate-50 hover:border-slate-300 transition-all shadow-sm hover:shadow-md"
+                  className={`w-full flex items-center justify-center gap-3 px-6 py-3 border-2 rounded-lg font-semibold transition-all shadow-sm hover:shadow-md ${darkMode ? 'bg-slate-700 border-slate-600 text-slate-200 hover:bg-slate-600 hover:border-slate-500' : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50 hover:border-slate-300'}`}
                 >
                   <svg className="w-5 h-5" viewBox="0 0 24 24">
                     <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
@@ -1074,7 +1074,7 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
                 {/* Microsoft Sign-in */}
                 <button
                   onClick={handleMicrosoftSignIn}
-                  className="w-full flex items-center justify-center gap-3 px-6 py-3 bg-white border-2 border-slate-200 rounded-lg font-semibold text-slate-700 hover:bg-slate-50 hover:border-slate-300 transition-all shadow-sm hover:shadow-md"
+                  className={`w-full flex items-center justify-center gap-3 px-6 py-3 border-2 rounded-lg font-semibold transition-all shadow-sm hover:shadow-md ${darkMode ? 'bg-slate-700 border-slate-600 text-slate-200 hover:bg-slate-600 hover:border-slate-500' : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50 hover:border-slate-300'}`}
                 >
                   <svg className="w-5 h-5" viewBox="0 0 23 23">
                     <path fill="#f3f3f3" d="M0 0h23v23H0z" />
@@ -1087,7 +1087,7 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
                 </button>
               </div>
 
-              <p className="text-xs text-slate-400 text-center mt-6">
+              <p className={`text-xs text-center mt-6 ${darkMode ? 'text-slate-500' : 'text-slate-400'}`}>
                 By signing in, you agree to our Terms of Service and Privacy Policy
               </p>
             </div>
@@ -2036,18 +2036,18 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
       {
         showSettings && (
           <div className="absolute inset-0 z-50 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4">
-            <div className="bg-white w-full max-w-md rounded-2xl shadow-2xl flex flex-col overflow-hidden">
+            <div className={`w-full max-w-md rounded-2xl shadow-2xl flex flex-col overflow-hidden ${darkMode ? 'bg-slate-800' : 'bg-white'}`}>
               {/* Header */}
-              <div className="p-6 border-b border-slate-100 flex items-center justify-between">
+              <div className={`p-6 border-b flex items-center justify-between ${darkMode ? 'border-slate-700' : 'border-slate-100'}`}>
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-indigo-100 rounded-full flex items-center justify-center">
-                    <Settings2 className="w-5 h-5 text-indigo-600" />
+                  <div className={`w-10 h-10 rounded-full flex items-center justify-center ${darkMode ? 'bg-indigo-900/50' : 'bg-indigo-100'}`}>
+                    <Settings2 className={`w-5 h-5 ${darkMode ? 'text-indigo-400' : 'text-indigo-600'}`} />
                   </div>
-                  <h2 className="text-xl font-bold text-slate-800">Settings</h2>
+                  <h2 className={`text-xl font-bold ${darkMode ? 'text-slate-100' : 'text-slate-800'}`}>Settings</h2>
                 </div>
                 <button
                   onClick={() => setShowSettings(false)}
-                  className="text-slate-400 hover:text-slate-600 transition-colors"
+                  className={`transition-colors ${darkMode ? 'text-slate-500 hover:text-slate-300' : 'text-slate-400 hover:text-slate-600'}`}
                 >
                   <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -2059,13 +2059,13 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
               <div className="p-6 space-y-6 max-h-[70vh] overflow-y-auto">
                 {/* AI Provider Selection */}
                 <div className="space-y-3">
-                  <label className="text-sm font-bold text-slate-700">AI Provider</label>
+                  <label className={`text-sm font-bold ${darkMode ? 'text-slate-300' : 'text-slate-700'}`}>AI Provider</label>
                   <div className="grid grid-cols-3 gap-2">
                     <button
                       onClick={() => setSelectedProvider('chatgpt')}
                       className={`p-3 rounded-lg border-2 transition-all ${selectedProvider === 'chatgpt'
                         ? 'border-green-500 bg-green-50 text-green-700'
-                        : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300'
+                        : darkMode ? 'border-slate-600 bg-slate-700 text-slate-300 hover:border-slate-500' : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300'
                         }`}
                     >
                       <div className="text-xs font-semibold text-left leading-tight">OpenAI GPT-5.1</div>
@@ -2074,7 +2074,7 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
                       onClick={() => setSelectedProvider('claude')}
                       className={`p-3 rounded-lg border-2 transition-all ${selectedProvider === 'claude'
                         ? 'border-purple-500 bg-purple-50 text-purple-700'
-                        : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300'
+                        : darkMode ? 'border-slate-600 bg-slate-700 text-slate-300 hover:border-slate-500' : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300'
                         }`}
                     >
                       <div className="text-xs font-semibold">Claude</div>
@@ -2083,7 +2083,7 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
                       onClick={() => setSelectedProvider('gemini')}
                       className={`p-3 rounded-lg border-2 transition-all ${selectedProvider === 'gemini'
                         ? 'border-blue-500 bg-blue-50 text-blue-700'
-                        : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300'
+                        : darkMode ? 'border-slate-600 bg-slate-700 text-slate-300 hover:border-slate-500' : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300'
                         }`}
                     >
                       <div className="text-xs font-semibold">Gemini</div>
@@ -2093,55 +2093,55 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
 
                 {/* API Keys */}
                 <div className="space-y-4">
-                  <h3 className="text-sm font-bold text-slate-700">API Keys</h3>
+                  <h3 className={`text-sm font-bold ${darkMode ? 'text-slate-300' : 'text-slate-700'}`}>API Keys</h3>
 
                   {/* OpenAI API Key */}
                   <div className="space-y-2">
-                    <label className="text-xs font-medium text-slate-600">OpenAI API Key</label>
+                    <label className={`text-xs font-medium ${darkMode ? 'text-slate-400' : 'text-slate-600'}`}>OpenAI API Key</label>
                     <input
                       type="password"
                       value={chatgptApiKey}
                       onChange={(e) => setChatgptApiKey(e.target.value)}
                       placeholder="sk-..."
-                      className="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                      className={`w-full px-3 py-2 text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent ${darkMode ? 'bg-slate-700 border-slate-600 text-slate-200 placeholder:text-slate-500' : 'border-slate-200'}`}
                     />
                   </div>
 
                   {/* Claude API Key */}
                   <div className="space-y-2">
-                    <label className="text-xs font-medium text-slate-600">Claude API Key</label>
+                    <label className={`text-xs font-medium ${darkMode ? 'text-slate-400' : 'text-slate-600'}`}>Claude API Key</label>
                     <input
                       type="password"
                       value={claudeApiKey}
                       onChange={(e) => setClaudeApiKey(e.target.value)}
                       placeholder="sk-ant-..."
-                      className="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                      className={`w-full px-3 py-2 text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent ${darkMode ? 'bg-slate-700 border-slate-600 text-slate-200 placeholder:text-slate-500' : 'border-slate-200'}`}
                     />
                   </div>
 
                   {/* Gemini API Key */}
                   <div className="space-y-2">
-                    <label className="text-xs font-medium text-slate-600">Gemini API Key</label>
+                    <label className={`text-xs font-medium ${darkMode ? 'text-slate-400' : 'text-slate-600'}`}>Gemini API Key</label>
                     <input
                       type="password"
                       value={geminiApiKey}
                       onChange={(e) => setGeminiApiKey(e.target.value)}
                       placeholder="AIza..."
-                      className="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className={`w-full px-3 py-2 text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${darkMode ? 'bg-slate-700 border-slate-600 text-slate-200 placeholder:text-slate-500' : 'border-slate-200'}`}
                     />
                   </div>
                 </div>
 
                 {/* Info */}
-                <div className="p-3 bg-blue-50 rounded-lg border border-blue-100">
-                  <p className="text-xs text-blue-700">
+                <div className={`p-3 rounded-lg border ${darkMode ? 'bg-blue-900/30 border-blue-800' : 'bg-blue-50 border-blue-100'}`}>
+                  <p className={`text-xs ${darkMode ? 'text-blue-300' : 'text-blue-700'}`}>
                     <strong>Note:</strong> API keys are stored locally in your browser and never sent to our servers.
                   </p>
                 </div>
               </div>
 
               {/* Footer */}
-              <div className="p-4 border-t border-slate-100 flex justify-end">
+              <div className={`p-4 border-t flex justify-end ${darkMode ? 'border-slate-700' : 'border-slate-100'}`}>
                 <button
                   onClick={() => setShowSettings(false)}
                   className="px-6 py-2 bg-indigo-600 text-white font-bold rounded-lg hover:bg-indigo-700 shadow-md hover:shadow-lg transition-all"
@@ -2162,6 +2162,7 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
           onSubmit={handleOutcomeSubmit}
           onDismiss={() => setShowOutcomeFeedback(false)}
           isOpen={showOutcomeFeedback}
+          darkMode={darkMode}
         />
       )}
 
