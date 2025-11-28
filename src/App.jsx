@@ -1558,7 +1558,7 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
                             <ChevronDown className={`w-4 h-4 transition-transform ${formatDropdownOpen ? 'rotate-180' : ''} ${darkMode ? 'text-slate-500' : 'text-slate-400'}`} />
                           </button>
                           {formatDropdownOpen && (
-                            <div className={`absolute z-20 top-full left-0 right-0 mt-1 rounded-lg border shadow-lg overflow-hidden max-h-64 overflow-y-auto ${darkMode ? 'bg-slate-800 border-slate-600' : 'bg-white border-slate-200'}`}>
+                            <div className={`absolute z-20 top-full left-0 right-0 mt-1 rounded-lg border shadow-lg overflow-hidden ${darkMode ? 'bg-slate-800 border-slate-600' : 'bg-white border-slate-200'}`}>
                               {FORMATS.map(f => {
                                 const Icon = f.icon;
                                 const isSelected = f.id === selectedFormat;
