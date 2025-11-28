@@ -860,12 +860,20 @@ Generate an improved version of the prompt that addresses all the feedback point
     // Create new AbortController for this generation
     generationAbortRef.current = new AbortController();
 
+    const currentSpec = promptSpec || createSpec(selectedOutputType);
     const requestState = {
       originalText: inputText,
       outputType: selectedOutputType,
       tone: selectedTone,
       format: selectedFormat,
-      length: selectedLength
+      length: selectedLength,
+      notes: notes,
+      toggles: {
+        allowPlaceholders,
+        stripMeta,
+        aestheticMode
+      },
+      typeSpecific: currentSpec.typeSpecific || {}
     };
     const historySnapshot = promptHistory;
     const historyIdSnapshot = currentHistoryId;
@@ -884,7 +892,7 @@ Generate an improved version of the prompt that addresses all the feedback point
     let generationFailed = false;
 
     try {
-      const currentSpec = promptSpec || createSpec(selectedOutputType);
+      // currentSpec already defined above in requestState
       const toneObj = TONES.find(t => t.id === selectedTone);
       const typeObj = OUTPUT_TYPES.find(t => t.id === selectedOutputType);
       const formatObj = FORMATS.find(f => f.id === selectedFormat);
@@ -1040,6 +1048,9 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
           tone: requestState.tone,
           format: requestState.format,
           length: requestState.length,
+          notes: requestState.notes || '',
+          toggles: requestState.toggles || {},
+          typeSpecific: requestState.typeSpecific || {},
           createdAt: new Date().toISOString(),
           isReversePrompted: isReverse,
           signature
@@ -1107,6 +1118,25 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
     setSelectedTone(data.tone || 'professional');
     setSelectedFormat(data.format || 'paragraph');
     setSelectedLength(data.length || 'medium');
+    
+    // Restore notes
+    setNotes(data.notes || '');
+    
+    // Restore toggles
+    if (data.toggles) {
+      setAllowPlaceholders(data.toggles.allowPlaceholders || false);
+      setStripMeta(data.toggles.stripMeta !== false); // Default true
+      setAestheticMode(data.toggles.aestheticMode || false);
+    }
+    
+    // Restore typeSpecific via promptSpec
+    if (data.typeSpecific && Object.keys(data.typeSpecific).length > 0) {
+      const spec = createSpec(data.outputType || 'doc');
+      setPromptSpec(mergeSpec(spec, { typeSpecific: data.typeSpecific }));
+    } else {
+      setPromptSpec(null);
+    }
+    
     // Load the generated prompt result
     if (data.finalPrompt) {
       setGeneratedResult(data.finalPrompt);
