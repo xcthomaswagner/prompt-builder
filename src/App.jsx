@@ -31,7 +31,11 @@ import {
   Smile,
   Coffee,
   Building,
-  GraduationCap
+  GraduationCap,
+  List,
+  ListOrdered,
+  Mail,
+  Table
 } from 'lucide-react';
 import { initializeApp } from "firebase/app";
 import {
@@ -425,15 +429,15 @@ const OUTPUT_TYPES = [
 ];
 
 const FORMATS = [
-  { id: 'paragraph', label: 'Paragraph', prompt: 'Flowing, cohesive narrative' },
-  { id: 'bullets', label: 'Bullet Points', prompt: 'Concise bulleted list' },
-  { id: 'numbered', label: 'Numbered List', prompt: 'Sequential numbered list' },
-  { id: 'steps', label: 'Step-by-Step', prompt: 'Clear, actionable steps' },
-  { id: 'sections', label: 'Structured Sections', prompt: 'Clear, hierarchical sections with headings' },
-  { id: 'json', label: 'JSON', prompt: 'Valid, parseable JSON object', isSafeJson: true },
-  { id: 'email', label: 'Email', prompt: 'Professional email format' },
-  { id: 'table', label: 'Table', prompt: 'Structured table with headers' },
-  { id: 'qa', label: 'Q&A', prompt: 'Question and Answer session' }
+  { id: 'paragraph', label: 'Paragraph', prompt: 'Flowing, cohesive narrative', icon: FileText },
+  { id: 'bullets', label: 'Bullet Points', prompt: 'Concise bulleted list', icon: List },
+  { id: 'numbered', label: 'Numbered List', prompt: 'Sequential numbered list', icon: ListOrdered },
+  { id: 'steps', label: 'Step-by-Step', prompt: 'Clear, actionable steps', icon: FileText },
+  { id: 'sections', label: 'Structured Sections', prompt: 'Clear, hierarchical sections with headings', icon: FileText },
+  { id: 'json', label: 'JSON', prompt: 'Valid, parseable JSON object', isSafeJson: true, icon: Code },
+  { id: 'email', label: 'Email', prompt: 'Professional email format', icon: Mail },
+  { id: 'table', label: 'Table', prompt: 'Structured table with headers', icon: Table },
+  { id: 'qa', label: 'Q&A', prompt: 'Question and Answer session', icon: MessageSquare }
 ];
 
 const LENGTHS = [
@@ -454,6 +458,7 @@ export default function App() {
   const [toneDropdownOpen, setToneDropdownOpen] = useState(false);
   const [selectedLength, setSelectedLength] = useState('medium');
   const [selectedFormat, setSelectedFormat] = useState('paragraph');
+  const [formatDropdownOpen, setFormatDropdownOpen] = useState(false);
   const [notes, setNotes] = useState('');
 
   // Toggles
@@ -1534,14 +1539,52 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
                       <div className="space-y-2">
                         <label className={`text-xs font-bold uppercase tracking-wide ${darkMode ? 'text-slate-400' : 'text-slate-500'}`}>Format</label>
                         <div className="relative">
-                          <select
-                            value={selectedFormat}
-                            onChange={(e) => setSelectedFormat(e.target.value)}
-                            className={`w-full appearance-none border text-sm py-2.5 px-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent ${darkMode ? 'bg-slate-700 border-slate-600 text-slate-200' : 'bg-slate-50 border-slate-200 text-slate-700'}`}
+                          <button
+                            type="button"
+                            onClick={() => setFormatDropdownOpen(!formatDropdownOpen)}
+                            onBlur={() => setTimeout(() => setFormatDropdownOpen(false), 150)}
+                            className={`w-full flex items-center gap-2 border text-sm py-2.5 px-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent ${darkMode ? 'bg-slate-700 border-slate-600 text-slate-200' : 'bg-slate-50 border-slate-200 text-slate-700'}`}
                           >
-                            {FORMATS.map(f => <option key={f.id} value={f.id}>{f.label}</option>)}
-                          </select>
-                          <ChevronDown className={`absolute right-3 top-3 w-4 h-4 pointer-events-none ${darkMode ? 'text-slate-500' : 'text-slate-400'}`} />
+                            {(() => {
+                              const currentFormat = FORMATS.find(f => f.id === selectedFormat);
+                              const Icon = currentFormat?.icon;
+                              return (
+                                <>
+                                  {Icon && <Icon className={`w-4 h-4 ${darkMode ? 'text-slate-400' : 'text-slate-500'}`} />}
+                                  <span className="flex-1 text-left">{currentFormat?.label}</span>
+                                </>
+                              );
+                            })()}
+                            <ChevronDown className={`w-4 h-4 transition-transform ${formatDropdownOpen ? 'rotate-180' : ''} ${darkMode ? 'text-slate-500' : 'text-slate-400'}`} />
+                          </button>
+                          {formatDropdownOpen && (
+                            <div className={`absolute z-20 top-full left-0 right-0 mt-1 rounded-lg border shadow-lg overflow-hidden max-h-64 overflow-y-auto ${darkMode ? 'bg-slate-800 border-slate-600' : 'bg-white border-slate-200'}`}>
+                              {FORMATS.map(f => {
+                                const Icon = f.icon;
+                                const isSelected = f.id === selectedFormat;
+                                return (
+                                  <button
+                                    key={f.id}
+                                    type="button"
+                                    onClick={() => {
+                                      setSelectedFormat(f.id);
+                                      setFormatDropdownOpen(false);
+                                    }}
+                                    className={`w-full flex items-center gap-2 px-3 py-2.5 text-sm text-left transition-colors ${
+                                      isSelected 
+                                        ? 'bg-cyan-50 text-cyan-700' 
+                                        : darkMode 
+                                          ? 'text-slate-200 hover:bg-cyan-900/30' 
+                                          : 'text-slate-700 hover:bg-cyan-50'
+                                    }`}
+                                  >
+                                    <Icon className={`w-4 h-4 ${isSelected ? 'text-cyan-600' : darkMode ? 'text-slate-400' : 'text-slate-500'}`} />
+                                    {f.label}
+                                  </button>
+                                );
+                              })}
+                            </div>
+                          )}
                         </div>
                       </div>
                     </div>
