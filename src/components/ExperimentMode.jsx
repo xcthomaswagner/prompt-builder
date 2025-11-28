@@ -497,31 +497,33 @@ export default function ExperimentMode({ callLLM, defaultOutputType = 'doc', db,
           )}
         </div>
 
-      {/* Run / Cancel Button */}
-        {isRunning ? (
-          <button
-            type="button"
-            onClick={handleCancelExperiment}
-            className="w-full py-4 rounded-xl bg-slate-500 hover:bg-slate-600 text-white font-bold text-lg shadow-lg flex items-center justify-center gap-3 transition-all transform active:scale-[0.99]"
-          >
-            <XCircle className="w-5 h-5" />
-            Cancel ({progress.completed}/{progress.total} completed)
-          </button>
-        ) : (
-          <button
-            type="button"
-            onClick={handleRunExperiment}
-            disabled={!canRun}
-            className={`w-full py-4 rounded-xl text-white font-bold text-lg shadow-lg flex items-center justify-center gap-3 transition-all transform active:scale-[0.99] ${
-              !canRun
+      {/* Run Button (clickable to cancel when running) */}
+        <button
+          type="button"
+          onClick={isRunning ? handleCancelExperiment : handleRunExperiment}
+          disabled={!canRun && !isRunning}
+          title={isRunning ? 'Click to cancel' : undefined}
+          className={`w-full py-4 rounded-xl text-white font-bold text-lg shadow-lg flex items-center justify-center gap-3 transition-all transform active:scale-[0.99] ${
+            isRunning
+              ? 'bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 cursor-pointer'
+              : !canRun
                 ? 'bg-slate-300 cursor-not-allowed shadow-none'
                 : 'bg-gradient-to-r from-cyan-500 to-blue-600 hover:shadow-cyan-200 hover:shadow-xl'
-            }`}
-          >
-            <Zap className="w-5 h-5 text-yellow-300 fill-current" />
-            Run Experiment ({totalCombos} combination{totalCombos !== 1 ? 's' : ''})
-          </button>
-        )}
+          }`}
+        >
+          {isRunning ? (
+            <>
+              <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+              Running {progress.completed}/{progress.total}...
+              <span className="text-sm font-normal opacity-75">(click to cancel)</span>
+            </>
+          ) : (
+            <>
+              <Zap className="w-5 h-5 text-yellow-300 fill-current" />
+              Run Experiment ({totalCombos} combination{totalCombos !== 1 ? 's' : ''})
+            </>
+          )}
+        </button>
 
         {isRunning && (
           <div className="space-y-1">
