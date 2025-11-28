@@ -542,8 +542,8 @@ export default function ExperimentMode({ callLLM, defaultOutputType = 'doc', db,
 
       {/* Error Display */}
       {error && (
-        <div className="flex items-center gap-2 p-4 bg-red-50 border border-red-200 rounded-lg text-red-600">
-          <AlertCircle size={20} />
+        <div className="flex items-center gap-1.5 text-xs text-red-500">
+          <AlertCircle size={14} />
           <span>{error}</span>
         </div>
       )}
