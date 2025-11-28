@@ -26,8 +26,9 @@ const forms = {
  * @param {string} props.outputType - The output type (deck, code, doc, etc.)
  * @param {Object} props.spec - The current prompt spec
  * @param {Function} props.onChange - Callback when spec changes: (field, value) => void
+ * @param {boolean} props.darkMode - Dark mode enabled
  */
-export default function TypeSpecificForm({ outputType, spec, onChange }) {
+export default function TypeSpecificForm({ outputType, spec, onChange, darkMode = false }) {
   const FormComponent = forms[outputType];
   
   if (!FormComponent) {
@@ -35,7 +36,7 @@ export default function TypeSpecificForm({ outputType, spec, onChange }) {
   }
   
   // Forms handle their own styling (accordion wrapper)
-  return <FormComponent spec={spec} onChange={onChange} />;
+  return <FormComponent spec={spec} onChange={onChange} darkMode={darkMode} />;
 }
 
 /**

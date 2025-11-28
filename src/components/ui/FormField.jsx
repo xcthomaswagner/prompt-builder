@@ -5,17 +5,17 @@
 /**
  * Form field wrapper with label
  */
-export function FormField({ label, hint, error, children, className = '' }) {
+export function FormField({ label, hint, error, children, className = '', darkMode = false }) {
   return (
     <div className={`space-y-1 ${className}`}>
       {label && (
-        <label className="block text-sm font-medium text-slate-700">
+        <label className={`block text-sm font-medium ${darkMode ? 'text-slate-300' : 'text-slate-700'}`}>
           {label}
         </label>
       )}
       {children}
       {hint && !error && (
-        <p className="text-xs text-slate-500">{hint}</p>
+        <p className={`text-xs ${darkMode ? 'text-slate-400' : 'text-slate-500'}`}>{hint}</p>
       )}
       {error && (
         <p className="text-xs text-red-500">{error}</p>
@@ -27,7 +27,7 @@ export function FormField({ label, hint, error, children, className = '' }) {
 /**
  * Button group for single-select options
  */
-export function ButtonGroup({ options, value, onChange, size = 'md', className = '' }) {
+export function ButtonGroup({ options, value, onChange, size = 'md', className = '', darkMode = false }) {
   const sizeClasses = {
     sm: 'px-2 py-1 text-xs',
     md: 'px-3 py-1.5 text-sm',
@@ -51,7 +51,7 @@ export function ButtonGroup({ options, value, onChange, size = 'md', className =
               rounded-md font-medium transition-all capitalize border
               ${isSelected
                 ? 'bg-cyan-50 border-cyan-500 text-cyan-700 shadow-sm ring-1 ring-cyan-200'
-                : 'bg-white border-slate-200 text-slate-500 hover:bg-slate-50 hover:border-slate-300'
+                : darkMode ? 'bg-slate-600 border-slate-500 text-slate-300 hover:bg-slate-500 hover:border-slate-400' : 'bg-white border-slate-200 text-slate-500 hover:bg-slate-50 hover:border-slate-300'
               }
             `}
           >
@@ -66,7 +66,7 @@ export function ButtonGroup({ options, value, onChange, size = 'md', className =
 /**
  * Checkbox with label - styled to match Output Type buttons
  */
-export function Checkbox({ label, checked, onChange, disabled = false, className = '' }) {
+export function Checkbox({ label, checked, onChange, disabled = false, className = '', darkMode = false }) {
   const handleClick = () => {
     if (!disabled) {
       onChange(!checked);
@@ -83,7 +83,7 @@ export function Checkbox({ label, checked, onChange, disabled = false, className
           w-5 h-5 rounded border-2 flex items-center justify-center transition-all flex-shrink-0
           ${checked
             ? 'bg-cyan-50 border-cyan-500'
-            : 'bg-white border-slate-300 hover:border-slate-400'
+            : darkMode ? 'bg-slate-600 border-slate-500 hover:border-slate-400' : 'bg-white border-slate-300 hover:border-slate-400'
           }
         `}
       >
@@ -93,7 +93,7 @@ export function Checkbox({ label, checked, onChange, disabled = false, className
           </svg>
         )}
       </div>
-      <span className="text-sm text-slate-700 select-none">{label}</span>
+      <span className={`text-sm select-none ${darkMode ? 'text-slate-300' : 'text-slate-700'}`}>{label}</span>
     </div>
   );
 }
@@ -125,15 +125,15 @@ export function NumberInput({ value, onChange, min, max, placeholder, className 
 /**
  * Select dropdown
  */
-export function Select({ value, onChange, options, placeholder, className = '' }) {
+export function Select({ value, onChange, options, placeholder, className = '', darkMode = false }) {
   return (
     <select
       value={value ?? ''}
       onChange={(e) => onChange(e.target.value || null)}
       className={`
-        w-full px-3 py-2 rounded-lg border border-slate-300
-        focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500
-        text-sm ${className}
+        w-full px-3 py-2 rounded-lg border
+        focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500
+        text-sm ${darkMode ? 'bg-slate-600 border-slate-500 text-slate-200' : 'bg-white border-slate-300 text-slate-700'} ${className}
       `}
     >
       {placeholder && <option value="">{placeholder}</option>}
@@ -172,7 +172,7 @@ export function TextInput({ value, onChange, placeholder, className = '' }) {
 /**
  * Multi-select with checkboxes
  */
-export function MultiSelect({ options, value = [], onChange, className = '' }) {
+export function MultiSelect({ options, value = [], onChange, className = '', darkMode = false }) {
   const toggleOption = (optionValue) => {
     if (value.includes(optionValue)) {
       onChange(value.filter(v => v !== optionValue));
@@ -192,6 +192,7 @@ export function MultiSelect({ options, value = [], onChange, className = '' }) {
             label={optionLabel}
             checked={value.includes(optionValue)}
             onChange={() => toggleOption(optionValue)}
+            darkMode={darkMode}
           />
         );
       })}
