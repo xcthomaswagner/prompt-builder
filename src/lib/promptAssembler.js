@@ -1,4 +1,5 @@
 import PROMPT_SPECS from './promptSpecs';
+import { analyzePrompt, mergeWithInferred, generateInferenceReport, inferOutputType } from './promptAnalyzer';
 
 const getValueByPath = (obj, path) => {
   if (!path) return undefined;
@@ -20,8 +21,10 @@ const evaluateCondition = (condition, context) => {
   const value = getValueByPath(context, condition.field);
   const operator = condition.operator || 'truthy';
   switch (operator) {
+    case '==':
     case 'equals':
       return value === condition.value;
+    case '!=':
     case 'notEquals':
       return value !== condition.value;
     case 'in':
@@ -97,13 +100,32 @@ export const buildPromptPlan = ({
   typeSpecific // Type-specific fields from the form (e.g., copy_type, emotional_appeal)
 }, specRegistry = PROMPT_SPECS) => {
   const registry = specRegistry && Object.keys(specRegistry).length ? specRegistry : PROMPT_SPECS;
-  const spec = registry[specId] || registry.default || PROMPT_SPECS[specId] || PROMPT_SPECS.default;
+  
+  // Analyze the prompt text to infer types
+  const promptText = userInput?.trim() || '';
+  const { inferred, confidence } = analyzePrompt(promptText);
+  
+  // Infer output type if not explicitly set (or set to default 'doc')
+  const { outputType: inferredOutputType, source: outputTypeSource } = inferOutputType(promptText, specId);
+  const effectiveSpecId = outputTypeSource === 'inferred' ? inferredOutputType : specId;
+  
+  const spec = registry[effectiveSpecId] || registry.default || PROMPT_SPECS[effectiveSpecId] || PROMPT_SPECS.default;
   if (!spec) {
-    throw new Error(`No prompt spec found for ${specId}`);
+    throw new Error(`No prompt spec found for ${effectiveSpecId}`);
   }
 
+  // Merge explicit typeSpecific selections with inferred values
+  // Explicit selections always win
+  const { values: mergedTypeSpecific, sources: typeSpecificSources } = mergeWithInferred(
+    typeSpecific || {},
+    inferred
+  );
+
+  // Generate inference report for transparency
+  const inferenceReport = generateInferenceReport(typeSpecificSources, confidence);
+
   const context = {
-    userInput: userInput?.trim() || '',
+    userInput: promptText,
     notes: notes?.trim() || '',
     tone: tone || {},
     output: outputType || {},
@@ -117,20 +139,41 @@ export const buildPromptPlan = ({
       stripMetaLabel: boolLabel(toggles?.stripMeta),
       aestheticModeLabel: boolLabel(toggles?.aestheticMode)
     },
-    typeSpecific: typeSpecific || {}, // Make typeSpecific available to templates
-    spec: expandMetadataLists(spec.metadata || {})
+    // Use merged typeSpecific (explicit + inferred)
+    typeSpecific: mergedTypeSpecific,
+    typeSpecificSources, // Track what was inferred vs explicit
+    spec: expandMetadataLists(spec.metadata || {}),
+    inference: {
+      outputType: inferredOutputType,
+      outputTypeSource,
+      report: inferenceReport,
+      confidence
+    }
   };
 
   const system = buildBlocks(spec.systemSteps || [], context);
   const user = buildBlocks(spec.userSteps || [], context);
 
+  // Append inference note to system prompt if anything was auto-detected
+  let systemPromptWithInference = system.text;
+  if (inferenceReport && !toggles?.stripMeta) {
+    systemPromptWithInference += `\n\n${inferenceReport}`;
+  }
+
   return {
     specId: spec.id,
     specVersion: spec.version || 1,
-    systemPrompt: system.text,
+    systemPrompt: systemPromptWithInference,
     userPrompt: user.text || context.userInput,
     stepTrace: [...system.trace, ...user.trace],
-    contextSnapshot: context
+    contextSnapshot: context,
+    inference: {
+      effectiveSpecId,
+      outputTypeSource,
+      inferredTypes: inferred,
+      mergedTypeSpecific,
+      sources: typeSpecificSources
+    }
   };
 };
 
