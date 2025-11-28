@@ -483,6 +483,7 @@ export default function App() {
 
   // Auto-Improve State
   const [isImproving, setIsImproving] = useState(false);
+  const [enableQualityAssessment, setEnableQualityAssessment] = useState(true);
   const [promptVersions, setPromptVersions] = useState([]); // Array of { text, quality, timestamp }
   const [currentVersionIndex, setCurrentVersionIndex] = useState(-1);
   const MAX_IMPROVE_ITERATIONS = 3;
@@ -585,11 +586,16 @@ Generate an improved version of the prompt that addresses all the feedback point
       setGeneratedResult(improvedText.trim());
 
       // Re-run quality assessment on improved version
-      setQualityResult({ ...quickQualityCheck(improvedText.trim(), currentSpec), assessing: true });
-      const callLLM = (prompt, systemPrompt) => callGeminiText(prompt, systemPrompt, geminiApiKey);
-      assessQuality(improvedText.trim(), currentSpec, callLLM)
-        .then(newQuality => setQualityResult(newQuality))
-        .catch(() => setQualityResult(quickQualityCheck(improvedText.trim(), currentSpec)));
+      const quickCheck = quickQualityCheck(improvedText.trim(), currentSpec);
+      if (enableQualityAssessment) {
+        setQualityResult({ ...quickCheck, assessing: true });
+        const callLLM = (prompt, systemPrompt) => callGeminiText(prompt, systemPrompt, geminiApiKey);
+        assessQuality(improvedText.trim(), currentSpec, callLLM)
+          .then(newQuality => setQualityResult(newQuality))
+          .catch(() => setQualityResult(quickCheck));
+      } else {
+        setQualityResult(quickCheck);
+      }
 
     } catch (err) {
       console.error('Auto-improve failed:', err);
@@ -854,20 +860,26 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
       setReversePromptTriggered(isReverse);
       setGeneratedResult(finalPromptText);
 
-      // Run LLM-based quality assessment
+      // Run quality assessment
       const currentSpec = promptSpec || createSpec(selectedOutputType);
-      // Start with quick check while LLM assesses
-      setQualityResult({ ...quickQualityCheck(finalPromptText, currentSpec), assessing: true });
+      const quickCheck = quickQualityCheck(finalPromptText, currentSpec);
       
-      // Run full LLM assessment in background
-      const callLLM = (prompt, systemPrompt) => callGeminiText(prompt, systemPrompt, geminiApiKey);
-      assessQuality(finalPromptText, currentSpec, callLLM)
-        .then(qualityCheck => setQualityResult(qualityCheck))
-        .catch(err => {
-          console.error('Quality assessment failed:', err);
-          // Fall back to quick check on error
-          setQualityResult(quickQualityCheck(finalPromptText, currentSpec));
-        });
+      if (enableQualityAssessment) {
+        // Start with quick check while LLM assesses
+        setQualityResult({ ...quickCheck, assessing: true });
+        
+        // Run full LLM assessment in background
+        const callLLM = (prompt, systemPrompt) => callGeminiText(prompt, systemPrompt, geminiApiKey);
+        assessQuality(finalPromptText, currentSpec, callLLM)
+          .then(qualityCheck => setQualityResult(qualityCheck))
+          .catch(err => {
+            console.error('Quality assessment failed:', err);
+            setQualityResult(quickCheck);
+          });
+      } else {
+        // Just use quick heuristic check
+        setQualityResult(quickCheck);
+      }
 
       // Set reasoning from analysis if available
       if (aiData.reverse_prompting?.reasoning) {
@@ -1505,6 +1517,18 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
                           className={`w-11 h-6 rounded-full relative transition-colors ${aestheticMode ? 'bg-cyan-500' : 'bg-slate-300'}`}
                         >
                           <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-transform shadow-sm ${aestheticMode ? 'left-6' : 'left-1'}`} />
+                        </button>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <div className="flex flex-col">
+                          <span className={`text-sm ${darkMode ? 'text-slate-300' : 'text-slate-700'}`}>AI Quality Assessment</span>
+                          <span className={`text-xs ${darkMode ? 'text-slate-500' : 'text-slate-400'}`}>Uses extra API call</span>
+                        </div>
+                        <button
+                          onClick={() => setEnableQualityAssessment(!enableQualityAssessment)}
+                          className={`w-11 h-6 rounded-full relative transition-colors ${enableQualityAssessment ? 'bg-cyan-500' : 'bg-slate-300'}`}
+                        >
+                          <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-transform shadow-sm ${enableQualityAssessment ? 'left-6' : 'left-1'}`} />
                         </button>
                       </div>
                     </div>
