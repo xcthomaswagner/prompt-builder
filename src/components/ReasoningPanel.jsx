@@ -11,12 +11,12 @@ import { Lightbulb, ChevronDown, ChevronUp } from 'lucide-react';
 /**
  * Setting tag showing an inferred value
  */
-function SettingTag({ label, value }) {
+function SettingTag({ label, value, darkMode = false }) {
   if (!value) return null;
   
   return (
-    <span className="inline-flex items-center gap-1 px-2 py-1 bg-indigo-100 text-indigo-700 rounded text-xs font-medium">
-      <span className="text-indigo-400">{label}:</span>
+    <span className={`inline-flex items-center gap-1 px-2 py-1 rounded text-xs font-medium ${darkMode ? 'bg-indigo-900/30 text-indigo-300' : 'bg-indigo-100 text-indigo-700'}`}>
+      <span className={darkMode ? 'text-indigo-400' : 'text-indigo-400'}>{label}:</span>
       <span className="capitalize">{value}</span>
     </span>
   );
@@ -28,7 +28,8 @@ function SettingTag({ label, value }) {
 export default function ReasoningPanel({ 
   reasoning = {}, 
   inferredSettings = {},
-  className = '' 
+  className = '',
+  darkMode = false
 }) {
   const [expanded, setExpanded] = useState(false);
 
@@ -45,14 +46,14 @@ export default function ReasoningPanel({
   }
 
   return (
-    <div className={`bg-indigo-50 rounded-lg border border-indigo-100 ${className}`}>
+    <div className={`rounded-lg border ${darkMode ? 'bg-indigo-900/20 border-indigo-800/50' : 'bg-indigo-50 border-indigo-100'} ${className}`}>
       <button
         onClick={() => setExpanded(!expanded)}
-        className="w-full p-4 flex items-center justify-between hover:bg-indigo-100/50 transition-colors rounded-lg"
+        className={`w-full p-4 flex items-center justify-between transition-colors rounded-lg ${darkMode ? 'hover:bg-indigo-900/30' : 'hover:bg-indigo-100/50'}`}
       >
         <div className="flex items-center gap-2">
-          <Lightbulb className="w-4 h-4 text-indigo-500" />
-          <span className="text-sm font-medium text-indigo-700">
+          <Lightbulb className={`w-4 h-4 ${darkMode ? 'text-indigo-400' : 'text-indigo-500'}`} />
+          <span className={`text-sm font-medium ${darkMode ? 'text-indigo-300' : 'text-indigo-700'}`}>
             Why these settings?
           </span>
         </div>
@@ -61,16 +62,16 @@ export default function ReasoningPanel({
           {/* Show tags in collapsed view */}
           {!expanded && hasSettings && (
             <div className="hidden sm:flex gap-1">
-              <SettingTag label="Tone" value={inferredSettings.tone} />
-              <SettingTag label="Format" value={inferredSettings.format} />
-              <SettingTag label="Length" value={inferredSettings.length} />
+              <SettingTag label="Tone" value={inferredSettings.tone} darkMode={darkMode} />
+              <SettingTag label="Format" value={inferredSettings.format} darkMode={darkMode} />
+              <SettingTag label="Length" value={inferredSettings.length} darkMode={darkMode} />
             </div>
           )}
           
           {expanded ? (
-            <ChevronUp className="w-5 h-5 text-indigo-400" />
+            <ChevronUp className={`w-5 h-5 ${darkMode ? 'text-indigo-400' : 'text-indigo-400'}`} />
           ) : (
-            <ChevronDown className="w-5 h-5 text-indigo-400" />
+            <ChevronDown className={`w-5 h-5 ${darkMode ? 'text-indigo-400' : 'text-indigo-400'}`} />
           )}
         </div>
       </button>
@@ -80,9 +81,9 @@ export default function ReasoningPanel({
           {/* Inferred Settings Tags */}
           {hasSettings && (
             <div className="flex flex-wrap gap-2">
-              <SettingTag label="Tone" value={inferredSettings.tone} />
-              <SettingTag label="Format" value={inferredSettings.format} />
-              <SettingTag label="Length" value={inferredSettings.length} />
+              <SettingTag label="Tone" value={inferredSettings.tone} darkMode={darkMode} />
+              <SettingTag label="Format" value={inferredSettings.format} darkMode={darkMode} />
+              <SettingTag label="Length" value={inferredSettings.length} darkMode={darkMode} />
             </div>
           )}
 
@@ -91,17 +92,17 @@ export default function ReasoningPanel({
             <div className="space-y-3">
               {Object.entries(reasoning).map(([key, explanation]) => (
                 <div key={key} className="text-sm">
-                  <span className="font-medium text-indigo-700 capitalize">
+                  <span className={`font-medium capitalize ${darkMode ? 'text-indigo-300' : 'text-indigo-700'}`}>
                     {key.replace(/_/g, ' ')}:
                   </span>{' '}
-                  <span className="text-slate-600">{explanation}</span>
+                  <span className={darkMode ? 'text-slate-400' : 'text-slate-600'}>{explanation}</span>
                 </div>
               ))}
             </div>
           )}
 
           {/* Helpful tip */}
-          <p className="text-xs text-indigo-400 italic pt-2 border-t border-indigo-100">
+          <p className={`text-xs italic pt-2 border-t ${darkMode ? 'text-indigo-400 border-indigo-800/50' : 'text-indigo-400 border-indigo-100'}`}>
             These settings were inferred from your input. You can override them using the options above.
           </p>
         </div>

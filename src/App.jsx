@@ -1636,6 +1636,7 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
                           format: selectedFormat,
                           length: selectedLength,
                         }}
+                        darkMode={darkMode}
                       />
                     </div>
                   )}
