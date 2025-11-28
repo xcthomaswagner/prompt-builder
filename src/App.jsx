@@ -400,13 +400,20 @@ const TONES = [
 ];
 
 const OUTPUT_TYPES = [
-  { id: 'deck', label: 'Deck', icon: Layout, context: 'Slide Deck Outline (Titles, Visuals, Notes)' },
-  { id: 'doc', label: 'Doc', icon: FileText, context: 'Comprehensive Written Document' },
-  { id: 'data', label: 'Data', icon: Database, context: 'Structured Data / Tables' },
-  { id: 'code', label: 'Code', icon: Code, context: 'Production-Ready Code' },
-  { id: 'copy', label: 'Copy', icon: Copy, context: 'Marketing Copy / Creative Writing' },
-  { id: 'comms', label: 'Comms', icon: MessageSquare, context: 'Email / Communication' },
-  { id: 'json', label: 'JSON', icon: Code, context: 'Canonical Prompt Blueprint (JSON object)' }
+  { id: 'deck', label: 'Deck', icon: Layout, context: 'Slide Deck Outline (Titles, Visuals, Notes)', 
+    tooltip: { title: 'Slides, narratives, exec briefings', desc: 'Perfect for investor updates, executive briefings, and internal pitches. Creates structured slide content with clear narratives and key points.' }},
+  { id: 'doc', label: 'Doc', icon: FileText, context: 'Comprehensive Written Document',
+    tooltip: { title: 'PRDs, memos, structured writing', desc: 'Ideal for product requirements, legal memos, and strategic documents. Produces well-structured, comprehensive written content.' }},
+  { id: 'data', label: 'Data', icon: Database, context: 'Structured Data / Tables',
+    tooltip: { title: 'Excel-style analysis, tables, charts', desc: 'Great for forecasts, survey summaries, and analytical reports. Generates structured data presentations with tables and insights.' }},
+  { id: 'code', label: 'Code', icon: Code, context: 'Production-Ready Code',
+    tooltip: { title: 'Functions, scripts, technical solutions', desc: 'Build production-ready code with proper error handling, documentation, and best practices baked in.' }},
+  { id: 'copy', label: 'Copy', icon: Copy, context: 'Marketing Copy / Creative Writing',
+    tooltip: { title: 'Marketing copy, headlines, CTAs', desc: 'Craft compelling marketing content, ad copy, landing pages, and creative writing that converts.' }},
+  { id: 'comms', label: 'Comms', icon: MessageSquare, context: 'Email / Communication',
+    tooltip: { title: 'Emails, stakeholder updates, internal comms', desc: 'Ideal for status updates, customer outreach, and internal communications. Creates clear, professional messaging for all stakeholders.' }},
+  { id: 'json', label: 'JSON', icon: Code, context: 'Canonical Prompt Blueprint (JSON object)',
+    tooltip: { title: 'Structured JSON output', desc: 'Generate valid, parseable JSON objects for API responses and data structures.' }}
 ];
 
 const FORMATS = [
@@ -1345,30 +1352,40 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
               </div>
 
               {/* Output Type Selector */}
-              <div>
+              <div className="relative">
                 <label className={`text-sm font-semibold mb-3 block ${darkMode ? 'text-slate-300' : 'text-slate-700'}`}>Output Type</label>
                 <div className="grid grid-cols-3 md:grid-cols-6 gap-3">
                   {OUTPUT_TYPES.filter(type => type.id !== 'json').map((type) => {
                     const Icon = type.icon;
                     const isSelected = selectedOutputType === type.id;
                     return (
-                      <button
-                        key={type.id}
-                        onClick={() => {
-                          if (type.id !== selectedOutputType) {
-                            setSelectedOutputType(type.id);
-                            // Reset spec when output type changes to avoid stale typeSpecific data
-                            setPromptSpec(createSpec(type.id));
-                          }
-                        }}
-                        className={`flex flex-col items-center justify-center p-3 rounded-lg border transition-all duration-200 ${isSelected
-                          ? 'bg-cyan-50 border-cyan-500 text-cyan-700 shadow-sm ring-1 ring-cyan-200'
-                          : darkMode ? 'bg-slate-700 border-slate-600 text-slate-400 hover:bg-slate-600 hover:border-slate-500' : 'bg-white border-slate-200 text-slate-500 hover:bg-slate-50 hover:border-slate-300'
-                          }`}
-                      >
-                        <Icon className={`w-5 h-5 mb-2 ${isSelected ? 'text-cyan-600' : darkMode ? 'text-slate-500' : 'text-slate-400'}`} />
-                        <span className="text-xs font-medium">{type.label}</span>
-                      </button>
+                      <div key={type.id} className="relative">
+                        <button
+                          onClick={() => {
+                            if (type.id !== selectedOutputType) {
+                              setSelectedOutputType(type.id);
+                              // Reset spec when output type changes to avoid stale typeSpecific data
+                              setPromptSpec(createSpec(type.id));
+                            }
+                          }}
+                          className={`w-full flex flex-col items-center justify-center p-3 rounded-lg border transition-all duration-200 ${isSelected
+                            ? 'bg-cyan-50 border-cyan-500 text-cyan-700 shadow-sm ring-1 ring-cyan-200'
+                            : darkMode ? 'bg-slate-700 border-slate-600 text-slate-400 hover:bg-slate-600 hover:border-slate-500' : 'bg-white border-slate-200 text-slate-500 hover:bg-slate-50 hover:border-slate-300'
+                            }`}
+                        >
+                          <Icon className={`w-5 h-5 mb-2 ${isSelected ? 'text-cyan-600' : darkMode ? 'text-slate-500' : 'text-slate-400'}`} />
+                          <span className="text-xs font-medium">{type.label}</span>
+                        </button>
+                        {/* Tooltip */}
+                        {isSelected && type.tooltip && (
+                          <div className={`absolute left-1/2 -translate-x-1/2 top-full mt-2 w-64 p-4 rounded-lg shadow-xl border z-20 animate-in fade-in zoom-in-95 duration-200 ${darkMode ? 'bg-slate-700 border-slate-600' : 'bg-white border-slate-200'}`}>
+                            {/* Arrow */}
+                            <div className={`absolute -top-2 left-1/2 -translate-x-1/2 w-3 h-3 rotate-45 ${darkMode ? 'bg-slate-700 border-l border-t border-slate-600' : 'bg-white border-l border-t border-slate-200'}`} />
+                            <div className="text-cyan-600 font-semibold text-sm mb-1">{type.tooltip.title}</div>
+                            <div className={`text-xs leading-relaxed ${darkMode ? 'text-slate-400' : 'text-slate-500'}`}>{type.tooltip.desc}</div>
+                          </div>
+                        )}
+                      </div>
                     );
                   })}
                 </div>
