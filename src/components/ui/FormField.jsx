@@ -101,7 +101,7 @@ export function Checkbox({ label, checked, onChange, disabled = false, className
 /**
  * Number input with optional min/max
  */
-export function NumberInput({ value, onChange, min, max, placeholder, className = '' }) {
+export function NumberInput({ value, onChange, min, max, placeholder, className = '', darkMode = false }) {
   return (
     <input
       type="number"
@@ -114,9 +114,9 @@ export function NumberInput({ value, onChange, min, max, placeholder, className 
       max={max}
       placeholder={placeholder}
       className={`
-        w-full px-3 py-2 rounded-lg border border-slate-300
-        focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500
-        text-sm ${className}
+        w-full px-3 py-2 rounded-lg border
+        focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500
+        text-sm ${darkMode ? 'bg-slate-600 border-slate-500 text-slate-200 placeholder:text-slate-400' : 'bg-white border-slate-300'} ${className}
       `}
     />
   );
@@ -153,7 +153,7 @@ export function Select({ value, onChange, options, placeholder, className = '', 
 /**
  * Text input
  */
-export function TextInput({ value, onChange, placeholder, className = '' }) {
+export function TextInput({ value, onChange, placeholder, className = '', darkMode = false }) {
   return (
     <input
       type="text"
@@ -161,9 +161,9 @@ export function TextInput({ value, onChange, placeholder, className = '' }) {
       onChange={(e) => onChange(e.target.value || null)}
       placeholder={placeholder}
       className={`
-        w-full px-3 py-2 rounded-lg border border-slate-300
-        focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500
-        text-sm ${className}
+        w-full px-3 py-2 rounded-lg border
+        focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500
+        text-sm ${darkMode ? 'bg-slate-600 border-slate-500 text-slate-200 placeholder:text-slate-400' : 'bg-white border-slate-300'} ${className}
       `}
     />
   );

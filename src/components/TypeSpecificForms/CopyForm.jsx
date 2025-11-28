@@ -35,7 +35,7 @@ const PLATFORMS = [
   { value: 'youtube', label: 'YouTube' },
 ];
 
-export default function CopyForm({ spec, onChange }) {
+export default function CopyForm({ spec, onChange, darkMode = false }) {
   const [isExpanded, setIsExpanded] = useState(true);
   const typeSpecific = spec.typeSpecific || {};
 
@@ -52,78 +52,84 @@ export default function CopyForm({ spec, onChange }) {
     : [];
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+    <div className={`rounded-xl shadow-sm border overflow-hidden ${darkMode ? 'bg-slate-800 border-slate-700' : 'bg-white border-slate-200'}`}>
       {/* Accordion Header */}
       <button
         onClick={() => setIsExpanded(!isExpanded)}
-        className="w-full flex items-center justify-between p-4 bg-slate-50 hover:bg-slate-100 transition-colors"
+        className={`w-full flex items-center justify-between p-4 transition-colors ${darkMode ? 'bg-slate-700 hover:bg-slate-600' : 'bg-slate-50 hover:bg-slate-100'}`}
       >
-        <div className="flex items-center gap-2 text-sm font-semibold text-slate-700">
-          <Copy className="w-4 h-4 text-slate-500" />
+        <div className={`flex items-center gap-2 text-sm font-semibold ${darkMode ? 'text-slate-200' : 'text-slate-700'}`}>
+          <Copy className={`w-4 h-4 ${darkMode ? 'text-slate-400' : 'text-slate-500'}`} />
           Copy Settings
         </div>
-        {isExpanded ? <ChevronUp className="w-4 h-4 text-slate-400" /> : <ChevronDown className="w-4 h-4 text-slate-400" />}
+        {isExpanded ? <ChevronUp className={`w-4 h-4 ${darkMode ? 'text-slate-500' : 'text-slate-400'}`} /> : <ChevronDown className={`w-4 h-4 ${darkMode ? 'text-slate-500' : 'text-slate-400'}`} />}
       </button>
 
       {/* Accordion Content */}
       {isExpanded && (
         <div className="p-6 space-y-6">
           {/* Copy Type */}
-          <FormField label="Copy Type">
+          <FormField label="Copy Type" darkMode={darkMode}>
             <ButtonGroup
               options={COPY_TYPES}
               value={typeSpecific.copy_type}
               onChange={(v) => handleChange('copy_type', v)}
               size="sm"
+              darkMode={darkMode}
             />
           </FormField>
 
           {/* Platform (for social) */}
           {typeSpecific.copy_type === 'social' && (
-            <FormField label="Platform">
+            <FormField label="Platform" darkMode={darkMode}>
               <ButtonGroup
                 options={PLATFORMS}
                 value={typeSpecific.platform}
                 onChange={(v) => handleChange('platform', v)}
                 size="sm"
+                darkMode={darkMode}
               />
             </FormField>
           )}
 
           {/* Emotional Appeal */}
-          <FormField label="Emotional Appeal" hint="Primary emotional driver">
+          <FormField label="Emotional Appeal" hint="Primary emotional driver" darkMode={darkMode}>
             <ButtonGroup
               options={EMOTIONAL_APPEALS}
               value={typeSpecific.emotional_appeal || 'aspiration'}
               onChange={(v) => handleChange('emotional_appeal', v)}
               size="sm"
+              darkMode={darkMode}
             />
           </FormField>
 
           {/* CTA */}
-          <FormField label="Call to Action">
+          <FormField label="Call to Action" darkMode={darkMode}>
             {ctaSuggestions.length > 0 ? (
               <Select
                 value={typeSpecific.cta_type}
                 onChange={(v) => handleChange('cta_type', v)}
                 options={ctaSuggestions.map(c => ({ value: c, label: c }))}
                 placeholder="Select or type custom..."
+                darkMode={darkMode}
               />
             ) : (
               <TextInput
                 value={typeSpecific.cta_type}
                 onChange={(v) => handleChange('cta_type', v)}
                 placeholder="e.g., Learn More, Shop Now"
+                darkMode={darkMode}
               />
             )}
           </FormField>
 
           {/* Brand Voice */}
-          <FormField label="Brand Voice" hint="Describe the brand personality">
+          <FormField label="Brand Voice" hint="Describe the brand personality" darkMode={darkMode}>
             <TextInput
               value={typeSpecific.brand_voice}
               onChange={(v) => handleChange('brand_voice', v)}
               placeholder="e.g., friendly, professional, playful"
+              darkMode={darkMode}
             />
           </FormField>
         </div>
