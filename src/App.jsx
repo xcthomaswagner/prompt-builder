@@ -441,6 +441,7 @@ export default function App() {
   // Form State
   const [inputText, setInputText] = useState('');
   const [selectedOutputType, setSelectedOutputType] = useState('doc');
+  const [hoveredOutputType, setHoveredOutputType] = useState(null);
   const [selectedTone, setSelectedTone] = useState('professional');
   const [selectedLength, setSelectedLength] = useState('medium');
   const [selectedFormat, setSelectedFormat] = useState('paragraph');
@@ -1362,12 +1363,15 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
                       <div key={type.id} className="relative">
                         <button
                           onClick={() => {
+                            setHoveredOutputType(null);
                             if (type.id !== selectedOutputType) {
                               setSelectedOutputType(type.id);
                               // Reset spec when output type changes to avoid stale typeSpecific data
                               setPromptSpec(createSpec(type.id));
                             }
                           }}
+                          onMouseEnter={() => setHoveredOutputType(type.id)}
+                          onMouseLeave={() => setHoveredOutputType(null)}
                           className={`w-full flex flex-col items-center justify-center p-3 rounded-lg border transition-all duration-200 ${isSelected
                             ? 'bg-cyan-50 border-cyan-500 text-cyan-700 shadow-sm ring-1 ring-cyan-200'
                             : darkMode ? 'bg-slate-700 border-slate-600 text-slate-400 hover:bg-slate-600 hover:border-slate-500' : 'bg-white border-slate-200 text-slate-500 hover:bg-slate-50 hover:border-slate-300'
@@ -1377,7 +1381,7 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
                           <span className="text-xs font-medium">{type.label}</span>
                         </button>
                         {/* Tooltip */}
-                        {isSelected && type.tooltip && (
+                        {hoveredOutputType === type.id && type.tooltip && (
                           <div className={`absolute left-1/2 -translate-x-1/2 top-full mt-2 w-64 p-4 rounded-lg shadow-xl border z-20 animate-in fade-in zoom-in-95 duration-200 ${darkMode ? 'bg-slate-700 border-slate-600' : 'bg-white border-slate-200'}`}>
                             {/* Arrow */}
                             <div className={`absolute -top-2 left-1/2 -translate-x-1/2 w-3 h-3 rotate-45 ${darkMode ? 'bg-slate-700 border-l border-t border-slate-600' : 'bg-white border-l border-t border-slate-200'}`} />
