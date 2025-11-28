@@ -107,14 +107,37 @@ const estimateTokens = (text) => {
   return tokens;
 };
 
+// --- Model Lists per Provider ---
+const OPENAI_MODELS = [
+  { id: 'gpt-4.1', label: 'GPT-4.1', description: 'Flagship model' },
+  { id: 'gpt-4.1-mini', label: 'GPT-4.1 Mini', description: 'Fast & cost-effective' },
+  { id: 'gpt-4.1-nano', label: 'GPT-4.1 Nano', description: 'Fastest variant' },
+  { id: 'gpt-4o', label: 'GPT-4o', description: 'Multimodal model' },
+  { id: 'gpt-4o-mini', label: 'GPT-4o Mini', description: 'Cost-effective 4o' },
+  { id: 'o3', label: 'o3', description: 'Reasoning model' },
+];
+
+const CLAUDE_MODELS = [
+  { id: 'claude-sonnet-4-20250514', label: 'Claude Sonnet 4', description: 'Latest balanced model' },
+  { id: 'claude-3-5-sonnet-20241022', label: 'Claude 3.5 Sonnet', description: 'Balanced performance' },
+  { id: 'claude-3-5-haiku-20241022', label: 'Claude 3.5 Haiku', description: 'Fastest Claude' },
+];
+
+const GEMINI_MODELS = [
+  { id: 'gemini-2.5-flash-preview-05-20', label: 'Gemini 2.5 Flash', description: 'Latest preview model' },
+  { id: 'gemini-2.0-flash', label: 'Gemini 2.0 Flash', description: 'Fast & efficient' },
+  { id: 'gemini-1.5-pro', label: 'Gemini 1.5 Pro', description: 'Advanced reasoning' },
+  { id: 'gemini-1.5-flash', label: 'Gemini 1.5 Flash', description: 'Quick responses' },
+];
+
 // --- Gemini API Configuration ---
 const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
 const openAiEnvKey = import.meta.env.VITE_OPENAI_API_KEY;
 
-const callGemini = async (prompt, systemInstruction, apiKey) => {
+const callGemini = async (prompt, systemInstruction, apiKey, modelId = 'gemini-2.0-flash') => {
   if (!apiKey) throw new Error("Gemini API Key is missing");
 
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelId}:generateContent?key=${apiKey}`;
 
   const payload = {
     contents: [{ parts: [{ text: prompt }] }],
@@ -220,10 +243,10 @@ const callGemini = async (prompt, systemInstruction, apiKey) => {
 };
 
 // Simple text-only Gemini call for improvement requests
-const callGeminiText = async (prompt, systemInstruction, apiKeyParam) => {
+const callGeminiText = async (prompt, systemInstruction, apiKeyParam, modelId = 'gemini-2.0-flash') => {
   if (!apiKeyParam) throw new Error("Gemini API Key is missing");
 
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKeyParam}`;
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelId}:generateContent?key=${apiKeyParam}`;
 
   const payload = {
     contents: [{ parts: [{ text: prompt }] }],
@@ -247,13 +270,13 @@ const callGeminiText = async (prompt, systemInstruction, apiKeyParam) => {
   return data.candidates?.[0]?.content?.parts?.[0]?.text || '';
 };
 
-const callOpenAI = async (prompt, systemInstruction, apiKey) => {
+const callOpenAI = async (prompt, systemInstruction, apiKey, modelId = 'gpt-4.1') => {
   if (!apiKey) throw new Error("OpenAI API Key is missing");
 
   const url = "https://api.openai.com/v1/chat/completions";
 
   const payload = {
-    model: "gpt-5.1",
+    model: modelId,
     messages: [
       { role: "system", content: systemInstruction + "\n\nIMPORTANT: You must return valid JSON only." },
       { role: "user", content: prompt }
@@ -285,7 +308,7 @@ const callOpenAI = async (prompt, systemInstruction, apiKey) => {
   }
 };
 
-const callAnthropic = async (prompt, systemInstruction, apiKey) => {
+const callAnthropic = async (prompt, systemInstruction, apiKey, modelId = 'claude-3-5-sonnet-20241022') => {
   if (!apiKey) throw new Error("Claude API Key is missing");
 
   // Note: Calling Anthropic directly from browser requires a proxy or dangerously-allow-browser header
@@ -293,7 +316,7 @@ const callAnthropic = async (prompt, systemInstruction, apiKey) => {
   const url = "https://api.anthropic.com/v1/messages";
 
   const payload = {
-    model: "claude-3-5-sonnet-20241022",
+    model: modelId,
     max_tokens: 4096,
     system: systemInstruction + "\n\nIMPORTANT: You must return valid JSON only.",
     messages: [
@@ -669,13 +692,27 @@ Generate an improved version of the prompt that addresses all the feedback point
   const [claudeApiKey, setClaudeApiKey] = useState(localStorage.getItem('claudeApiKey') || '');
   const [geminiApiKey, setGeminiApiKey] = useState(localStorage.getItem('geminiApiKey') || apiKey || '');
 
+  // Selected models per provider
+  const [selectedOpenAIModel, setSelectedOpenAIModel] = useState(
+    localStorage.getItem('selectedOpenAIModel') || OPENAI_MODELS[0].id
+  );
+  const [selectedClaudeModel, setSelectedClaudeModel] = useState(
+    localStorage.getItem('selectedClaudeModel') || CLAUDE_MODELS[0].id
+  );
+  const [selectedGeminiModel, setSelectedGeminiModel] = useState(
+    localStorage.getItem('selectedGeminiModel') || GEMINI_MODELS[0].id
+  );
+
   // Save settings to localStorage
   useEffect(() => {
     localStorage.setItem('selectedProvider', selectedProvider);
     localStorage.setItem('chatgptApiKey', chatgptApiKey);
     localStorage.setItem('claudeApiKey', claudeApiKey);
     localStorage.setItem('geminiApiKey', geminiApiKey);
-  }, [selectedProvider, chatgptApiKey, claudeApiKey, geminiApiKey]);
+    localStorage.setItem('selectedOpenAIModel', selectedOpenAIModel);
+    localStorage.setItem('selectedClaudeModel', selectedClaudeModel);
+    localStorage.setItem('selectedGeminiModel', selectedGeminiModel);
+  }, [selectedProvider, chatgptApiKey, claudeApiKey, geminiApiKey, selectedOpenAIModel, selectedClaudeModel, selectedGeminiModel]);
 
   // --- History Functions ---
   const handleDeleteHistory = async (e, itemId) => {
@@ -877,14 +914,14 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
 
       let aiData;
       if (selectedProvider === 'chatgpt') {
-        if (!chatgptApiKey) throw new Error("OpenAI GPT-5.1 API Key is missing. Please add it in Settings.");
-        aiData = await callOpenAI(userPromptForModel, systemPrompt, chatgptApiKey);
+        if (!chatgptApiKey) throw new Error("OpenAI API Key is missing. Please add it in Settings.");
+        aiData = await callOpenAI(userPromptForModel, systemPrompt, chatgptApiKey, selectedOpenAIModel);
       } else if (selectedProvider === 'claude') {
         if (!claudeApiKey) throw new Error("Claude API Key is missing. Please add it in Settings.");
-        aiData = await callAnthropic(userPromptForModel, systemPrompt, claudeApiKey);
+        aiData = await callAnthropic(userPromptForModel, systemPrompt, claudeApiKey, selectedClaudeModel);
       } else {
         if (!geminiApiKey) throw new Error("Gemini API Key is missing. Please add it in Settings.");
-        aiData = await callGemini(userPromptForModel, systemPrompt, geminiApiKey);
+        aiData = await callGemini(userPromptForModel, systemPrompt, geminiApiKey, selectedGeminiModel);
       }
 
       isReverse = aiData.reverse_prompting?.was_triggered || false;
@@ -1223,16 +1260,16 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
             <div className="max-w-6xl mx-auto pb-20">
               <ExperimentMode
                 callLLM={async (userPrompt, systemPrompt) => {
-                  // Use the currently selected provider
+                  // Use the currently selected provider and model
                   if (selectedProvider === 'chatgpt') {
                     if (!chatgptApiKey) throw new Error("OpenAI API Key is missing");
-                    return callOpenAI(userPrompt, systemPrompt, chatgptApiKey);
+                    return callOpenAI(userPrompt, systemPrompt, chatgptApiKey, selectedOpenAIModel);
                   } else if (selectedProvider === 'claude') {
                     if (!claudeApiKey) throw new Error("Claude API Key is missing");
-                    return callAnthropic(userPrompt, systemPrompt, claudeApiKey);
+                    return callAnthropic(userPrompt, systemPrompt, claudeApiKey, selectedClaudeModel);
                   } else {
                     if (!geminiApiKey) throw new Error("Gemini API Key is missing");
-                    return callGemini(userPrompt, systemPrompt, geminiApiKey);
+                    return callGemini(userPrompt, systemPrompt, geminiApiKey, selectedGeminiModel);
                   }
                 }}
                 defaultOutputType={selectedOutputType}
@@ -2241,40 +2278,88 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
                 <div className="space-y-4">
                   <h3 className={`text-sm font-bold ${darkMode ? 'text-slate-300' : 'text-slate-700'}`}>API Keys</h3>
 
-                  {/* OpenAI API Key */}
-                  <div className="space-y-2">
-                    <label className={`text-xs font-medium ${darkMode ? 'text-slate-400' : 'text-slate-600'}`}>OpenAI API Key</label>
-                    <input
-                      type="password"
-                      value={chatgptApiKey}
-                      onChange={(e) => setChatgptApiKey(e.target.value)}
-                      placeholder="sk-..."
-                      className={`w-full px-3 py-2 text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent ${darkMode ? 'bg-slate-700 border-slate-600 text-slate-200 placeholder:text-slate-500' : 'border-slate-200'}`}
-                    />
+                  {/* OpenAI Settings */}
+                  <div className={`p-3 rounded-lg border ${darkMode ? 'border-slate-600 bg-slate-700/50' : 'border-green-100 bg-green-50/50'}`}>
+                    <div className="space-y-3">
+                      <div className="space-y-1.5">
+                        <label className={`text-xs font-medium ${darkMode ? 'text-slate-400' : 'text-slate-600'}`}>OpenAI API Key</label>
+                        <input
+                          type="password"
+                          value={chatgptApiKey}
+                          onChange={(e) => setChatgptApiKey(e.target.value)}
+                          placeholder="sk-..."
+                          className={`w-full px-3 py-2 text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent ${darkMode ? 'bg-slate-700 border-slate-600 text-slate-200 placeholder:text-slate-500' : 'border-slate-200 bg-white'}`}
+                        />
+                      </div>
+                      <div className="space-y-1.5">
+                        <label className={`text-xs font-medium ${darkMode ? 'text-slate-400' : 'text-slate-600'}`}>Model</label>
+                        <select
+                          value={selectedOpenAIModel}
+                          onChange={(e) => setSelectedOpenAIModel(e.target.value)}
+                          className={`w-full px-3 py-2 text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent ${darkMode ? 'bg-slate-700 border-slate-600 text-slate-200' : 'border-slate-200 bg-white'}`}
+                        >
+                          {OPENAI_MODELS.map(m => (
+                            <option key={m.id} value={m.id}>{m.label}</option>
+                          ))}
+                        </select>
+                      </div>
+                    </div>
                   </div>
 
-                  {/* Claude API Key */}
-                  <div className="space-y-2">
-                    <label className={`text-xs font-medium ${darkMode ? 'text-slate-400' : 'text-slate-600'}`}>Claude API Key</label>
-                    <input
-                      type="password"
-                      value={claudeApiKey}
-                      onChange={(e) => setClaudeApiKey(e.target.value)}
-                      placeholder="sk-ant-..."
-                      className={`w-full px-3 py-2 text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent ${darkMode ? 'bg-slate-700 border-slate-600 text-slate-200 placeholder:text-slate-500' : 'border-slate-200'}`}
-                    />
+                  {/* Claude Settings */}
+                  <div className={`p-3 rounded-lg border ${darkMode ? 'border-slate-600 bg-slate-700/50' : 'border-purple-100 bg-purple-50/50'}`}>
+                    <div className="space-y-3">
+                      <div className="space-y-1.5">
+                        <label className={`text-xs font-medium ${darkMode ? 'text-slate-400' : 'text-slate-600'}`}>Claude API Key</label>
+                        <input
+                          type="password"
+                          value={claudeApiKey}
+                          onChange={(e) => setClaudeApiKey(e.target.value)}
+                          placeholder="sk-ant-..."
+                          className={`w-full px-3 py-2 text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent ${darkMode ? 'bg-slate-700 border-slate-600 text-slate-200 placeholder:text-slate-500' : 'border-slate-200 bg-white'}`}
+                        />
+                      </div>
+                      <div className="space-y-1.5">
+                        <label className={`text-xs font-medium ${darkMode ? 'text-slate-400' : 'text-slate-600'}`}>Model</label>
+                        <select
+                          value={selectedClaudeModel}
+                          onChange={(e) => setSelectedClaudeModel(e.target.value)}
+                          className={`w-full px-3 py-2 text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent ${darkMode ? 'bg-slate-700 border-slate-600 text-slate-200' : 'border-slate-200 bg-white'}`}
+                        >
+                          {CLAUDE_MODELS.map(m => (
+                            <option key={m.id} value={m.id}>{m.label}</option>
+                          ))}
+                        </select>
+                      </div>
+                    </div>
                   </div>
 
-                  {/* Gemini API Key */}
-                  <div className="space-y-2">
-                    <label className={`text-xs font-medium ${darkMode ? 'text-slate-400' : 'text-slate-600'}`}>Gemini API Key</label>
-                    <input
-                      type="password"
-                      value={geminiApiKey}
-                      onChange={(e) => setGeminiApiKey(e.target.value)}
-                      placeholder="AIza..."
-                      className={`w-full px-3 py-2 text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${darkMode ? 'bg-slate-700 border-slate-600 text-slate-200 placeholder:text-slate-500' : 'border-slate-200'}`}
-                    />
+                  {/* Gemini Settings */}
+                  <div className={`p-3 rounded-lg border ${darkMode ? 'border-slate-600 bg-slate-700/50' : 'border-blue-100 bg-blue-50/50'}`}>
+                    <div className="space-y-3">
+                      <div className="space-y-1.5">
+                        <label className={`text-xs font-medium ${darkMode ? 'text-slate-400' : 'text-slate-600'}`}>Gemini API Key</label>
+                        <input
+                          type="password"
+                          value={geminiApiKey}
+                          onChange={(e) => setGeminiApiKey(e.target.value)}
+                          placeholder="AIza..."
+                          className={`w-full px-3 py-2 text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${darkMode ? 'bg-slate-700 border-slate-600 text-slate-200 placeholder:text-slate-500' : 'border-slate-200 bg-white'}`}
+                        />
+                      </div>
+                      <div className="space-y-1.5">
+                        <label className={`text-xs font-medium ${darkMode ? 'text-slate-400' : 'text-slate-600'}`}>Model</label>
+                        <select
+                          value={selectedGeminiModel}
+                          onChange={(e) => setSelectedGeminiModel(e.target.value)}
+                          className={`w-full px-3 py-2 text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${darkMode ? 'bg-slate-700 border-slate-600 text-slate-200' : 'border-slate-200 bg-white'}`}
+                        >
+                          {GEMINI_MODELS.map(m => (
+                            <option key={m.id} value={m.id}>{m.label}</option>
+                          ))}
+                        </select>
+                      </div>
+                    </div>
                   </div>
                 </div>
 
