@@ -93,7 +93,8 @@ export const buildPromptPlan = ({
   format,
   length,
   notes,
-  toggles
+  toggles,
+  typeSpecific // Type-specific fields from the form (e.g., copy_type, emotional_appeal)
 }, specRegistry = PROMPT_SPECS) => {
   const registry = specRegistry && Object.keys(specRegistry).length ? specRegistry : PROMPT_SPECS;
   const spec = registry[specId] || registry.default || PROMPT_SPECS[specId] || PROMPT_SPECS.default;
@@ -116,6 +117,7 @@ export const buildPromptPlan = ({
       stripMetaLabel: boolLabel(toggles?.stripMeta),
       aestheticModeLabel: boolLabel(toggles?.aestheticMode)
     },
+    typeSpecific: typeSpecific || {}, // Make typeSpecific available to templates
     spec: expandMetadataLists(spec.metadata || {})
   };
 

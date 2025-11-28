@@ -339,7 +339,7 @@ Conclude with 2-3 sentences acknowledging that both systems involve complex trad
     metadata: {
       persona: 'Brand Voice Strategist',
       guardrails: [
-        'Capture positioning pillars (hero, tension, proof, action).',
+        'Focus ONLY on the specified copy type - do not produce other formats.',
         'Align tone with audience motivations and channel norms.',
         'Provide alternates when messaging needs experimentation.'
       ],
@@ -354,6 +354,41 @@ Conclude with 2-3 sentences acknowledging that both systems involve complex trad
       ]
     },
     systemExtensions: [
+      {
+        id: 'copy-type-context',
+        channel: 'system',
+        template: `COPY TYPE SPECIFICATION:
+You are creating a blueprint for: {{typeSpecific.copy_type}} copy.
+
+Copy Type Context:
+- ad: Short-form advertising copy (headlines, body, CTA)
+- landing: Landing page sections (hero, benefits, social proof, CTA)
+- email: Email marketing (subject line, preview, body, CTA)
+- social: Social media posts (platform-optimized, hashtags, engagement hooks)
+- press: Press release (headline, dateline, lead, body quotes, boilerplate)
+- tagline: Brand taglines and slogans (memorable, concise, brand essence)
+- product: Product descriptions (features, benefits, specifications)
+
+CRITICAL: Generate ONLY {{typeSpecific.copy_type}} copy. Do NOT produce other copy types.`
+      },
+      {
+        id: 'copy-emotional-appeal',
+        channel: 'system',
+        conditions: [{ field: 'typeSpecific.emotional_appeal', operator: 'exists' }],
+        template: 'PRIMARY EMOTIONAL DRIVER: {{typeSpecific.emotional_appeal}}\nLeverage this emotion throughout the messaging.'
+      },
+      {
+        id: 'copy-brand-voice',
+        channel: 'system',
+        conditions: [{ field: 'typeSpecific.brand_voice', operator: 'exists' }],
+        template: 'BRAND VOICE: {{typeSpecific.brand_voice}}\nMaintain this personality in all copy elements.'
+      },
+      {
+        id: 'copy-cta',
+        channel: 'system',
+        conditions: [{ field: 'typeSpecific.cta_type', operator: 'exists' }],
+        template: 'CALL TO ACTION: {{typeSpecific.cta_type}}\nBuild messaging toward this action.'
+      },
       {
         id: 'copy-testing',
         channel: 'system',

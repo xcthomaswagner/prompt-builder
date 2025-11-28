@@ -843,7 +843,8 @@ Generate an improved version of the prompt that addresses all the feedback point
           allowPlaceholders,
           stripMeta,
           aestheticMode
-        }
+        },
+        typeSpecific: currentSpec.typeSpecific // Pass type-specific form data (e.g., copy_type, emotional_appeal)
       });
 
       const systemPrompt = `${plan.systemPrompt}
@@ -1304,6 +1305,7 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
                           const formatObj = FORMATS.find(f => f.id === selectedFormat);
                           const lengthObj = LENGTHS.find(t => t.id === selectedLength);
 
+                          const currentSpec = promptSpec || createSpec(selectedOutputType);
                           const plan = buildPromptPlan({
                             specId: selectedOutputType,
                             userInput: inputText || "(User Input)",
@@ -1312,7 +1314,8 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
                             format: formatObj,
                             length: lengthObj,
                             notes,
-                            toggles: { allowPlaceholders, stripMeta, aestheticMode }
+                            toggles: { allowPlaceholders, stripMeta, aestheticMode },
+                            typeSpecific: currentSpec.typeSpecific
                           });
                           return plan.systemPrompt;
                         } catch (e) {
