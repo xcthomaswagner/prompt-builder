@@ -475,7 +475,7 @@ export default function App() {
   const [isImproving, setIsImproving] = useState(false);
   const [promptVersions, setPromptVersions] = useState([]); // Array of { text, quality, timestamp }
   const [currentVersionIndex, setCurrentVersionIndex] = useState(-1);
-  const MAX_IMPROVE_ITERATIONS = 10;
+  const MAX_IMPROVE_ITERATIONS = 3;
 
   // Handle template selection
   const handleTemplateSelect = (template) => {
@@ -1589,6 +1589,13 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
                         onImprove={qualityResult.improvements?.length > 0 ? handleAutoImprove : undefined}
                         isImproving={isImproving}
                       />
+                      {/* Distinctiveness warning after improvements */}
+                      {promptVersions.length > 0 && promptVersions.length < MAX_IMPROVE_ITERATIONS && (
+                        <p className="mt-2 text-xs text-slate-500 flex items-center gap-1">
+                          <AlertCircle className="w-3 h-3" />
+                          Note: Further improvements may reduce the prompt's distinctiveness.
+                        </p>
+                      )}
                       {/* Iteration limit warning */}
                       {promptVersions.length >= MAX_IMPROVE_ITERATIONS && qualityResult.improvements?.length > 0 && (
                         <p className="mt-2 text-xs text-amber-600 flex items-center gap-1">
