@@ -1605,9 +1605,22 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
                         </svg>
                         ChatGPT
                       </a>
-                      {/* Claude Button - Using anchor to avoid Cloudflare blocks */}
+                      {/* Claude Button - Uses ?q= parameter to prefill prompt */}
                       <a
-                        href="https://claude.ai/new"
+                        href={`https://claude.ai/new?q=${encodeURIComponent(generatedResult)}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors cursor-pointer"
+                        title="Opens Claude with prompt pre-filled"
+                      >
+                        <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor">
+                          <path d="M4.709 15.955l4.72-2.647.08-.08 2.109-3.94 1.079 1.953-1.327 2.477-.039.04-4.254 4.409c-.956.99-2.634.263-2.634-1.14v-.462c0-.229.096-.448.266-.61zm8.837-5.092l3.785-7.082c.593-1.11 2.217-1.11 2.81 0l3.603 6.74a1.652 1.652 0 01-1.456 2.45h-1.867l-5.796.002-1.08-2.11zm-4.14 7.748l3.248-3.369h8.292c.78 0 1.249.862.819 1.51l-2.381 3.586c-.298.45-.805.72-1.349.72H10.97c-.95 0-1.82-.535-2.246-1.383l-.637-1.174.32.11zM.81 9.885a1.652 1.652 0 01-.019-1.648L3.86 2.604c.593-1.11 2.217-1.11 2.81 0L9.19 7.01l-1.078 1.979L5.066 3.69 2.39 8.69l3.782 6.954-.003.003-.32-.11-1.08.562-3.96-6.214z" />
+                        </svg>
+                        Claude
+                      </a>
+                      {/* Gemini Button - Copies to clipboard and opens (no URL param support) */}
+                      <a
+                        href="https://gemini.google.com/app"
                         target="_blank"
                         rel="noopener noreferrer"
                         onClick={() => {
@@ -1616,12 +1629,12 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
                           setTimeout(() => setCopySuccess(false), 2000);
                         }}
                         className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors cursor-pointer"
-                        title="Opens Claude and copies prompt to clipboard"
+                        title="Opens Gemini and copies prompt to clipboard"
                       >
                         <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor">
-                          <path d="M17.45 15.18l-5.45-9.45-5.45 9.45h10.9zm-5.45-11.18c.55 0 1.05.22 1.41.59l7.07 7.07c.37.36.59.86.59 1.41s-.22 1.05-.59 1.41l-7.07 7.07c-.36.37-.86.59-1.41.59s-1.05-.22-1.41-.59l-7.07-7.07c-.37-.36-.59-.86-.59-1.41s.22-1.05.59-1.41l7.07-7.07c.36-.37.86-.59 1.41-.59z" />
+                          <path d="M12 0C9.284 3.478 5.522 5.463 0 5.463v2.182C5.522 7.645 9.284 9.63 12 13.108c2.716-3.478 6.478-5.463 12-5.463V5.463C18.478 5.463 14.716 3.478 12 0zm0 10.892C9.284 14.37 5.522 16.355 0 16.355v2.182C5.522 18.537 9.284 20.522 12 24c2.716-3.478 6.478-5.463 12-5.463v-2.182c-5.522 0-9.284-1.985-12-5.463z" />
                         </svg>
-                        Claude
+                        Gemini
                       </a>
                     </div>
                   </div>
