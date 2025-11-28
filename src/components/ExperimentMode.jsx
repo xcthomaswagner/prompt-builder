@@ -28,8 +28,9 @@ import {
  * @param {Object} [props.apiKeys] - API keys { gemini, openai, anthropic }
  * @param {Object} [props.firebaseApp] - Firebase app instance (for storage uploads)
  * @param {Function} [props.onHistoryChange] - Callback with history state for parent rendering
+ * @param {Object} [props.typeSpecific] - Type-specific form data from parent (e.g., copy_type, emotional_appeal)
  */
-export default function ExperimentMode({ callLLM, defaultOutputType = 'doc', db, user, apiKeys = {}, firebaseApp, onHistoryChange, darkMode = false }) {
+export default function ExperimentMode({ callLLM, defaultOutputType = 'doc', db, user, apiKeys = {}, firebaseApp, onHistoryChange, darkMode = false, typeSpecific = {} }) {
   // Form state
   const [originalPrompt, setOriginalPrompt] = useState('');
   const [outputType, setOutputType] = useState(defaultOutputType);
@@ -204,6 +205,7 @@ export default function ExperimentMode({ callLLM, defaultOutputType = 'doc', db,
           judgeOptions // Pass judge options for dual-judge and rubric enforcement
         },
         signal: abortControllerRef.current?.signal,
+        typeSpecific, // Pass type-specific form data (e.g., copy_type, emotional_appeal)
         onProgress: async (completed, total, result) => {
           setProgress({ completed, total });
           setResults(prev => {

@@ -260,9 +260,10 @@ const extractExpandedPrompt = (response) => {
  * @param {Function} callLLM - Async function to call the LLM: (userPrompt, systemPrompt) => Promise<response>
  * @param {Object} [toggles] - Optional toggles.
  * @param {Object} [models] - Model configuration { executionModel, judgeModel, enableJudge, apiKeys }
+ * @param {Object} [typeSpecific] - Type-specific form data (e.g., copy_type, emotional_appeal)
  * @returns {Promise<{ config: Object, blueprintResult: string, executionResult?: string, evaluation?: Object }>}
  */
-export async function runExperimentCell(combo, prompt, outputType, callLLM, toggles = {}, models = {}) {
+export async function runExperimentCell(combo, prompt, outputType, callLLM, toggles = {}, models = {}, typeSpecific = {}) {
   const toneObj = TONES.find(t => t.id === combo.tone) || TONES[0];
   const lengthObj = LENGTHS.find(l => l.id === combo.length) || LENGTHS[1];
   const formatObj = FORMATS.find(f => f.id === combo.format) || FORMATS[0];
@@ -281,7 +282,8 @@ export async function runExperimentCell(combo, prompt, outputType, callLLM, togg
       allowPlaceholders: toggles.allowPlaceholders ?? false,
       stripMeta: toggles.stripMeta ?? true,
       aestheticMode: toggles.aestheticMode ?? false
-    }
+    },
+    typeSpecific // Pass type-specific form data
   });
 
   // Append the JSON contract to the system prompt
@@ -489,7 +491,8 @@ export async function runMatrixExperiment({
   toggles = {},
   models = {},
   onProgress,
-  signal // AbortSignal for cancellation
+  signal, // AbortSignal for cancellation
+  typeSpecific = {} // Type-specific form data (e.g., copy_type, emotional_appeal)
 }) {
   const combos = buildMatrixCombos(matrixConfig);
   if (combos.length === 0) {
@@ -506,7 +509,7 @@ export async function runMatrixExperiment({
     }
 
     try {
-      const result = await runExperimentCell(combo, prompt, outputType, callLLM, toggles, models);
+      const result = await runExperimentCell(combo, prompt, outputType, callLLM, toggles, models, typeSpecific);
       results.push(result);
     } catch (err) {
       results.push({

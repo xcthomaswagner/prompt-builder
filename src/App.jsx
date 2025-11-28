@@ -1246,6 +1246,7 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
                 firebaseApp={app}
                 onHistoryChange={setExperimentHistory}
                 darkMode={darkMode}
+                typeSpecific={promptSpec?.typeSpecific || {}}
               />
             </div>
           ) : (
