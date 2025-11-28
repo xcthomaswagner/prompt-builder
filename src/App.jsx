@@ -24,7 +24,9 @@ import {
   Undo2,
   RefreshCw,
   PanelRightClose,
-  PanelRight
+  PanelRight,
+  Sun,
+  Moon
 } from 'lucide-react';
 import { initializeApp } from "firebase/app";
 import {
@@ -463,6 +465,9 @@ export default function App() {
 
   // Sidebar collapsed state
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+
+  // Theme state
+  const [darkMode, setDarkMode] = useState(false);
 
   // Experiment history state (lifted from ExperimentMode for sidebar rendering)
   const [experimentHistory, setExperimentHistory] = useState(null);
@@ -1084,27 +1089,27 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 flex font-sans text-slate-900 selection:bg-cyan-100 selection:text-cyan-900">
+    <div className={`min-h-screen flex font-sans selection:bg-cyan-100 selection:text-cyan-900 transition-colors duration-300 ${darkMode ? 'bg-slate-900 text-slate-100' : 'bg-slate-50 text-slate-900'}`}>
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col h-full overflow-hidden relative">
         {/* Header */}
-        <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 shadow-sm z-10">
+        <header className={`h-16 border-b flex items-center justify-between px-6 shadow-sm z-10 transition-colors ${darkMode ? 'bg-slate-800 border-slate-700' : 'bg-white border-slate-200'}`}>
           <div className="flex items-center gap-6">
             <div className="flex items-center gap-3">
               <div className="w-8 h-8 bg-cyan-500 rounded-lg flex items-center justify-center text-white font-bold shadow-cyan-200 shadow-md">
                 <Sparkles className="w-5 h-5" />
               </div>
-              <h1 className="font-bold text-xl text-slate-800 tracking-tight">Intelligent Prompt Builder</h1>
+              <h1 className={`font-bold text-xl tracking-tight ${darkMode ? 'text-white' : 'text-slate-800'}`}>Intelligent Prompt Builder</h1>
             </div>
 
             {/* Mode Toggle Tabs */}
-            <div className="flex items-center bg-slate-100 rounded-lg p-1">
+            <div className={`flex items-center rounded-lg p-1 ${darkMode ? 'bg-slate-700' : 'bg-slate-100'}`}>
               <button
                 onClick={() => setAppMode('builder')}
                 className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-medium transition-all ${appMode === 'builder'
-                  ? 'bg-white text-slate-800 shadow-sm'
-                  : 'text-slate-500 hover:text-slate-700'
+                  ? darkMode ? 'bg-slate-600 text-white shadow-sm' : 'bg-white text-slate-800 shadow-sm'
+                  : darkMode ? 'text-slate-400 hover:text-slate-200' : 'text-slate-500 hover:text-slate-700'
                   }`}
               >
                 <Wand2 className="w-4 h-4" />
@@ -1113,8 +1118,8 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
               <button
                 onClick={() => setAppMode('experiment')}
                 className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-medium transition-all ${appMode === 'experiment'
-                  ? 'bg-white text-slate-800 shadow-sm'
-                  : 'text-slate-500 hover:text-slate-700'
+                  ? darkMode ? 'bg-slate-600 text-white shadow-sm' : 'bg-white text-slate-800 shadow-sm'
+                  : darkMode ? 'text-slate-400 hover:text-slate-200' : 'text-slate-500 hover:text-slate-700'
                   }`}
               >
                 <Beaker className="w-4 h-4" />
@@ -1123,17 +1128,25 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
             </div>
           </div>
           <div className="flex items-center gap-4">
-            <div className="flex items-center gap-3 bg-slate-50 rounded-lg px-3 py-2 border border-slate-200">
-              <div className="w-8 h-8 rounded-full bg-slate-200 overflow-hidden border border-slate-300">
+            {/* Theme Toggle */}
+            <button
+              onClick={() => setDarkMode(!darkMode)}
+              className={`p-2 rounded-lg transition-colors ${darkMode ? 'bg-slate-700 text-yellow-400 hover:bg-slate-600' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}
+              title={darkMode ? 'Switch to light mode' : 'Switch to dark mode'}
+            >
+              {darkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+            </button>
+            <div className={`flex items-center gap-3 rounded-lg px-3 py-2 border ${darkMode ? 'bg-slate-700 border-slate-600' : 'bg-slate-50 border-slate-200'}`}>
+              <div className={`w-8 h-8 rounded-full overflow-hidden border ${darkMode ? 'bg-slate-600 border-slate-500' : 'bg-slate-200 border-slate-300'}`}>
                 <img src={user?.photoURL || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user?.uid || 'default'}`} alt="avatar" />
               </div>
               <div className="hidden md:block">
-                <div className="text-xs font-semibold text-slate-700">{user?.displayName || 'User'}</div>
-                <div className="text-xs text-slate-500">{user?.email || ''}</div>
+                <div className={`text-xs font-semibold ${darkMode ? 'text-slate-200' : 'text-slate-700'}`}>{user?.displayName || 'User'}</div>
+                <div className={`text-xs ${darkMode ? 'text-slate-400' : 'text-slate-500'}`}>{user?.email || ''}</div>
               </div>
               <button
                 onClick={handleSignOut}
-                className="text-xs text-slate-500 hover:text-red-600 font-medium px-2 py-1 hover:bg-red-50 rounded transition-colors"
+                className={`text-xs font-medium px-2 py-1 rounded transition-colors ${darkMode ? 'text-slate-400 hover:text-red-400 hover:bg-red-900/30' : 'text-slate-500 hover:text-red-600 hover:bg-red-50'}`}
                 title="Sign out"
               >
                 Sign out
@@ -1143,7 +1156,7 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
         </header>
 
         {/* Scrollable Work Area */}
-        <div className="flex-1 overflow-y-auto bg-slate-50/50 p-4 md:p-8">
+        <div className={`flex-1 overflow-y-auto p-4 md:p-8 transition-colors ${darkMode ? 'bg-slate-900/50' : 'bg-slate-50/50'}`}>
           {appMode === 'experiment' ? (
             <div className="max-w-6xl mx-auto pb-20">
               <ExperimentMode
