@@ -1,0 +1,36 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+  functions = "netlify/functions"
+
+[build.environment]
+  NODE_VERSION = "20"
+
+# SPA redirects - all routes go to index.html
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+  conditions = {Role = ["admin", "visitor"]}
+
+# But not for API routes
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/:splat"
+  status = 200
+
+# Headers for security
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+
+# Preview deploy context (UAT)
+[context.deploy-preview]
+  command = "npm run build"
+
+# Branch deploys (e.g., uat branch)
+[context.branch-deploy]
+  command = "npm run build"
