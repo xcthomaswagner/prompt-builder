@@ -126,10 +126,10 @@ const CLAUDE_MODELS = [
 ];
 
 const GEMINI_MODELS = [
-  { id: 'gemini-2.5-flash-preview-05-20', label: 'Gemini 2.5 Flash', description: 'Latest preview model' },
-  { id: 'gemini-2.0-flash', label: 'Gemini 2.0 Flash', description: 'Fast & efficient' },
+  { id: 'gemini-2.0-flash', label: 'Gemini 2.0 Flash', description: 'Latest fast model' },
   { id: 'gemini-1.5-pro', label: 'Gemini 1.5 Pro', description: 'Advanced reasoning' },
   { id: 'gemini-1.5-flash', label: 'Gemini 1.5 Flash', description: 'Quick responses' },
+  { id: 'gemini-1.5-flash-8b', label: 'Gemini 1.5 Flash 8B', description: 'Lightweight' },
 ];
 
 // --- Gemini API Configuration ---
