@@ -393,10 +393,13 @@ const extractExpandedPrompt = (response) => {
 
 const TONES = [
   { id: 'professional', label: 'Professional', prompt: 'formal, objective, and expert' },
-  { id: 'creative', label: 'Creative', prompt: 'imaginative, evocative, and storytelling' },
+  { id: 'friendly', label: 'Friendly', prompt: 'warm, approachable, and conversational' },
+  { id: 'casual', label: 'Casual', prompt: 'relaxed, informal, and easy-going' },
+  { id: 'executive', label: 'Executive', prompt: 'concise, strategic, and high-level' },
   { id: 'academic', label: 'Academic', prompt: 'rigorous, citation-focused, and analytical' },
-  { id: 'casual', label: 'Casual', prompt: 'friendly, conversational, and accessible' },
-  { id: 'instructive', label: 'Instructive', prompt: 'didactic, step-by-step teacher' }
+  { id: 'creative', label: 'Creative', prompt: 'imaginative, evocative, and storytelling' },
+  { id: 'helpful', label: 'Helpful', prompt: 'supportive, instructive, and solution-oriented' },
+  { id: 'technical', label: 'Technical', prompt: 'precise, detailed, and specification-focused' },
 ];
 
 const OUTPUT_TYPES = [
