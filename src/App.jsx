@@ -310,20 +310,40 @@ const callOpenAI = async (prompt, systemInstruction, apiKey, modelId = 'gpt-5.1'
   }
 };
 
+// Firebase Function URL for Claude proxy (set in .env)
+const claudeFunctionUrl = import.meta.env.VITE_CLAUDE_FUNCTION_URL;
+
 const callAnthropic = async (prompt, systemInstruction, apiKey, modelId = 'claude-3-5-sonnet-20241022') => {
+  // Use Firebase Function proxy if available (avoids Cloudflare)
+  if (claudeFunctionUrl) {
+    try {
+      const response = await fetch(claudeFunctionUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ prompt, systemInstruction, modelId })
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(`Claude Function Error: ${errorData.error || response.statusText}`);
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error("Claude Function Failed:", error);
+      throw error;
+    }
+  }
+
+  // Fallback: Direct API call (may trigger Cloudflare in browser)
   if (!apiKey) throw new Error("Claude API Key is missing");
 
-  // Note: Calling Anthropic directly from browser requires a proxy or dangerously-allow-browser header
-  // For this local app, we'll use the header, but in production this should go through a backend
   const url = "https://api.anthropic.com/v1/messages";
-
   const payload = {
     model: modelId,
     max_tokens: 4096,
     system: systemInstruction + "\n\nIMPORTANT: You must return valid JSON only.",
-    messages: [
-      { role: "user", content: prompt }
-    ]
+    messages: [{ role: "user", content: prompt }]
   };
 
   try {
