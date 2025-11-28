@@ -556,6 +556,10 @@ export default function App() {
   const [currentVersionIndex, setCurrentVersionIndex] = useState(-1);
   const MAX_IMPROVE_ITERATIONS = 3;
 
+  // Iterate & Refine State
+  const [refinementInstructions, setRefinementInstructions] = useState('');
+  const [isRefining, setIsRefining] = useState(false);
+
   // Handle template selection
   const handleTemplateSelect = (template) => {
     setSelectedTemplate(template);
@@ -688,6 +692,64 @@ Generate an improved version of the prompt that addresses all the feedback point
   const resetVersionHistory = () => {
     setPromptVersions([]);
     setCurrentVersionIndex(-1);
+  };
+
+  // Iterate & Refine the prompt based on user instructions
+  const handleRefinePrompt = async () => {
+    if (!generatedResult || !refinementInstructions.trim()) return;
+    if (!geminiApiKey) {
+      setErrorMsg('Gemini API Key is required for refinement.');
+      return;
+    }
+
+    setIsRefining(true);
+    setErrorMsg('');
+
+    try {
+      const systemPrompt = `You are a prompt refinement expert. Your task is to modify the given prompt based on the user's specific instructions.
+
+RULES:
+- Follow the user's refinement instructions exactly
+- Maintain the overall structure and format of the prompt unless told otherwise
+- Keep the prompt's core purpose intact
+- Return ONLY the refined prompt text, no explanations or meta-commentary
+- The result should be a complete, ready-to-use prompt`;
+
+      const userPrompt = `## Current Prompt
+${generatedResult}
+
+## Refinement Instructions
+${refinementInstructions}
+
+Apply the refinement instructions above to modify the prompt. Return only the updated prompt.`;
+
+      const refinedText = await callGeminiText(userPrompt, systemPrompt, geminiApiKey);
+
+      if (!refinedText || refinedText.trim().length === 0) {
+        throw new Error('No refined prompt returned');
+      }
+
+      // Save current version to history before updating
+      const newVersion = {
+        text: generatedResult,
+        timestamp: Date.now()
+      };
+      
+      setPromptVersions(prev => [...prev, newVersion]);
+      setCurrentVersionIndex(prev => prev + 1);
+
+      // Update to refined version
+      setGeneratedResult(refinedText.trim());
+      
+      // Clear the refinement instructions
+      setRefinementInstructions('');
+
+    } catch (err) {
+      console.error('Refinement failed:', err);
+      setErrorMsg(`Failed to refine prompt: ${err.message}`);
+    } finally {
+      setIsRefining(false);
+    }
   };
 
   // Helper: Generate a hash signature for the prompt (first 60 chars)
@@ -1864,6 +1926,59 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
                       <pre className={`whitespace-pre-wrap font-mono text-sm leading-relaxed ${darkMode ? 'text-slate-300' : 'text-slate-700'}`}>
                         {generatedResult}
                       </pre>
+                    </div>
+                  </div>
+
+                  {/* Iterate & Refine Section */}
+                  <div className="px-6 pb-6">
+                    <div className={`rounded-xl border overflow-hidden ${darkMode ? 'bg-slate-800 border-slate-700' : 'bg-white border-slate-200'}`}>
+                      <div className={`px-4 py-3 border-b ${darkMode ? 'bg-slate-700/50 border-slate-700' : 'bg-slate-50 border-slate-200'}`}>
+                        <div className="flex items-center gap-2">
+                          <RefreshCw className={`w-4 h-4 ${darkMode ? 'text-cyan-400' : 'text-cyan-600'}`} />
+                          <span className={`text-sm font-semibold ${darkMode ? 'text-slate-200' : 'text-slate-700'}`}>
+                            Iterate & Refine Your Prompt
+                          </span>
+                        </div>
+                      </div>
+                      <div className="p-4 space-y-3">
+                        <textarea
+                          value={refinementInstructions}
+                          onChange={(e) => setRefinementInstructions(e.target.value)}
+                          placeholder="Enter your refinement instructions... e.g., 'Make it more concise', 'Add a section about error handling', 'Change the tone to be more formal'"
+                          className={`w-full px-3 py-2 rounded-lg border text-sm resize-none transition-colors ${
+                            darkMode 
+                              ? 'bg-slate-900 border-slate-600 text-slate-200 placeholder-slate-500 focus:border-cyan-500' 
+                              : 'bg-white border-slate-300 text-slate-700 placeholder-slate-400 focus:border-cyan-500'
+                          } focus:outline-none focus:ring-1 focus:ring-cyan-500`}
+                          rows={3}
+                        />
+                        <div className="flex items-center justify-between">
+                          <p className={`text-xs ${darkMode ? 'text-slate-500' : 'text-slate-400'}`}>
+                            Describe how you'd like to modify the expanded prompt
+                          </p>
+                          <button
+                            onClick={handleRefinePrompt}
+                            disabled={isRefining || !refinementInstructions.trim()}
+                            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                              isRefining || !refinementInstructions.trim()
+                                ? 'bg-slate-300 text-slate-500 cursor-not-allowed'
+                                : 'bg-gradient-to-r from-cyan-500 to-blue-500 text-white hover:from-cyan-600 hover:to-blue-600 shadow-sm hover:shadow'
+                            }`}
+                          >
+                            {isRefining ? (
+                              <>
+                                <RefreshCw className="w-4 h-4 animate-spin" />
+                                Refining...
+                              </>
+                            ) : (
+                              <>
+                                <RefreshCw className="w-4 h-4" />
+                                Refine Prompt
+                              </>
+                            )}
+                          </button>
+                        </div>
+                      </div>
                     </div>
                   </div>
 
