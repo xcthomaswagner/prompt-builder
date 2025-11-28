@@ -20,7 +20,9 @@ import {
   X,
   Search,
   Beaker,
-  Lightbulb
+  Lightbulb,
+  Undo2,
+  RefreshCw
 } from 'lucide-react';
 import { initializeApp } from "firebase/app";
 import {
@@ -202,6 +204,34 @@ const callGemini = async (prompt, systemInstruction, apiKey) => {
       await new Promise(resolve => setTimeout(resolve, delays[attempts - 1]));
     }
   }
+};
+
+// Simple text-only Gemini call for improvement requests
+const callGeminiText = async (prompt, systemInstruction, apiKeyParam) => {
+  if (!apiKeyParam) throw new Error("Gemini API Key is missing");
+
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKeyParam}`;
+
+  const payload = {
+    contents: [{ parts: [{ text: prompt }] }],
+    systemInstruction: { parts: [{ text: systemInstruction }] },
+    generationConfig: {
+      maxOutputTokens: 4096,
+    }
+  };
+
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  });
+
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+
+  const data = await response.json();
+  return data.candidates?.[0]?.content?.parts?.[0]?.text || '';
 };
 
 const callOpenAI = async (prompt, systemInstruction, apiKey) => {
@@ -441,6 +471,12 @@ export default function App() {
   const [showOutcomeFeedback, setShowOutcomeFeedback] = useState(false);
   const [lastGeneratedPromptId, setLastGeneratedPromptId] = useState(null);
 
+  // Auto-Improve State
+  const [isImproving, setIsImproving] = useState(false);
+  const [promptVersions, setPromptVersions] = useState([]); // Array of { text, quality, timestamp }
+  const [currentVersionIndex, setCurrentVersionIndex] = useState(-1);
+  const MAX_IMPROVE_ITERATIONS = 3;
+
   // Handle template selection
   const handleTemplateSelect = (template) => {
     setSelectedTemplate(template);
@@ -475,6 +511,96 @@ export default function App() {
     } catch (error) {
       console.error('Failed to record outcome:', error);
     }
+  };
+
+  // Auto-improve the generated prompt based on quality feedback
+  const handleAutoImprove = async () => {
+    if (!generatedResult || !qualityResult?.improvements?.length) return;
+    if (!geminiApiKey) {
+      setErrorMsg('Gemini API Key is required for auto-improve.');
+      return;
+    }
+
+    // Check iteration limit
+    if (promptVersions.length >= MAX_IMPROVE_ITERATIONS) {
+      setErrorMsg(`Maximum of ${MAX_IMPROVE_ITERATIONS} improvement iterations reached.`);
+      return;
+    }
+
+    setIsImproving(true);
+    setErrorMsg('');
+
+    try {
+      const currentSpec = promptSpec || createSpec(selectedOutputType);
+      
+      const systemPrompt = `You are a prompt refinement expert. Your task is to improve the given prompt based on specific feedback.
+
+RULES:
+- Address ALL the improvement points provided
+- Maintain the original intent and structure
+- Keep the same output type and tone
+- Return ONLY the improved prompt text, no explanations or meta-commentary
+- The result should be a complete, ready-to-use prompt`;
+
+      const userPrompt = `## Current Prompt
+${generatedResult}
+
+## Improvements Needed
+${qualityResult.improvements.map((imp, idx) => `${idx + 1}. ${imp}`).join('\n')}
+
+## Context
+- Output Type: ${currentSpec.outputType || selectedOutputType}
+- Tone: ${selectedTone}
+- Format: ${selectedFormat}
+
+Generate an improved version of the prompt that addresses all the feedback points above.`;
+
+      const improvedText = await callGeminiText(userPrompt, systemPrompt, geminiApiKey);
+
+      if (!improvedText || improvedText.trim().length === 0) {
+        throw new Error('No improved prompt returned');
+      }
+
+      // Save current version to history before updating
+      const newVersion = {
+        text: generatedResult,
+        quality: qualityResult,
+        timestamp: Date.now()
+      };
+      
+      setPromptVersions(prev => [...prev, newVersion]);
+      setCurrentVersionIndex(prev => prev + 1);
+
+      // Update to improved version
+      setGeneratedResult(improvedText.trim());
+
+      // Re-run quality check on improved version
+      const newQuality = quickQualityCheck(improvedText.trim(), currentSpec);
+      setQualityResult(newQuality);
+
+    } catch (err) {
+      console.error('Auto-improve failed:', err);
+      setErrorMsg(`Failed to improve prompt: ${err.message}`);
+    } finally {
+      setIsImproving(false);
+    }
+  };
+
+  // Undo to a previous version
+  const handleUndoImprove = () => {
+    if (promptVersions.length === 0) return;
+
+    const previousVersion = promptVersions[promptVersions.length - 1];
+    setGeneratedResult(previousVersion.text);
+    setQualityResult(previousVersion.quality);
+    setPromptVersions(prev => prev.slice(0, -1));
+    setCurrentVersionIndex(prev => prev - 1);
+  };
+
+  // Reset version history when generating new prompt
+  const resetVersionHistory = () => {
+    setPromptVersions([]);
+    setCurrentVersionIndex(-1);
   };
 
   // Helper: Generate a hash signature for the prompt (first 60 chars)
@@ -637,6 +763,7 @@ export default function App() {
     setReversePromptTriggered(false);
     setErrorMsg('');
     setIsSavingHistory(false);
+    resetVersionHistory();
 
     let finalPromptText = '';
     let isReverse = false;
@@ -1425,6 +1552,28 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
 
                   {/* Prompt Content */}
                   <div className="p-6 bg-slate-50">
+                    {/* Version Info Bar */}
+                    {promptVersions.length > 0 && (
+                      <div className="flex items-center justify-between mb-3 px-2">
+                        <div className="flex items-center gap-2 text-sm text-slate-500">
+                          <RefreshCw className="w-4 h-4 text-indigo-500" />
+                          <span>
+                            Version {promptVersions.length + 1} 
+                            <span className="text-slate-400 ml-1">
+                              (improved {promptVersions.length} time{promptVersions.length > 1 ? 's' : ''})
+                            </span>
+                          </span>
+                        </div>
+                        <button
+                          onClick={handleUndoImprove}
+                          className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 rounded-lg transition-colors"
+                          title="Revert to previous version"
+                        >
+                          <Undo2 className="w-3.5 h-3.5" />
+                          Undo
+                        </button>
+                      </div>
+                    )}
                     <div className="bg-white rounded-lg border border-slate-200 p-5">
                       <pre className="whitespace-pre-wrap font-mono text-sm text-slate-700 leading-relaxed">
                         {generatedResult}
@@ -1432,10 +1581,21 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
                     </div>
                   </div>
 
-                  {/* Quality Feedback */}
+                  {/* Quality Feedback with Auto-Improve */}
                   {qualityResult && (
                     <div className="px-6 pb-6">
-                      <QualityFeedback quality={qualityResult} />
+                      <QualityFeedback 
+                        quality={qualityResult} 
+                        onImprove={qualityResult.improvements?.length > 0 ? handleAutoImprove : undefined}
+                        isImproving={isImproving}
+                      />
+                      {/* Iteration limit warning */}
+                      {promptVersions.length >= MAX_IMPROVE_ITERATIONS && qualityResult.improvements?.length > 0 && (
+                        <p className="mt-2 text-xs text-amber-600 flex items-center gap-1">
+                          <AlertCircle className="w-3 h-3" />
+                          Maximum improvement iterations reached. Generate a new prompt to continue.
+                        </p>
+                      )}
                     </div>
                   )}
 
