@@ -1867,8 +1867,8 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
                     </div>
                   </div>
 
-                  {/* Quality Feedback with Auto-Improve */}
-                  {qualityResult && (
+                  {/* HIDDEN - Quality Feedback - pending removal in future release */}
+                  {false && qualityResult && (
                     <div className="px-6 pb-6">
                       <QualityFeedback 
                         quality={qualityResult} 
@@ -1893,8 +1893,8 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
                     </div>
                   )}
 
-                  {/* Reasoning Panel */}
-                  {reasoning && Object.keys(reasoning).length > 0 && (
+                  {/* HIDDEN - Reasoning Panel (Why these Settings) - pending removal in future release */}
+                  {false && reasoning && Object.keys(reasoning).length > 0 && (
                     <div className="px-6 pb-6">
                       <ReasoningPanel
                         reasoning={reasoning}
