@@ -36,7 +36,7 @@ const PLATFORMS = [
 ];
 
 export default function CopyForm({ spec, onChange, darkMode = false }) {
-  const [isExpanded, setIsExpanded] = useState(true);
+  const [isExpanded, setIsExpanded] = useState(false);
   const typeSpecific = spec.typeSpecific || {};
 
   const handleChange = (field, value) => {
@@ -60,7 +60,7 @@ export default function CopyForm({ spec, onChange, darkMode = false }) {
       >
         <div className={`flex items-center gap-2 text-sm font-semibold ${darkMode ? 'text-slate-200' : 'text-slate-700'}`}>
           <Copy className={`w-4 h-4 ${darkMode ? 'text-slate-400' : 'text-slate-500'}`} />
-          Copy Settings
+          Copy Settings (optional)
         </div>
         {isExpanded ? <ChevronUp className={`w-4 h-4 ${darkMode ? 'text-slate-500' : 'text-slate-400'}`} /> : <ChevronDown className={`w-4 h-4 ${darkMode ? 'text-slate-500' : 'text-slate-400'}`} />}
       </button>

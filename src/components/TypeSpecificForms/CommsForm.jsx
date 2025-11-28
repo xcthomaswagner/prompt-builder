@@ -29,7 +29,7 @@ const URGENCY_LEVELS = [
 ];
 
 export default function CommsForm({ spec, onChange, darkMode = false }) {
-  const [isExpanded, setIsExpanded] = useState(true);
+  const [isExpanded, setIsExpanded] = useState(false);
   const typeSpecific = spec.typeSpecific || {};
 
   const handleChange = (field, value) => {

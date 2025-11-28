@@ -25,7 +25,7 @@ const CITATION_STYLES = [
 ];
 
 export default function DocForm({ spec, onChange, darkMode = false }) {
-  const [isExpanded, setIsExpanded] = useState(true);
+  const [isExpanded, setIsExpanded] = useState(false);
   const typeSpecific = spec.typeSpecific || {};
 
   const handleChange = (field, value, additionalFields = {}) => {
