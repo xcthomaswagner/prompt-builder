@@ -1120,7 +1120,6 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
             </div>
           </div>
           <div className="flex items-center gap-4">
-            <a href="#" className="text-sm text-slate-500 hover:text-indigo-600 font-medium hidden md:block">Documentation</a>
             <div className="flex items-center gap-3 bg-slate-50 rounded-lg px-3 py-2 border border-slate-200">
               <div className="w-8 h-8 rounded-full bg-slate-200 overflow-hidden border border-slate-300">
                 <img src={user?.photoURL || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user?.uid || 'default'}`} alt="avatar" />
@@ -1272,6 +1271,7 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
                         setSelectedTemplate(null);
                         setShowTemplates(false);
                         setLastGeneratedPromptId(null);
+                        resetVersionHistory();
                       }}
                       className="text-slate-500 hover:text-slate-700 font-sans text-xs px-2 py-0.5 rounded hover:bg-slate-100 transition-colors"
                     >
