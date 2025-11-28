@@ -177,7 +177,6 @@ const callGemini = async (prompt, systemInstruction, apiKey) => {
       }
 
       const data = await response.json();
-      console.log("API Response:", data);
 
       const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
       if (!text) {
@@ -194,14 +193,12 @@ const callGemini = async (prompt, systemInstruction, apiKey) => {
       if (error.message?.includes("503") || error.message?.includes("unavailable")) {
         attempts++;
         if (attempts > 2) throw error; // Only retry twice for 503
-        console.log(`API unavailable, retry attempt ${attempts} after error:`, error.message);
         await new Promise(resolve => setTimeout(resolve, delays[attempts - 1]));
         continue;
       }
 
       attempts++;
       if (attempts > 5) throw error;
-      console.log(`Retry attempt ${attempts} after error:`, error.message);
       await new Promise(resolve => setTimeout(resolve, delays[attempts - 1]));
     }
   }
@@ -705,7 +702,6 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
         if (!geminiApiKey) throw new Error("Gemini API Key is missing. Please add it in Settings.");
         aiData = await callGemini(userPromptForModel, systemPrompt, geminiApiKey);
       }
-      console.log("AI Data received:", aiData);
 
       isReverse = aiData.reverse_prompting?.was_triggered || false;
       finalPromptText = extractExpandedPrompt(aiData);
@@ -715,10 +711,8 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
         throw new Error("Failed to generate expanded prompt text.");
       }
 
-      console.log("Setting result...");
       setReversePromptTriggered(isReverse);
       setGeneratedResult(finalPromptText);
-      console.log("Result set successfully");
 
       // Run quick quality check
       const currentSpec = promptSpec || createSpec(selectedOutputType);
@@ -749,19 +743,15 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
 
       generationFailed = true;
     } finally {
-      console.log("Setting isGenerating to false");
       setIsGenerating(false);
-      console.log("isGenerating set to false");
     }
 
     if (generationFailed || !finalPromptText) {
-      console.log("Save skipped: Generation failed or no prompt text");
       setIsSavingHistory(false);
       return;
     }
 
     if (!user) {
-      console.log("Save skipped: No user logged in");
       setIsSavingHistory(false);
       return;
     }
@@ -774,7 +764,6 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
 
     setIsSavingHistory(true);
     const signature = generateSignature(requestState.originalText);
-    console.log("Attempting to save task...", { signature, user: user.uid });
 
     const saveTask = async () => {
       try {
@@ -799,7 +788,6 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
         };
 
         if (existingItem) {
-          console.log("Updating existing prompt version:", existingItem.id);
           const docRef = doc(db, 'users', user.uid, 'prompt_history', existingItem.id);
           await updateDoc(docRef, {
             ...newVersionData,
@@ -808,10 +796,8 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
             versions: arrayUnion(newVersionData),
             signature
           });
-          console.log("Update successful");
           return existingItem.id;
         } else {
-          console.log("Creating new prompt history item");
           const collectionRef = collection(db, 'users', user.uid, 'prompt_history');
           const docRef = await addDoc(collectionRef, {
             ...newVersionData,
@@ -821,7 +807,6 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
             versions: [newVersionData],
             signature
           });
-          console.log("Create successful, ID:", docRef.id);
           return docRef.id;
         }
       } catch (error) {
@@ -841,7 +826,6 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
           setCurrentHistoryId(savedId);
           setLastGeneratedPromptId(savedId);
         }
-        console.log("Saved to history");
         setIsSavingHistory(false);
       })
       .catch((dbError) => {
