@@ -46,6 +46,22 @@ export function createDeckSpec() {
 }
 
 /**
+ * Infer recommended slide count based on deck type
+ * @param {DeckType} deckType
+ * @returns {number} Recommended slide count
+ */
+export function inferSlideCount(deckType) {
+  switch (deckType) {
+    case 'investor': return 12;  // Classic 10-12 slide pitch
+    case 'sales': return 10;     // Focused, action-oriented
+    case 'board': return 15;     // Comprehensive but concise
+    case 'training': return 20;  // More content for learning
+    case 'internal': return 8;   // Quick updates
+    default: return 10;
+  }
+}
+
+/**
  * Get recommended visual style based on deck type
  * @param {DeckType} deckType
  * @returns {VisualStyle}

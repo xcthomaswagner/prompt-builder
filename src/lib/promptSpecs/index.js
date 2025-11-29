@@ -39,6 +39,7 @@ export {
 export {
   createDeckSpec,
   deckDefaults,
+  inferSlideCount,
   recommendVisualStyle,
   validateDeckSpec,
 } from './templates/deck.js';
