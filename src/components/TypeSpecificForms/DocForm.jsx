@@ -8,13 +8,11 @@ import { FormField, ButtonGroup, Checkbox, Select, MultiSelect } from '../ui/For
 import { SECTION_STRUCTURES } from '../../lib/promptSpecs/templates/doc.js';
 
 const DOCUMENT_TYPES = [
-  { value: 'report', label: 'Report' },
-  { value: 'proposal', label: 'Proposal' },
+  { value: 'requirements', label: 'Requirements' },
   { value: 'guide', label: 'Guide' },
   { value: 'analysis', label: 'Analysis' },
   { value: 'whitepaper', label: 'Whitepaper' },
-  { value: 'memo', label: 'Memo' },
-  { value: 'requirements', label: 'Requirements Doc' },
+  { value: 'proposal', label: 'Proposal' },
 ];
 
 const CITATION_STYLES = [
