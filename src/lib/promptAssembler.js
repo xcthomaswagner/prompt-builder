@@ -92,10 +92,12 @@ export const buildPromptPlan = ({
   specId,
   userInput,
   tone,
+  style,
   outputType,
   format,
   length,
   notes,
+  contextConstraints,
   toggles,
   typeSpecific // Type-specific fields from the form (e.g., copy_type, emotional_appeal)
 }, specRegistry = PROMPT_SPECS) => {
@@ -127,7 +129,9 @@ export const buildPromptPlan = ({
   const context = {
     userInput: promptText,
     notes: notes?.trim() || '',
+    contextConstraints: contextConstraints?.trim() || '',
     tone: tone || {},
+    style: style || {},
     output: outputType || {},
     format: format || {},
     length: length || {},

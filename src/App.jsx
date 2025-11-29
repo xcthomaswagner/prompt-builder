@@ -486,6 +486,14 @@ const LENGTHS = [
   { id: 'long', label: 'Long', prompt: 'Exhaustive and detailed' }
 ];
 
+const STYLES = [
+  { id: 'direct', label: 'Direct', prompt: 'straightforward, no fluff' },
+  { id: 'narrative', label: 'Narrative', prompt: 'story-driven, engaging flow' },
+  { id: 'analytical', label: 'Analytical', prompt: 'data-backed, logical structure' },
+  { id: 'persuasive', label: 'Persuasive', prompt: 'compelling, action-oriented' },
+  { id: 'instructional', label: 'Instructional', prompt: 'step-by-step, clear guidance' },
+];
+
 export default function App() {
   const [user, setUser] = useState(null);
   const [promptHistory, setPromptHistory] = useState([]);
@@ -496,6 +504,8 @@ export default function App() {
   const [hoveredOutputType, setHoveredOutputType] = useState(null);
   const [selectedTone, setSelectedTone] = useState('professional');
   const [toneDropdownOpen, setToneDropdownOpen] = useState(false);
+  const [selectedStyle, setSelectedStyle] = useState('direct');
+  const [contextConstraints, setContextConstraints] = useState('');
   const [selectedLength, setSelectedLength] = useState('medium');
   const [selectedFormat, setSelectedFormat] = useState('paragraph');
   const [formatDropdownOpen, setFormatDropdownOpen] = useState(false);
@@ -922,8 +932,10 @@ Apply the refinement instructions above to modify the prompt. Return only the up
       originalText: inputText,
       outputType: selectedOutputType,
       tone: selectedTone,
+      style: selectedStyle,
       format: selectedFormat,
       length: selectedLength,
+      contextConstraints: contextConstraints,
       notes: notes,
       toggles: {
         allowPlaceholders,
@@ -951,6 +963,7 @@ Apply the refinement instructions above to modify the prompt. Return only the up
     try {
       // currentSpec already defined above in requestState
       const toneObj = TONES.find(t => t.id === selectedTone);
+      const styleObj = STYLES.find(s => s.id === selectedStyle);
       const typeObj = OUTPUT_TYPES.find(t => t.id === selectedOutputType);
       const formatObj = FORMATS.find(f => f.id === selectedFormat);
       const lengthObj = LENGTHS.find(t => t.id === selectedLength);
@@ -960,10 +973,12 @@ Apply the refinement instructions above to modify the prompt. Return only the up
         specId: selectedOutputType,
         userInput: inputText,
         tone: toneObj,
+        style: styleObj,
         outputType: typeObj,
         format: formatObj,
         length: lengthObj,
         notes,
+        contextConstraints,
         toggles: {
           allowPlaceholders,
           stripMeta,
@@ -1173,10 +1188,12 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
     resetVersionHistory(); // Clear auto-improve version history
     setSelectedOutputType(data.outputType || 'doc');
     setSelectedTone(data.tone || 'professional');
+    setSelectedStyle(data.style || 'direct');
     setSelectedFormat(data.format || 'paragraph');
     setSelectedLength(data.length || 'medium');
     
-    // Restore notes
+    // Restore context and notes
+    setContextConstraints(data.contextConstraints || '');
     setNotes(data.notes || '');
     
     // Restore toggles
@@ -1448,6 +1465,7 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
                       {(() => {
                         try {
                           const toneObj = TONES.find(t => t.id === selectedTone);
+                          const styleObj = STYLES.find(s => s.id === selectedStyle);
                           const typeObj = OUTPUT_TYPES.find(t => t.id === selectedOutputType);
                           const formatObj = FORMATS.find(f => f.id === selectedFormat);
                           const lengthObj = LENGTHS.find(t => t.id === selectedLength);
@@ -1457,10 +1475,12 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
                             specId: selectedOutputType,
                             userInput: inputText || "(User Input)",
                             tone: toneObj,
+                            style: styleObj,
                             outputType: typeObj,
                             format: formatObj,
                             length: lengthObj,
                             notes,
+                            contextConstraints,
                             toggles: { allowPlaceholders, stripMeta, aestheticMode },
                             typeSpecific: currentSpec.typeSpecific
                           });
@@ -1485,8 +1505,10 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
                         setInputText('');
                         setSelectedOutputType('doc');
                         setSelectedTone('professional');
+                        setSelectedStyle('direct');
                         setSelectedFormat('paragraph');
                         setSelectedLength('medium');
+                        setContextConstraints('');
                         setNotes('');
                         setAllowPlaceholders(false);
                         setStripMeta(true);
@@ -1690,6 +1712,20 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
                           )}
                         </div>
                       </div>
+                      {/* Style */}
+                      <div className="space-y-2">
+                        <label className={`text-xs font-bold uppercase tracking-wide ${darkMode ? 'text-slate-400' : 'text-slate-500'}`}>Style</label>
+                        <div className="relative">
+                          <select
+                            value={selectedStyle}
+                            onChange={(e) => setSelectedStyle(e.target.value)}
+                            className={`w-full appearance-none border text-sm py-2.5 px-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent ${darkMode ? 'bg-slate-700 border-slate-600 text-slate-200' : 'bg-slate-50 border-slate-200 text-slate-700'}`}
+                          >
+                            {STYLES.map(s => <option key={s.id} value={s.id}>{s.label}</option>)}
+                          </select>
+                          <ChevronDown className={`absolute right-3 top-3 w-4 h-4 pointer-events-none ${darkMode ? 'text-slate-500' : 'text-slate-400'}`} />
+                        </div>
+                      </div>
                       {/* Length */}
                       <div className="space-y-2">
                         <label className={`text-xs font-bold uppercase tracking-wide ${darkMode ? 'text-slate-400' : 'text-slate-500'}`}>Length</label>
@@ -1758,14 +1794,25 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
                       </div>
                     </div>
 
+                    {/* Context & Constraints */}
+                    <div className="space-y-2">
+                      <label className={`text-xs font-bold uppercase tracking-wide ${darkMode ? 'text-slate-400' : 'text-slate-500'}`}>Context & Constraints</label>
+                      <textarea
+                        value={contextConstraints}
+                        onChange={(e) => setContextConstraints(e.target.value)}
+                        placeholder="Business context, technical limitations, compliance requirements, budget/timeline constraints..."
+                        className={`w-full h-16 border rounded-lg p-3 text-sm focus:ring-2 focus:ring-cyan-500 outline-none resize-none ${darkMode ? 'bg-slate-700 border-slate-600 text-slate-200 placeholder:text-slate-400' : 'bg-slate-50 border-slate-200 text-slate-700'}`}
+                      />
+                    </div>
+
                     {/* Notes */}
                     <div className="space-y-2">
-                      <label className={`text-xs font-bold uppercase tracking-wide ${darkMode ? 'text-slate-400' : 'text-slate-500'}`}>Notes (Audience, Constraints)</label>
+                      <label className={`text-xs font-bold uppercase tracking-wide ${darkMode ? 'text-slate-400' : 'text-slate-500'}`}>Additional Notes</label>
                       <textarea
                         value={notes}
                         onChange={(e) => setNotes(e.target.value)}
-                        placeholder="Add any additional context, audience details, or specific links..."
-                        className={`w-full h-20 border rounded-lg p-3 text-sm focus:ring-2 focus:ring-cyan-500 outline-none resize-none ${darkMode ? 'bg-slate-700 border-slate-600 text-slate-200 placeholder:text-slate-400' : 'bg-slate-50 border-slate-200 text-slate-700'}`}
+                        placeholder="Audience details, links, references..."
+                        className={`w-full h-16 border rounded-lg p-3 text-sm focus:ring-2 focus:ring-cyan-500 outline-none resize-none ${darkMode ? 'bg-slate-700 border-slate-600 text-slate-200 placeholder:text-slate-400' : 'bg-slate-50 border-slate-200 text-slate-700'}`}
                       />
                     </div>
 

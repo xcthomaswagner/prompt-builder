@@ -40,7 +40,20 @@ const baseSystemSteps = [
   {
     id: 'controls',
     channel: 'system',
-    template: `CONTROL SETTINGS:\n- Tone: {{tone.label}} ({{tone.prompt}})\n- Output Type: {{output.label}} ({{output.context}})\n- Format Style: {{format.label}} ({{format.prompt}})\n- Detail Level: {{length.label}}\n- Allow Illustrative Placeholders: {{toggles.allowPlaceholdersLabel}}\n- Strip Meta Commentary: {{toggles.stripMetaLabel}}\n- Emphasize Aesthetics: {{toggles.aestheticModeLabel}}`
+    template: `CONTROL SETTINGS:
+- Tone: {{tone.label}} ({{tone.prompt}})
+- Style: {{style.label}} ({{style.prompt}})
+- Output Type: {{output.label}} ({{output.context}})
+- Format: {{format.label}} ({{format.prompt}})
+- Detail Level: {{length.label}}
+- Allow Placeholders: {{toggles.allowPlaceholdersLabel}}
+- Strip Meta Commentary: {{toggles.stripMetaLabel}}`
+  },
+  {
+    id: 'context-constraints',
+    channel: 'system',
+    template: `CONTEXT & CONSTRAINTS:\n{{contextConstraints}}`,
+    conditions: [{ field: 'contextConstraints', operator: 'exists' }]
   },
   {
     id: 'guardrails',
@@ -494,12 +507,25 @@ Focus: Engage with activities. Include practice opportunities and memory aids.`
     },
     systemExtensions: [
       {
-        id: 'data-outputs',
+        id: 'data-output-format',
         channel: 'system',
-        template: `STRUCTURE REQUIREMENTS:
+        template: `OUTPUT FORMAT:
+
+**DATA BLUEPRINT METADATA**
+- Type: [API/Schema/Dictionary/Analytics/Dashboard]
+- Source Context: [Inferred from brief]
+- Target Consumers: [Who will use this data]
+
+**STRUCTURE REQUIREMENTS**
 - Provide tabular or bullet formats that can be pasted into spreadsheets or BI tools
 - Include sample queries or metrics if relevant
-- Specify data types, constraints, and relationships`
+- Specify data types, constraints, and relationships
+
+**SOURCE MATERIAL EXTRACTION**
+If the user provides existing documentation, transcripts, or data samples:
+- Extract key entities and relationships
+- Identify data quality issues or gaps
+- Note assumptions about missing fields`
       },
       {
         id: 'data-api-template',
@@ -791,13 +817,25 @@ Chart 1: [Title]
     },
     systemExtensions: [
       {
-        id: 'code-expectations',
+        id: 'code-output-format',
         channel: 'system',
-        template: `CODE DELIVERY NOTES:
-- Highlight default languages or runtimes if not specified
+        template: `OUTPUT FORMAT:
+
+**CODE BLUEPRINT METADATA**
+- Type: [Feature/Bugfix/Refactor/API/Migration]
+- Language/Stack: [Inferred from brief]
+- Complexity: [Simple/Moderate/Complex]
+
+**DELIVERY REQUIREMENTS**
 - Include pseudo-code and docstring expectations
 - Specify error handling patterns
-- Include test coverage expectations`
+- Include test coverage expectations
+
+**SOURCE MATERIAL EXTRACTION**
+If the user provides existing code, specs, or bug reports:
+- Extract key requirements and constraints
+- Identify affected components and dependencies
+- Note breaking change risks`
       },
       {
         id: 'code-feature-template',
@@ -1159,6 +1197,23 @@ SELECT * FROM source WHERE NOT EXISTS (SELECT 1 FROM target WHERE ...);
     },
     systemExtensions: [
       {
+        id: 'copy-output-format',
+        channel: 'system',
+        template: `OUTPUT FORMAT:
+
+**COPY BLUEPRINT METADATA**
+- Type: [Press/Email/Ad/Landing/Social/Product/Tagline]
+- Target Audience: [Inferred from brief]
+- Channel: [Where this will be published]
+- Emotional Appeal: {{typeSpecific.emotional_appeal || 'trust'}}
+
+**SOURCE MATERIAL EXTRACTION**
+If the user provides brand guidelines, competitor examples, or customer feedback:
+- Extract key brand voice attributes
+- Identify differentiators and proof points
+- Note audience pain points and desires`
+      },
+      {
         id: 'copy-type-context',
         channel: 'system',
         template: `COPY TYPE: {{typeSpecific.copy_type}}
@@ -1371,6 +1426,23 @@ REQUIREMENTS:
       ]
     },
     systemExtensions: [
+      {
+        id: 'comms-output-format',
+        channel: 'system',
+        template: `OUTPUT FORMAT:
+
+**COMMS BLUEPRINT METADATA**
+- Type: [Exec Update/All-Hands/1:1/Stakeholder Brief/Announcement/Feedback]
+- Audience: [Inferred from brief]
+- Urgency: [Routine/Important/Urgent]
+- Channel: [Email/Slack/Document/Meeting]
+
+**SOURCE MATERIAL EXTRACTION**
+If the user provides meeting notes, prior emails, or stakeholder feedback:
+- Extract key decisions and action items
+- Identify stakeholder concerns and sensitivities
+- Note context that should be referenced`
+      },
       {
         id: 'comms-email-template',
         channel: 'system',
