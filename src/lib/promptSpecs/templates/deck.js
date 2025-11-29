@@ -9,22 +9,19 @@
 import { createBaseSpec } from '../schema.js';
 
 /**
- * @typedef {'keynote'|'internal'|'pitch'|'training'} PresentationContext
- */
-
-/**
  * @typedef {'minimal'|'data-heavy'|'image-rich'} VisualStyle
  */
 
 /**
+ * @typedef {'investor'|'sales'|'board'|'internal'|'training'} DeckType
+ */
+
+/**
  * @typedef {Object} DeckTypeSpecific
+ * @property {DeckType} deck_type - Type of deck
  * @property {number|null} slide_count - Target number of slides
- * @property {number|null} duration_minutes - Presentation length in minutes
- * @property {PresentationContext} presentation_context - Type of presentation
  * @property {VisualStyle} visual_style - Visual approach
  * @property {boolean} include_speaker_notes - Include speaker notes
- * @property {boolean} include_visual_suggestions - Include visual suggestions
- * @property {string[]} slide_structure - Ordered list of slide types
  */
 
 /**
@@ -32,13 +29,10 @@ import { createBaseSpec } from '../schema.js';
  * @type {DeckTypeSpecific}
  */
 export const deckDefaults = {
+  deck_type: 'internal',
   slide_count: null,
-  duration_minutes: null,
-  presentation_context: 'internal',
   visual_style: 'minimal',
   include_speaker_notes: true,
-  include_visual_suggestions: true,
-  slide_structure: [],
 };
 
 /**
@@ -52,35 +46,20 @@ export function createDeckSpec() {
 }
 
 /**
- * Infer slide count from duration
- * @param {number} durationMinutes - Presentation duration
- * @returns {number} Estimated slide count
- */
-export function inferSlideCount(durationMinutes) {
-  // Rule of thumb: ~2 minutes per slide for most presentations
-  if (durationMinutes <= 5) return 3;
-  if (durationMinutes <= 10) return 5;
-  if (durationMinutes <= 15) return 8;
-  if (durationMinutes <= 30) return 15;
-  if (durationMinutes <= 45) return 22;
-  return Math.round(durationMinutes / 2);
-}
-
-/**
- * Get recommended visual style based on context
- * @param {PresentationContext} context
+ * Get recommended visual style based on deck type
+ * @param {DeckType} deckType
  * @returns {VisualStyle}
  */
-export function recommendVisualStyle(context) {
-  switch (context) {
-    case 'keynote':
+export function recommendVisualStyle(deckType) {
+  switch (deckType) {
+    case 'investor':
+    case 'sales':
       return 'image-rich';
-    case 'internal':
-      return 'minimal';
-    case 'pitch':
-      return 'image-rich';
+    case 'board':
+      return 'data-heavy';
     case 'training':
       return 'data-heavy';
+    case 'internal':
     default:
       return 'minimal';
   }
@@ -104,15 +83,6 @@ export function validateDeckSpec(typeSpecific) {
     }
     if (typeSpecific.slide_count > 50) {
       warnings.push('Consider breaking into multiple presentations');
-    }
-  }
-  
-  if (typeSpecific.duration_minutes !== null) {
-    if (typeSpecific.duration_minutes < 1) {
-      errors.push('Duration must be at least 1 minute');
-    }
-    if (typeSpecific.duration_minutes > 180) {
-      warnings.push('Presentations over 3 hours may need breaks');
     }
   }
   

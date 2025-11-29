@@ -25,17 +25,17 @@ function getTypeSpecificInstructions(outputType, typeSpecific) {
   const instructions = {
     deck: () => {
       const parts = ['For this slide deck:'];
+      if (typeSpecific.deck_type) {
+        parts.push(`- Deck type: ${typeSpecific.deck_type}`);
+      }
       if (typeSpecific.slide_count) {
         parts.push(`- Target ${typeSpecific.slide_count} slides`);
       }
-      if (typeSpecific.duration_minutes) {
-        parts.push(`- Designed for ${typeSpecific.duration_minutes} minute presentation`);
+      if (typeSpecific.visual_style) {
+        parts.push(`- Visual style: ${typeSpecific.visual_style}`);
       }
       if (typeSpecific.include_speaker_notes) {
         parts.push('- Include speaker notes for each slide');
-      }
-      if (typeSpecific.include_visual_suggestions) {
-        parts.push('- Include visual/image suggestions for each slide');
       }
       parts.push('- Each slide should have: title, key points (3-5 bullets), visual suggestion, speaker notes');
       return parts.join('\n');

@@ -74,11 +74,10 @@ Return ONLY valid JSON, no markdown formatting.`;
  */
 function getTypeSpecificPromptHints(outputType) {
   const hints = {
-    deck: `- slide_count: Recommended number of slides
-   - duration_minutes: Suggested presentation length
-   - presentation_context: keynote|internal|pitch|training
-   - include_speaker_notes: boolean
-   - include_visual_suggestions: boolean`,
+    deck: `- deck_type: investor|sales|board|internal|training
+   - slide_count: Recommended number of slides
+   - visual_style: minimal|data-heavy|image-rich
+   - include_speaker_notes: boolean`,
     
     code: `- language: Programming language to use
    - framework: Framework if applicable
