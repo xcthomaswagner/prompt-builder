@@ -36,6 +36,12 @@ export const SUPPORTED_MODELS = [
     provider: 'openai',
     description: 'Large-scale model optimized for chat and agentic tasks'
   },
+  {
+    id: 'o3',
+    label: 'o3',
+    provider: 'openai',
+    description: 'Advanced reasoning model'
+  },
   // Anthropic
   {
     id: 'claude-3-5-sonnet-20241022',

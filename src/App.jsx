@@ -111,6 +111,7 @@ const estimateTokens = (text) => {
 const OPENAI_MODELS = [
   { id: 'gpt-5.1', label: 'GPT-5.1', description: 'Latest flagship' },
   { id: 'gpt-4.5-preview', label: 'GPT-4.5', description: 'Large-scale agentic model' },
+  { id: 'o3', label: 'o3', description: 'Reasoning model' },
 ];
 
 const CLAUDE_MODELS = [
