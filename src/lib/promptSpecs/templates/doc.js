@@ -9,7 +9,7 @@
 import { createBaseSpec } from '../schema.js';
 
 /**
- * @typedef {'report'|'proposal'|'guide'|'analysis'|'whitepaper'|'memo'} DocumentType
+ * @typedef {'report'|'proposal'|'guide'|'analysis'|'whitepaper'|'memo'|'requirements'} DocumentType
  */
 
 /**
@@ -49,6 +49,7 @@ export const SECTION_STRUCTURES = {
   analysis: ['overview', 'data_sources', 'methodology', 'findings', 'implications'],
   whitepaper: ['abstract', 'introduction', 'background', 'solution', 'benefits', 'conclusion'],
   memo: ['purpose', 'background', 'discussion', 'action_items'],
+  requirements: ['executive_summary', 'stakeholders', 'functional_requirements', 'non_functional_requirements', 'user_stories', 'acceptance_criteria', 'constraints', 'assumptions', 'dependencies', 'glossary'],
 };
 
 /**

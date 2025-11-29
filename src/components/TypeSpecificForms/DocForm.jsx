@@ -14,6 +14,7 @@ const DOCUMENT_TYPES = [
   { value: 'analysis', label: 'Analysis' },
   { value: 'whitepaper', label: 'Whitepaper' },
   { value: 'memo', label: 'Memo' },
+  { value: 'requirements', label: 'Requirements Doc' },
 ];
 
 const CITATION_STYLES = [

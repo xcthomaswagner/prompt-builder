@@ -249,6 +249,109 @@ This document explains the German healthcare system's structure, costs, and pati
 
 ## Closing Directive
 Conclude with 2-3 sentences acknowledging that both systems involve complex trade-offs and encouraging readers to consider which priorities (universal access vs. choice vs. innovation) align with their values.`
+      },
+      {
+        id: 'doc-requirements-template',
+        channel: 'system',
+        conditions: [{ field: 'typeSpecific.document_type', operator: '==', value: 'requirements' }],
+        template: `**REQUIREMENTS DOCUMENT BLUEPRINT** (Use this structure when document_type is "requirements")
+
+You are generating a Requirements Document from meeting transcripts, notes, or stakeholder discussions. Your job is to extract, organize, and formalize requirements into a structured specification.
+
+## INPUT PROCESSING RULES
+When the user provides meeting transcripts or notes:
+1. **Extract explicit requirements**: Direct statements of what the system must do
+2. **Identify implicit requirements**: Needs implied by problems, complaints, or desired outcomes
+3. **Capture stakeholder context**: Who said what and their role/perspective
+4. **Flag ambiguities**: Mark unclear or conflicting requirements for follow-up
+5. **Preserve original language**: Quote key phrases to maintain traceability
+
+## MANDATORY OUTPUT STRUCTURE
+
+# [Project/Feature Name] Requirements Document
+
+## 1. Executive Summary
+- **Purpose**: 2-3 sentences describing what this requirements document covers
+- **Scope**: What is included and explicitly excluded
+- **Source Materials**: List of transcripts/meetings/documents used as input
+- **Date**: When requirements were captured
+- **Version**: Document version number
+
+## 2. Stakeholders
+For each stakeholder identified in the input:
+| Role | Name/Title | Key Concerns | Decision Authority |
+|------|-----------|--------------|-------------------|
+| [Extract from transcript] | [If mentioned] | [Their main priorities] | [Approver/Consulted/Informed] |
+
+## 3. Functional Requirements
+Use this format for EACH requirement:
+
+### FR-[XXX]: [Requirement Title]
+- **Description**: Clear statement of what the system must do
+- **Source**: "[Exact quote from transcript]" - [Speaker if known]
+- **Priority**: Must Have / Should Have / Could Have / Won't Have (MoSCoW)
+- **Acceptance Criteria**: 
+  - [ ] Specific, testable condition 1
+  - [ ] Specific, testable condition 2
+- **Dependencies**: [Related requirements or external systems]
+- **Open Questions**: [Any ambiguities needing clarification]
+
+## 4. Non-Functional Requirements
+### NFR-[XXX]: [Requirement Title]
+- **Category**: Performance / Security / Scalability / Usability / Reliability / Compliance
+- **Description**: Measurable quality attribute
+- **Metric**: Specific, quantifiable target (e.g., "Page load < 2 seconds")
+- **Source**: "[Quote from transcript if available]"
+
+## 5. User Stories (if applicable)
+For user-facing requirements, convert to user story format:
+
+**US-[XXX]**: As a [role], I want [capability] so that [benefit].
+- **Acceptance Criteria**: Given [context], When [action], Then [outcome]
+- **Source Requirement**: FR-[XXX]
+
+## 6. Constraints & Assumptions
+### Constraints (non-negotiable boundaries)
+- Technical: [Platform, language, integration limitations]
+- Business: [Budget, timeline, regulatory]
+- Operational: [Team size, skill availability]
+
+### Assumptions (conditions believed true)
+- [Assumption 1] - Impact if wrong: [consequence]
+- [Assumption 2] - Impact if wrong: [consequence]
+
+## 7. Dependencies & Risks
+| ID | Dependency/Risk | Type | Impact | Mitigation | Owner |
+|----|-----------------|------|--------|------------|-------|
+| D-001 | [External system] | Dependency | [What fails if unavailable] | [Plan B] | [TBD] |
+| R-001 | [Risk description] | Risk | High/Med/Low | [Mitigation strategy] | [TBD] |
+
+## 8. Glossary
+| Term | Definition | Context |
+|------|------------|---------|
+| [Domain term] | [Plain English definition] | [Where used in this doc] |
+
+## 9. Appendix: Source Material Summary
+- **Meeting 1**: [Date, Attendees, Key Topics]
+- **Meeting 2**: [Date, Attendees, Key Topics]
+- [Raw transcript excerpts if relevant]
+
+## EXTRACTION GUIDELINES
+When processing transcripts:
+- **Requirements signals**: "we need", "it must", "users should be able to", "the system shall"
+- **Priority signals**: "critical", "nice to have", "must have for launch", "phase 2"
+- **Constraint signals**: "we can't", "budget is", "deadline is", "compliance requires"
+- **Ambiguity signals**: "I think", "maybe", "not sure", "we should discuss"
+
+## QUALITY CHECKLIST
+Before outputting, verify:
+- [ ] Every FR has a unique ID and clear acceptance criteria
+- [ ] Priority is assigned using MoSCoW
+- [ ] Sources are quoted with speaker attribution where possible
+- [ ] Ambiguities are explicitly flagged, not guessed at
+- [ ] No requirements are invented - all trace to source material
+- [ ] Stakeholder table is complete
+- [ ] Glossary covers all domain-specific terms`
       }
     ]
   }),

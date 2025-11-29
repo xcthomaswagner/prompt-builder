@@ -67,6 +67,18 @@ const TYPE_PATTERNS = {
     { pattern: /\b(feedback|performance|review|constructive|improvement)\b/i, value: 'feedback' }
   ],
 
+  // Document type detection
+  document_type: [
+    { pattern: /\b(requirements?\s*doc|requirements?\s*spec|prd|product\s*requirements?|brd|business\s*requirements?)\b/i, value: 'requirements' },
+    { pattern: /\b(transcript|meeting\s*notes?|discussion|stakeholder\s*interview|discovery\s*session)\b/i, value: 'requirements' },
+    { pattern: /\b(user\s*stories?|acceptance\s*criteria|functional\s*requirements?|non[\s-]?functional)\b/i, value: 'requirements' },
+    { pattern: /\b(report|findings|analysis|assessment)\b/i, value: 'report' },
+    { pattern: /\b(proposal|rfp|bid|pitch\s*document)\b/i, value: 'proposal' },
+    { pattern: /\b(guide|how[\s-]?to|tutorial|instructions?|manual)\b/i, value: 'guide' },
+    { pattern: /\b(whitepaper|white\s*paper|research\s*paper|technical\s*paper)\b/i, value: 'whitepaper' },
+    { pattern: /\b(memo|memorandum|internal\s*communication)\b/i, value: 'memo' }
+  ],
+
   // Emotional appeal detection for copy
   emotional_appeal: [
     { pattern: /\b(fear|fomo|miss\s*out|urgent|scarcity|limited|deadline)\b/i, value: 'fear' },
