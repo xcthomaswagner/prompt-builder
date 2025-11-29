@@ -6,19 +6,12 @@ import { useState } from 'react';
 import { ChevronDown, ChevronUp, Layout } from 'lucide-react';
 import { FormField, ButtonGroup, Checkbox, NumberInput, Select } from '../ui/FormField.jsx';
 
-const PRESENTATION_CONTEXTS = [
-  { value: 'keynote', label: 'Keynote' },
+const DECK_TYPES = [
+  { value: 'investor', label: 'Investor Pitch' },
+  { value: 'sales', label: 'Sales' },
+  { value: 'board', label: 'Board Update' },
   { value: 'internal', label: 'Internal' },
-  { value: 'pitch', label: 'Pitch' },
   { value: 'training', label: 'Training' },
-];
-
-const DURATION_OPTIONS = [
-  { value: 5, label: '5 min (Lightning)' },
-  { value: 15, label: '15 min (Standard)' },
-  { value: 30, label: '30 min (Deep dive)' },
-  { value: 45, label: '45 min (Workshop)' },
-  { value: 60, label: '60 min (Full session)' },
 ];
 
 const VISUAL_STYLES = [
@@ -55,23 +48,12 @@ export default function DeckForm({ spec, onChange, darkMode = false }) {
       {/* Accordion Content */}
       {isExpanded && (
         <div className="p-6 space-y-6">
-          {/* Presentation Context */}
-          <FormField label="Presentation Context" hint="What type of presentation is this?" darkMode={darkMode}>
+          {/* Deck Type */}
+          <FormField label="Deck Type" hint="What type of presentation?" darkMode={darkMode}>
             <ButtonGroup
-              options={PRESENTATION_CONTEXTS}
-              value={typeSpecific.presentation_context}
-              onChange={(v) => handleChange('presentation_context', v)}
-              darkMode={darkMode}
-            />
-          </FormField>
-
-          {/* Duration */}
-          <FormField label="Duration" darkMode={darkMode}>
-            <Select
-              value={typeSpecific.duration_minutes}
-              onChange={(v) => handleChange('duration_minutes', v ? parseInt(v) : null)}
-              options={DURATION_OPTIONS}
-              placeholder="Auto (based on content)"
+              options={DECK_TYPES}
+              value={typeSpecific.deck_type}
+              onChange={(v) => handleChange('deck_type', v)}
               darkMode={darkMode}
             />
           </FormField>
@@ -82,7 +64,7 @@ export default function DeckForm({ spec, onChange, darkMode = false }) {
               value={typeSpecific.slide_count}
               onChange={(v) => handleChange('slide_count', v)}
               min={3}
-              max={100}
+              max={50}
               placeholder="Auto"
               darkMode={darkMode}
             />
@@ -104,12 +86,6 @@ export default function DeckForm({ spec, onChange, darkMode = false }) {
               label="Include Speaker Notes"
               checked={typeSpecific.include_speaker_notes !== false}
               onChange={(v) => handleChange('include_speaker_notes', v)}
-              darkMode={darkMode}
-            />
-            <Checkbox
-              label="Include Visual Suggestions"
-              checked={typeSpecific.include_visual_suggestions !== false}
-              onChange={(v) => handleChange('include_visual_suggestions', v)}
               darkMode={darkMode}
             />
           </div>

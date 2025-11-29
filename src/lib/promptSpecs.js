@@ -358,351 +358,114 @@ Before outputting, verify:
   deck: createSpec({
     id: 'deck',
     metadata: {
-      deliverable: 'Slide deck outline',
-      persona: 'Narrative Experience Strategist & Presentation Expert',
+      deliverable: 'Slide deck blueprint',
+      persona: 'Presentation Strategist',
       guardrails: [
-        'Limit structure to scannable slide beats (Title, Visuals, Speaker Notes).',
-        'Highlight story arc: hook, tension, resolution, and next steps.',
-        'Include audience-specific persuasion cues or data where relevant.',
-        'Every slide must have a single clear message (one idea per slide).',
-        'Specify exact data points, metrics, or examples to include.'
+        'One core message per slide.',
+        'Every slide needs: Title, Key Message, Visual Suggestion, Speaker Notes.',
+        'Highlight story arc: hook → tension → resolution → next steps.'
       ],
       enrichment: [
-        'Suggest slide groupings (e.g., Overview, Insight, Recommendation).',
-        'Outline suggested visuals, metaphors, or diagrams.',
+        'Suggest specific visuals (chart type, image concept, diagram).',
         'Include transition language between sections.',
-        'Specify timing estimates per section.'
+        'Specify exact data points or metrics to include.'
       ],
       pipeline: [
-        'Story Framing: define narrative spine and hero metric.',
-        'Slide Inventory: map beats into slide titles with intent + visual guidance.',
-        'Detailing: add speaker notes with examples, stats, and CTA.'
+        'Infer deck type and audience from brief.',
+        'Map story arc into slide structure.',
+        'Detail each slide with visual and speaking guidance.'
       ]
     },
     systemExtensions: [
       {
-        id: 'deck-specific',
+        id: 'deck-output-format',
         channel: 'system',
-        template: `DECK DELIVERY NOTES:
-- Aim for <= 12 slides unless the brief mandates more
-- Each slide must list: Title, Key Visual, Speaker Notes
-- One core message per slide
-- Specify exact metrics/data points to include`
+        template: `OUTPUT FORMAT:
+
+**DECK METADATA**
+- Type: [Investor/Sales/Board/Internal/Training]
+- Audience: [Inferred from brief]
+- Slides: [Recommended count]
+- Visual Style: {{typeSpecific.visual_style || 'balanced'}}
+
+**SLIDE TABLE**
+| # | Title | Key Message | Visual | Speaker Notes |
+|---|-------|-------------|--------|---------------|
+[Complete table for all slides]
+
+**DETAILED SLIDES**
+For each slide, provide expanded guidance.`
       },
       {
-        id: 'deck-investor-template',
+        id: 'deck-slide-rules',
+        channel: 'system',
+        template: `SLIDE RULES:
+- Titles: Action-oriented, 5-8 words max
+- Key Message: One sentence takeaway per slide
+- Visuals: Be specific (e.g., "bar chart comparing Q1-Q4" not just "chart")
+- Speaker Notes: 2-3 bullets with talking points, stats, or stories`
+      },
+      {
+        id: 'deck-investor',
         channel: 'system',
         conditions: [{ field: 'typeSpecific.deck_type', operator: '==', value: 'investor' }],
-        template: `INVESTOR PITCH DECK BLUEPRINT (10-12 slides):
-
-**SLIDE 1: TITLE**
-- Company name + tagline (5-8 words capturing essence)
-- Logo placement, founding date, location
-- Visual: Clean, memorable, confidence-building
-
-**SLIDE 2: PROBLEM** 
-- Pain point with quantified impact ($X lost, Y hours wasted)
-- Who experiences this (specific persona)
-- Why now? Market timing trigger
-- Visual: Relatable scenario or striking statistic
-
-**SLIDE 3: SOLUTION**
-- One-sentence value proposition
-- How it works (3 simple steps max)
-- "Before vs After" transformation
-- Visual: Product screenshot or demo flow
-
-**SLIDE 4: MARKET OPPORTUNITY**
-- TAM/SAM/SOM with sources
-- Growth rate and trends
-- Why this market, why now
-- Visual: Market size visualization
-
-**SLIDE 5: TRACTION**
-- Key metrics (revenue, users, growth rate)
-- Milestone timeline
-- Notable customers/logos
-- Visual: Hockey stick chart if applicable
-
-**SLIDE 6: BUSINESS MODEL**
-- Revenue streams
-- Pricing strategy
-- Unit economics (CAC, LTV, margins)
-- Visual: Revenue breakdown or pricing tiers
-
-**SLIDE 7: COMPETITION**
-- Competitive landscape (2x2 matrix)
-- Your unfair advantage
-- Defensibility (moat)
-- Visual: Positioning matrix
-
-**SLIDE 8: GO-TO-MARKET**
-- Customer acquisition strategy
-- Key channels
-- Partnership opportunities
-- Visual: Funnel or flywheel
-
-**SLIDE 9: TEAM**
-- Founders with relevant experience
-- Key hires needed
-- Advisors if notable
-- Visual: Headshots + one-line credentials
-
-**SLIDE 10: FINANCIALS**
-- 3-year projections
-- Key assumptions
-- Path to profitability
-- Visual: Revenue projection chart
-
-**SLIDE 11: THE ASK**
-- Funding amount
-- Use of funds breakdown
-- Milestones this enables
-- Visual: Pie chart of fund allocation
-
-**SLIDE 12: CLOSING**
-- One memorable takeaway
-- Contact information
-- Clear next step`
+        template: `INVESTOR PITCH (10-12 slides):
+Structure: Title → Problem (quantified) → Solution (before/after) → Market (TAM/SAM/SOM) → Traction → Business Model → Competition (2x2) → Go-to-Market → Team → Financials → The Ask → Close
+Focus: Large market, strong team, clear path to returns. Lead with traction if available.`
       },
       {
-        id: 'deck-sales-template',
+        id: 'deck-sales',
         channel: 'system',
         conditions: [{ field: 'typeSpecific.deck_type', operator: '==', value: 'sales' }],
-        template: `SALES DECK BLUEPRINT (8-12 slides):
-
-**SLIDE 1: TITLE + HOOK**
-- Provocative question or bold claim
-- Company positioning statement
-- Visual: Impactful imagery related to outcome
-
-**SLIDE 2: THE CHALLENGE**
-- Industry pain points (their world)
-- Cost of inaction (quantified)
-- Emotional connection to frustration
-- Visual: Relatable scenario
-
-**SLIDE 3: THE VISION**
-- What great looks like
-- Transformation promise
-- Aspirational outcome
-- Visual: Success state imagery
-
-**SLIDE 4: THE SOLUTION**
-- Product/service overview
-- Key capabilities (3-5 max)
-- How it works simply
-- Visual: Product demo or workflow
-
-**SLIDE 5-7: PROOF POINTS**
-- Case study 1: Challenge → Solution → Results
-- Case study 2: Different industry/use case
-- Metrics and testimonials
-- Visual: Before/after metrics, customer logos
-
-**SLIDE 8: DIFFERENTIATORS**
-- Why you vs. alternatives
-- Unique capabilities
-- Risk mitigation
-- Visual: Comparison table or unique value visual
-
-**SLIDE 9: IMPLEMENTATION**
-- Onboarding process
-- Timeline to value
-- Support structure
-- Visual: Implementation roadmap
-
-**SLIDE 10: INVESTMENT**
-- Pricing overview
-- ROI calculation
-- Risk reversal (guarantee/trial)
-- Visual: Value vs. cost comparison
-
-**SLIDE 11: NEXT STEPS**
-- Clear CTA
-- Decision timeline
-- Contact information
-- Visual: Simple action path`
+        template: `SALES DECK (8-12 slides):
+Structure: Hook → Challenge (cost of inaction) → Vision → Solution → Proof Points (2-3 case studies) → Differentiators → Implementation → Investment/ROI → Next Steps
+Focus: Their pain, your proof, make buying easy. Every slide builds toward close.`
       },
       {
-        id: 'deck-board-template',
+        id: 'deck-board',
         channel: 'system',
         conditions: [{ field: 'typeSpecific.deck_type', operator: '==', value: 'board' }],
-        template: `BOARD UPDATE DECK BLUEPRINT (10-15 slides):
-
-**SLIDE 1: EXECUTIVE SUMMARY**
-- Quarter/period overview
-- 3-5 key headlines
-- Overall health indicator (green/yellow/red)
-- Visual: Scorecard or dashboard
-
-**SLIDE 2: KEY METRICS DASHBOARD**
-- Revenue vs. plan
-- Growth rate
-- Key KPIs with trend arrows
-- Visual: Metrics dashboard
-
-**SLIDE 3-4: WINS & HIGHLIGHTS**
-- Major achievements
-- Customer wins
-- Product milestones
-- Visual: Timeline or celebration imagery
-
-**SLIDE 5: FINANCIAL PERFORMANCE**
-- P&L summary
-- Cash position
-- Burn rate and runway
-- Visual: Financial charts
-
-**SLIDE 6-7: CHALLENGES & RISKS**
-- What's not working
-- Risk register with mitigations
-- Honest assessment
-- Visual: Risk matrix
-
-**SLIDE 8: PRODUCT UPDATE**
-- Roadmap progress
-- Key releases
-- Technical debt/priorities
-- Visual: Roadmap timeline
-
-**SLIDE 9: TEAM & ORG**
-- Headcount vs. plan
-- Key hires/departures
-- Org health metrics
-- Visual: Org chart or team metrics
-
-**SLIDE 10: COMPETITIVE LANDSCAPE**
-- Market movements
-- Competitive intelligence
-- Strategic implications
-- Visual: Market map
-
-**SLIDE 11: STRATEGIC PRIORITIES**
-- Next quarter focus areas
-- Resource allocation
-- Key initiatives
-- Visual: Priority matrix
-
-**SLIDE 12: ASKS & DECISIONS**
-- Board input needed
-- Decisions required
-- Support requests
-- Visual: Decision table
-
-**SLIDE 13: APPENDIX**
-- Detailed financials
-- Supporting data
-- Reference materials`
+        template: `BOARD UPDATE (10-15 slides):
+Structure: Exec Summary (health scorecard) → Metrics Dashboard → Wins → Financials → Challenges & Risks → Product Update → Team → Competitive → Strategic Priorities → Asks/Decisions → Appendix
+Focus: Signal not noise. Be direct and honest. Flag issues early.`
       },
       {
-        id: 'deck-internal-template',
+        id: 'deck-internal',
         channel: 'system',
         conditions: [{ field: 'typeSpecific.deck_type', operator: '==', value: 'internal' }],
-        template: `INTERNAL PRESENTATION BLUEPRINT (6-10 slides):
-
-**SLIDE 1: TITLE + CONTEXT**
-- Meeting purpose
-- What we're deciding/discussing
-- Time allocation
-- Visual: Simple, branded
-
-**SLIDE 2: SITUATION/BACKGROUND**
-- Current state
-- How we got here
-- Key context needed
-- Visual: Timeline or context diagram
-
-**SLIDE 3: ANALYSIS/FINDINGS**
-- Data and insights
-- Key discoveries
-- Implications
-- Visual: Charts, data viz
-
-**SLIDE 4-5: OPTIONS/RECOMMENDATIONS**
-- Option A: Pros, cons, implications
-- Option B: Pros, cons, implications
-- Recommended path with rationale
-- Visual: Comparison matrix
-
-**SLIDE 6: IMPLEMENTATION PLAN**
-- Key milestones
-- Owners and timelines
-- Dependencies
-- Visual: Gantt or roadmap
-
-**SLIDE 7: RESOURCE ASK**
-- What's needed
-- Budget implications
-- Team requirements
-- Visual: Resource breakdown
-
-**SLIDE 8: DISCUSSION**
-- Key questions to resolve
-- Input needed
-- Decision points
-- Visual: Minimal, focus on conversation
-
-**SLIDE 9: NEXT STEPS**
-- Immediate actions
-- Owners
-- Follow-up timeline
-- Visual: Action table`
+        template: `INTERNAL MEETING (6-10 slides):
+Structure: Purpose → Background → Analysis → Options (pros/cons) → Recommendation → Implementation Plan → Resource Ask → Discussion → Next Steps
+Focus: Optimize for decisions. Present options clearly, recommend, get alignment.`
       },
       {
-        id: 'deck-training-template',
+        id: 'deck-training',
         channel: 'system',
         conditions: [{ field: 'typeSpecific.deck_type', operator: '==', value: 'training' }],
-        template: `TRAINING/WORKSHOP DECK BLUEPRINT:
+        template: `TRAINING/WORKSHOP (15-25 slides):
+Structure: Learning Objectives → Agenda → Why This Matters → Content Modules (1 concept/slide) → Exercises → Key Takeaways → Resources → Q&A
+Focus: Engage with activities. Include practice opportunities and memory aids.`
+      },
+      {
+        id: 'deck-few-shot',
+        channel: 'system',
+        template: `EXAMPLE OUTPUT:
 
-**SLIDE 1: TITLE + LEARNING OBJECTIVES**
-- Workshop name
-- 3-5 learning outcomes
-- Duration and format
-- Visual: Engaging, topic-relevant
+**Input**: "Pitch deck for AI writing startup, 5k users, $20k MRR"
 
-**SLIDE 2: AGENDA**
-- Session breakdown with times
-- Interactive elements flagged
-- Break schedule
-- Visual: Visual timeline
+**DECK METADATA**
+- Type: Investor Pitch
+- Audience: Seed/Series A investors
+- Slides: 11
+- Visual Style: Clean, data-forward
 
-**SLIDE 3: WHY THIS MATTERS**
-- Relevance to audience
-- Pain points addressed
-- Success stories
-- Visual: Motivational
-
-**SLIDE 4-X: CONTENT MODULES**
-For each module:
-- Key concept (one per slide)
-- Explanation or framework
-- Example or case study
-- Practice activity
-- Visual: Diagrams, frameworks, examples
-
-**SLIDE: INTERACTIVE EXERCISE**
-- Activity instructions
-- Time allocation
-- Expected outcome
-- Visual: Worksheet or activity guide
-
-**SLIDE: KEY TAKEAWAYS**
-- Summary of main points
-- Memory aids
-- Quick reference
-- Visual: Infographic summary
-
-**SLIDE: RESOURCES**
-- Further reading
-- Tools and templates
-- Contact for questions
-- Visual: Resource links/QR codes
-
-**SLIDE: Q&A**
-- Open discussion prompt
-- Parking lot for offline questions
-- Visual: Minimal, focus on dialogue`
+| # | Title | Key Message | Visual | Notes |
+|---|-------|-------------|--------|-------|
+| 1 | WriteAI: AI-Powered Writing | Make everyone a better writer | Logo + tagline | Hook: "What if writing was effortless?" |
+| 2 | Writing is Broken | Professionals waste 25% of time on writing | Frustrated worker + clock | "2.5 hours/day on email alone" |
+| 3 | WriteAI Solution | Draft to polish in minutes | Before/after comparison | Live demo talking points |
+| 4 | $47B Market | Content creation tools growing 24% YoY | Market size circles | TAM/SAM/SOM breakdown |
+| 5 | Early Traction | 5,000 users, $20K MRR, 15% MoM growth | Hockey stick chart | Highlight organic growth |
+...`
       }
     ]
   }),
