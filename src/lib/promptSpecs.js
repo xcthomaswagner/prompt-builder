@@ -47,7 +47,8 @@ const baseSystemSteps = [
 - Format: {{format.label}} ({{format.prompt}})
 - Detail Level: {{length.label}}
 - Allow Placeholders: {{toggles.allowPlaceholdersLabel}}
-- Strip Meta Commentary: {{toggles.stripMetaLabel}}`
+- Strip Meta Commentary: {{toggles.stripMetaLabel}}
+- Emphasize Visual Polish: {{toggles.aestheticModeLabel}}`
   },
   {
     id: 'context-constraints',
@@ -179,67 +180,6 @@ const baseUserSteps = [
   }
 ];
 
-// CONSOLIDATED FEW-SHOT EXAMPLES (Format-driven)
-// These demonstrate how Format + Tone + Prompt combine
-const FORMAT_FEW_SHOT_EXAMPLES = `
-FEW-SHOT EXAMPLES (Format as Primary Router):
-
----
-EXAMPLE 1: Email Format
-Input: { Format: Email, Tone: Formal, Prompt: "Rescue crew deployment update" }
-Output Blueprint:
-Subject: ACTION REQ'D: Senior Rescue Crew Deployment - Immediate Response Needed
-
-[BLUF opening - state the critical update in first sentence]
-
-[Body paragraph 1: Current situation status, 2-3 sentences max]
-- [Key metric or deadline]
-- [Required action item]
-
-[Closing: Single CTA with specific deadline and owner]
-
-[SIGN-OFF]
-
----
-EXAMPLE 2: Document/Sections Format
-Input: { Format: Sections, Tone: Professional, Prompt: "Q1 Performance Review" }
-Output Blueprint:
-# Q1 Performance Review [DRAFT] [Date]
-
-## Executive Summary
-[2-3 sentence overview of key findings and recommendations]
-
-## Key Metrics
-| Metric | Target | Actual | Variance |
-|--------|--------|--------|----------|
-[Table with performance data]
-
-## Strategic Initiatives
-### Initiative 1: [Name]
-[Status, progress, next steps]
-
-## Recommendations
-[Prioritized action items with owners and deadlines]
-
----
-EXAMPLE 3: Bullet Points Format
-Input: { Format: Bullets, Tone: Technical, Prompt: "API migration checklist" }
-Output Blueprint:
-**Pre-Migration**
-- Audit current API endpoints and dependencies
-- Document breaking changes and deprecations
-- Set up staging environment for testing
-
-**Migration Steps**
-- Update authentication flow to OAuth 2.0
-- Migrate data models to new schema
-- Implement versioning strategy (v2 prefix)
-
-**Post-Migration**
-- Monitor error rates for 48 hours
-- Update client SDKs and documentation
-- Deprecate legacy endpoints (30-day notice)
-`;
 
 /**
  * Creates a new prompt specification by merging base defaults with type-specific overrides.
