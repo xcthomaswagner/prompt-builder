@@ -143,8 +143,10 @@ const baseSystemSteps = [
 When Format=Email: Use BLUF structure, subject line, single CTA
 When Format=Sections: Use hierarchical H1/H2/H3, date markers, transitions
 When Format=Bullets: Parallel structure, action verbs, grouped headers
+When Format=Numbered: Sequential numbers, parallel structure, ranked items
 When Format=Table: Clear headers, consistent types, markdown syntax
-When Format=Steps: Numbered sequence, one action per step, prerequisites first`
+When Format=Steps: Numbered sequence, one action per step, prerequisites first
+When Format=Q&A: Bold questions, direct answers, grouped by topic`
   },
   {
     id: 'guardrails',
