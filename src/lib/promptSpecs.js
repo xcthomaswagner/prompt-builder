@@ -55,6 +55,74 @@ const baseSystemSteps = [
     template: `CONTEXT & CONSTRAINTS:\n{{contextConstraints}}`,
     conditions: [{ field: 'contextConstraints', operator: 'exists' }]
   },
+  // FORMAT-SPECIFIC STRUCTURAL TEMPLATES (Template Router)
+  {
+    id: 'format-email',
+    channel: 'system',
+    conditions: [{ field: 'format.id', operator: '==', value: 'email' }],
+    template: `FORMAT STRUCTURAL REQUIREMENTS (Email):
+- Use BLUF (Bottom Line Up Front) structure
+- Subject line: Clear, action-oriented, under 60 chars
+- Opening: State the key point/ask immediately
+- Body: 2-3 short paragraphs max, use bullets for lists
+- Closing: Single, clear call-to-action
+- Length constraint: ~100-150 words for body
+- Include [SIGN-OFF] placeholder`
+  },
+  {
+    id: 'format-sections',
+    channel: 'system',
+    conditions: [{ field: 'format.id', operator: '==', value: 'sections' }],
+    template: `FORMAT STRUCTURAL REQUIREMENTS (Document):
+- Hierarchical breakdown with clear H1/H2/H3 structure
+- Enforce formality of language matching the tone setting
+- Include date markers: [DRAFT] or [FINAL], [Date]
+- Prepend/append title with version indicator
+- Each section: clear topic sentence, supporting details, transition`
+  },
+  {
+    id: 'format-bullets',
+    channel: 'system',
+    conditions: [{ field: 'format.id', operator: '==', value: 'bullets' }],
+    template: `FORMAT STRUCTURAL REQUIREMENTS (Bullet Points):
+- Lead with action verbs or key nouns
+- Parallel structure across all bullets
+- 5-7 words per bullet ideal, 12 max
+- Group related items under sub-headers if >7 bullets
+- No periods unless full sentences`
+  },
+  {
+    id: 'format-table',
+    channel: 'system',
+    conditions: [{ field: 'format.id', operator: '==', value: 'table' }],
+    template: `FORMAT STRUCTURAL REQUIREMENTS (Table):
+- Clear column headers with units where applicable
+- Consistent data types per column
+- Sort by most important dimension
+- Include totals/summaries row if numeric
+- Use markdown table syntax`
+  },
+  {
+    id: 'format-steps',
+    channel: 'system',
+    conditions: [{ field: 'format.id', operator: '==', value: 'steps' }],
+    template: `FORMAT STRUCTURAL REQUIREMENTS (Step-by-Step):
+- Number each step sequentially (1, 2, 3...)
+- One action per step
+- Include expected outcome after key steps
+- Note prerequisites at the start
+- Add troubleshooting tips for complex steps`
+  },
+  {
+    id: 'format-few-shots',
+    channel: 'system',
+    template: `REFERENCE EXAMPLES (showing Format + Tone + Content integration):
+When Format=Email: Use BLUF structure, subject line, single CTA
+When Format=Sections: Use hierarchical H1/H2/H3, date markers, transitions
+When Format=Bullets: Parallel structure, action verbs, grouped headers
+When Format=Table: Clear headers, consistent types, markdown syntax
+When Format=Steps: Numbered sequence, one action per step, prerequisites first`
+  },
   {
     id: 'guardrails',
     channel: 'system',
@@ -88,6 +156,68 @@ const baseUserSteps = [
     conditions: [{ field: 'notes', operator: 'exists' }]
   }
 ];
+
+// CONSOLIDATED FEW-SHOT EXAMPLES (Format-driven)
+// These demonstrate how Format + Tone + Prompt combine
+const FORMAT_FEW_SHOT_EXAMPLES = `
+FEW-SHOT EXAMPLES (Format as Primary Router):
+
+---
+EXAMPLE 1: Email Format
+Input: { Format: Email, Tone: Formal, Prompt: "Rescue crew deployment update" }
+Output Blueprint:
+Subject: ACTION REQ'D: Senior Rescue Crew Deployment - Immediate Response Needed
+
+[BLUF opening - state the critical update in first sentence]
+
+[Body paragraph 1: Current situation status, 2-3 sentences max]
+- [Key metric or deadline]
+- [Required action item]
+
+[Closing: Single CTA with specific deadline and owner]
+
+[SIGN-OFF]
+
+---
+EXAMPLE 2: Document/Sections Format
+Input: { Format: Sections, Tone: Professional, Prompt: "Q1 Performance Review" }
+Output Blueprint:
+# Q1 Performance Review [DRAFT] [Date]
+
+## Executive Summary
+[2-3 sentence overview of key findings and recommendations]
+
+## Key Metrics
+| Metric | Target | Actual | Variance |
+|--------|--------|--------|----------|
+[Table with performance data]
+
+## Strategic Initiatives
+### Initiative 1: [Name]
+[Status, progress, next steps]
+
+## Recommendations
+[Prioritized action items with owners and deadlines]
+
+---
+EXAMPLE 3: Bullet Points Format
+Input: { Format: Bullets, Tone: Technical, Prompt: "API migration checklist" }
+Output Blueprint:
+**Pre-Migration**
+- Audit current API endpoints and dependencies
+- Document breaking changes and deprecations
+- Set up staging environment for testing
+
+**Migration Steps**
+- Update authentication flow to OAuth 2.0
+- Migrate data models to new schema
+- Implement versioning strategy (v2 prefix)
+
+**Post-Migration**
+- Monitor error rates for 48 hours
+- Update client SDKs and documentation
+- Deprecate legacy endpoints (30-day notice)
+`;
 
 /**
  * Creates a new prompt specification by merging base defaults with type-specific overrides.
