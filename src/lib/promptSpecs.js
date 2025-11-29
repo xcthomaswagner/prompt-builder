@@ -114,6 +114,28 @@ const baseSystemSteps = [
 - Add troubleshooting tips for complex steps`
   },
   {
+    id: 'format-numbered',
+    channel: 'system',
+    conditions: [{ field: 'format.id', operator: '==', value: 'numbered' }],
+    template: `FORMAT STRUCTURAL REQUIREMENTS (Numbered List):
+- Use sequential numbers (1, 2, 3...)
+- Keep items parallel in structure
+- Use for ordered sequences or ranked items
+- Each item should be self-contained
+- Consider sub-numbering (1a, 1b) for nested items`
+  },
+  {
+    id: 'format-qa',
+    channel: 'system',
+    conditions: [{ field: 'format.id', operator: '==', value: 'qa' }],
+    template: `FORMAT STRUCTURAL REQUIREMENTS (Q&A):
+- Bold or emphasize each question
+- Provide clear, direct answers
+- Keep answers concise but complete
+- Group related questions together
+- Include follow-up considerations where relevant`
+  },
+  {
     id: 'format-few-shots',
     channel: 'system',
     template: `REFERENCE EXAMPLES (showing Format + Tone + Content integration):

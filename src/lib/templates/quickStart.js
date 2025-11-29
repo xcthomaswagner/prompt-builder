@@ -33,11 +33,10 @@ export const quickStartTemplates = [
     description: 'Executive presentation of quarterly performance',
     defaults: {
       typeSpecific: {
+        deck_type: 'board',
         slide_count: 12,
-        duration_minutes: 30,
-        presentation_context: 'internal',
+        visual_style: 'data-heavy',
         include_speaker_notes: true,
-        include_visual_suggestions: true,
       },
       constraints: {
         tone_markers: ['professional', 'data-driven'],
@@ -53,12 +52,10 @@ export const quickStartTemplates = [
     description: 'External presentation for product announcement',
     defaults: {
       typeSpecific: {
+        deck_type: 'sales',
         slide_count: 15,
-        duration_minutes: 20,
-        presentation_context: 'keynote',
-        include_speaker_notes: true,
-        include_visual_suggestions: true,
         visual_style: 'image-rich',
+        include_speaker_notes: true,
       },
       constraints: {
         tone_markers: ['creative', 'inspiring'],
@@ -74,9 +71,9 @@ export const quickStartTemplates = [
     description: 'Pitch deck for fundraising',
     defaults: {
       typeSpecific: {
+        deck_type: 'investor',
         slide_count: 10,
-        duration_minutes: 15,
-        presentation_context: 'pitch',
+        visual_style: 'minimal',
         include_speaker_notes: true,
       },
       constraints: {
