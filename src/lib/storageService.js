@@ -152,8 +152,8 @@ export function modelSupportsVision(modelId) {
     'gemini-2',      // All Gemini 2.x models
     'gemini-1.5',    // All Gemini 1.5 models
     'gpt-5',         // All GPT-5 models
-    'gpt-4o',        // GPT-4o and GPT-4o-mini
-    'gpt-4-turbo',   // GPT-4 Turbo
+    'gpt-4.5',       // GPT-4.5 models
+    'gpt-4-turbo',   // GPT-4 Turbo (legacy)
     'claude-3',      // All Claude 3.x models (opus, sonnet, haiku)
     'o1',            // OpenAI o1 models
     'o3',            // OpenAI o3 models

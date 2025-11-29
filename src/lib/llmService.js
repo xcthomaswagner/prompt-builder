@@ -31,40 +31,16 @@ export const SUPPORTED_MODELS = [
     description: 'Latest flagship model with enhanced reasoning'
   },
   {
-    id: 'gpt-4.1',
-    label: 'GPT-4.1',
+    id: 'gpt-4.5-preview',
+    label: 'GPT-4.5',
     provider: 'openai',
-    description: 'Flagship model with enhanced coding and instruction following'
+    description: 'Large-scale model optimized for chat and agentic tasks'
   },
   {
     id: 'o3',
     label: 'o3',
     provider: 'openai',
     description: 'Advanced reasoning model'
-  },
-  {
-    id: 'gpt-4.1-mini',
-    label: 'GPT-4.1 Mini',
-    provider: 'openai',
-    description: 'Fast and cost-effective 4.1 variant'
-  },
-  {
-    id: 'gpt-4.1-nano',
-    label: 'GPT-4.1 Nano',
-    provider: 'openai',
-    description: 'Smallest and fastest 4.1 variant'
-  },
-  {
-    id: 'gpt-4o',
-    label: 'GPT-4o',
-    provider: 'openai',
-    description: 'Most capable OpenAI model'
-  },
-  {
-    id: 'gpt-4o-mini',
-    label: 'GPT-4o Mini',
-    provider: 'openai',
-    description: 'Fast and cost-effective'
   },
   // Anthropic
   {
@@ -161,7 +137,7 @@ async function callGemini(userPrompt, systemPrompt, apiKey, modelId = 'gemini-2.
 /**
  * Call OpenAI API.
  */
-async function callOpenAI(userPrompt, systemPrompt, apiKey, modelId = 'gpt-4o') {
+async function callOpenAI(userPrompt, systemPrompt, apiKey, modelId = 'gpt-4.5-preview') {
   const url = 'https://api.openai.com/v1/chat/completions';
 
   const messages = [];

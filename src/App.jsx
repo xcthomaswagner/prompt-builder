@@ -110,12 +110,7 @@ const estimateTokens = (text) => {
 // --- Model Lists per Provider ---
 const OPENAI_MODELS = [
   { id: 'gpt-5.1', label: 'GPT-5.1', description: 'Latest flagship' },
-  { id: 'chatgpt-4o-latest', label: 'ChatGPT-4o', description: 'Latest ChatGPT' },
-  { id: 'gpt-4.1', label: 'GPT-4.1', description: 'Flagship model' },
-  { id: 'gpt-4.1-mini', label: 'GPT-4.1 Mini', description: 'Fast & cost-effective' },
-  { id: 'gpt-4.1-nano', label: 'GPT-4.1 Nano', description: 'Fastest variant' },
-  { id: 'gpt-4o', label: 'GPT-4o', description: 'Multimodal model' },
-  { id: 'gpt-4o-mini', label: 'GPT-4o Mini', description: 'Cost-effective 4o' },
+  { id: 'gpt-4.5-preview', label: 'GPT-4.5', description: 'Large-scale agentic model' },
   { id: 'o3', label: 'o3', description: 'Reasoning model' },
 ];
 
