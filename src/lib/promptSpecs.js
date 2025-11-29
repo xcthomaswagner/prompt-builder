@@ -137,16 +137,40 @@ const baseSystemSteps = [
 - Include follow-up considerations where relevant`
   },
   {
+    id: 'format-paragraph',
+    channel: 'system',
+    conditions: [{ field: 'format.id', operator: '==', value: 'paragraph' }],
+    template: `FORMAT STRUCTURAL REQUIREMENTS (Paragraph):
+- Write in flowing, cohesive prose
+- Use clear topic sentences for each paragraph
+- Maintain logical transitions between ideas
+- Aim for 3-5 sentences per paragraph
+- Vary sentence length for readability`
+  },
+  {
+    id: 'format-json',
+    channel: 'system',
+    conditions: [{ field: 'format.id', operator: '==', value: 'json' }],
+    template: `FORMAT STRUCTURAL REQUIREMENTS (JSON):
+- Output ONLY valid, parseable JSON
+- Use consistent key naming (camelCase or snake_case)
+- Include appropriate data types (strings, numbers, booleans, arrays)
+- No markdown, no code fences, no explanatory text
+- Structure should be logical and hierarchical`
+  },
+  {
     id: 'format-few-shots',
     channel: 'system',
     template: `REFERENCE EXAMPLES (showing Format + Tone + Content integration):
+When Format=Paragraph: Flowing prose, topic sentences, smooth transitions
 When Format=Email: Use BLUF structure, subject line, single CTA
 When Format=Sections: Use hierarchical H1/H2/H3, date markers, transitions
 When Format=Bullets: Parallel structure, action verbs, grouped headers
 When Format=Numbered: Sequential numbers, parallel structure, ranked items
 When Format=Table: Clear headers, consistent types, markdown syntax
 When Format=Steps: Numbered sequence, one action per step, prerequisites first
-When Format=Q&A: Bold questions, direct answers, grouped by topic`
+When Format=Q&A: Bold questions, direct answers, grouped by topic
+When Format=JSON: Valid parseable JSON only, no markdown or explanations`
   },
   {
     id: 'guardrails',
