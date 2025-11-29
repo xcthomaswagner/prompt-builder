@@ -23,6 +23,38 @@ const CITATION_STYLES = [
   { value: 'ieee', label: 'IEEE' },
 ];
 
+// Extracted to avoid duplication
+function SettingsPanel({ typeSpecific, handleChange, darkMode }) {
+  return (
+    <div className={`rounded-lg p-4 border space-y-4 ${darkMode ? 'bg-slate-700 border-slate-600' : 'bg-slate-50 border-slate-200'}`}>
+      <h5 className={`text-sm font-medium ${darkMode ? 'text-slate-300' : 'text-slate-700'}`}>Settings & Options</h5>
+      <div className="space-y-2">
+        <Checkbox
+          label="Include Executive Summary"
+          checked={typeSpecific.include_executive_summary || false}
+          onChange={(v) => handleChange('include_executive_summary', v)}
+          darkMode={darkMode}
+        />
+        <Checkbox
+          label="Include Table of Contents"
+          checked={typeSpecific.include_toc || false}
+          onChange={(v) => handleChange('include_toc', v)}
+          darkMode={darkMode}
+        />
+      </div>
+      <FormField label="Citation Style" hint="If references are needed" darkMode={darkMode}>
+        <Select
+          value={typeSpecific.citation_style}
+          onChange={(v) => handleChange('citation_style', v)}
+          options={CITATION_STYLES}
+          placeholder="None"
+          darkMode={darkMode}
+        />
+      </FormField>
+    </div>
+  );
+}
+
 export default function DocForm({ spec, onChange, darkMode = false }) {
   const [isExpanded, setIsExpanded] = useState(false);
   const typeSpecific = spec.typeSpecific || {};
@@ -96,68 +128,14 @@ export default function DocForm({ spec, onChange, darkMode = false }) {
               </div>
 
               {/* Right Column - Settings & Options */}
-              <div className={`rounded-lg p-4 border space-y-4 ${darkMode ? 'bg-slate-700 border-slate-600' : 'bg-slate-50 border-slate-200'}`}>
-                <h5 className={`text-sm font-medium ${darkMode ? 'text-slate-300' : 'text-slate-700'}`}>Settings & Options</h5>
-                
-                {/* Toggles */}
-                <div className="space-y-2">
-                  <Checkbox
-                    label="Include Executive Summary"
-                    checked={typeSpecific.include_executive_summary || false}
-                    onChange={(v) => handleChange('include_executive_summary', v)}
-                    darkMode={darkMode}
-                  />
-                  <Checkbox
-                    label="Include Table of Contents"
-                    checked={typeSpecific.include_toc || false}
-                    onChange={(v) => handleChange('include_toc', v)}
-                    darkMode={darkMode}
-                  />
-                </div>
-
-                {/* Citation Style */}
-                <FormField label="Citation Style" hint="If references are needed" darkMode={darkMode}>
-                  <Select
-                    value={typeSpecific.citation_style}
-                    onChange={(v) => handleChange('citation_style', v)}
-                    options={CITATION_STYLES}
-                    placeholder="None"
-                    darkMode={darkMode}
-                  />
-                </FormField>
-              </div>
+              <SettingsPanel typeSpecific={typeSpecific} handleChange={handleChange} darkMode={darkMode} />
             </div>
           )}
 
           {/* Fallback when no sections - show settings inline */}
           {suggestedSections.length === 0 && (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className={`rounded-lg p-4 border space-y-4 ${darkMode ? 'bg-slate-700 border-slate-600' : 'bg-slate-50 border-slate-200'}`}>
-                <h5 className={`text-sm font-medium ${darkMode ? 'text-slate-300' : 'text-slate-700'}`}>Settings & Options</h5>
-                <div className="space-y-2">
-                  <Checkbox
-                    label="Include Executive Summary"
-                    checked={typeSpecific.include_executive_summary || false}
-                    onChange={(v) => handleChange('include_executive_summary', v)}
-                    darkMode={darkMode}
-                  />
-                  <Checkbox
-                    label="Include Table of Contents"
-                    checked={typeSpecific.include_toc || false}
-                    onChange={(v) => handleChange('include_toc', v)}
-                    darkMode={darkMode}
-                  />
-                </div>
-                <FormField label="Citation Style" hint="If references are needed" darkMode={darkMode}>
-                  <Select
-                    value={typeSpecific.citation_style}
-                    onChange={(v) => handleChange('citation_style', v)}
-                    options={CITATION_STYLES}
-                    placeholder="None"
-                    darkMode={darkMode}
-                  />
-                </FormField>
-              </div>
+              <SettingsPanel typeSpecific={typeSpecific} handleChange={handleChange} darkMode={darkMode} />
             </div>
           )}
         </div>
