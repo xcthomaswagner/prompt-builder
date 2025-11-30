@@ -74,12 +74,19 @@ function getTrackWidth(levelId) {
 
 /**
  * Novelty slider component - 5 levels based on paper's probability thresholds
+ * Uses a draggable range input for natural slider interaction
  */
 function NoveltySlider({ value, onChange, darkMode }) {
   const levels = DIVERSITY_LEVELS_ORDERED;
   const currentLevel = DIVERSITY_LEVELS[value];
   const colors = getLevelColors(value);
   const currentIndex = levels.findIndex(l => l.id === value);
+
+  // Handle slider change - map 0-4 index to level id
+  const handleSliderChange = (e) => {
+    const index = parseInt(e.target.value, 10);
+    onChange(levels[index].id);
+  };
 
   return (
     <div className="space-y-3">
@@ -98,45 +105,68 @@ function NoveltySlider({ value, onChange, darkMode }) {
         </div>
       </div>
 
-      {/* 5-position slider */}
-      <div className="relative pt-2 pb-1">
-        {/* Track background */}
-        <div className={`h-2 rounded-full ${darkMode ? 'bg-slate-600' : 'bg-slate-200'}`}>
-          {/* Gradient fill based on position */}
+      {/* Draggable range slider */}
+      <div className="relative">
+        {/* Custom track background with gradient */}
+        <div className={`absolute inset-x-0 top-1/2 -translate-y-1/2 h-2 rounded-full ${darkMode ? 'bg-slate-600' : 'bg-slate-200'}`}>
           <div 
-            className={`h-full rounded-full transition-all duration-300 bg-gradient-to-r from-green-400 via-yellow-400 to-purple-500 ${getTrackWidth(value)}`}
+            className="h-full rounded-full transition-all duration-150 bg-gradient-to-r from-green-400 via-yellow-400 to-purple-500"
+            style={{ width: `${(currentIndex / 4) * 100}%` }}
           />
         </div>
         
-        {/* Clickable buttons positioned on track */}
-        <div className="absolute inset-x-0 top-0 flex justify-between">
+        {/* Tick marks for snap points */}
+        <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 flex justify-between pointer-events-none">
           {levels.map((level, index) => (
-            <button
+            <div 
               key={level.id}
-              type="button"
-              onClick={() => onChange(level.id)}
-              className={`
-                w-6 h-6 rounded-full border-2 transition-all cursor-pointer
-                ${value === level.id 
-                  ? 'bg-white border-cyan-500 scale-110 shadow-lg ring-2 ring-cyan-300' 
-                  : index <= currentIndex
-                    ? darkMode 
-                      ? 'bg-slate-600 border-slate-400 hover:border-cyan-400' 
-                      : 'bg-slate-100 border-slate-300 hover:border-cyan-400'
-                    : darkMode 
-                      ? 'bg-slate-700 border-slate-500 hover:border-cyan-400 hover:bg-slate-600' 
-                      : 'bg-white border-slate-300 hover:border-cyan-400 hover:bg-slate-50'
-                }
-              `}
-              title={`${level.label} (p<${level.probabilityThreshold})`}
-              aria-label={`Set novelty to ${level.label}`}
+              className={`w-2 h-2 rounded-full ${
+                index <= currentIndex 
+                  ? 'bg-white border border-slate-300' 
+                  : darkMode ? 'bg-slate-500' : 'bg-slate-300'
+              }`}
             />
           ))}
         </div>
+
+        {/* Actual range input */}
+        <input
+          type="range"
+          min="0"
+          max="4"
+          step="1"
+          value={currentIndex}
+          onChange={handleSliderChange}
+          className="relative w-full h-6 appearance-none bg-transparent cursor-pointer z-10
+            [&::-webkit-slider-thumb]:appearance-none
+            [&::-webkit-slider-thumb]:w-5
+            [&::-webkit-slider-thumb]:h-5
+            [&::-webkit-slider-thumb]:rounded-full
+            [&::-webkit-slider-thumb]:bg-white
+            [&::-webkit-slider-thumb]:border-2
+            [&::-webkit-slider-thumb]:border-cyan-500
+            [&::-webkit-slider-thumb]:shadow-lg
+            [&::-webkit-slider-thumb]:cursor-grab
+            [&::-webkit-slider-thumb]:active:cursor-grabbing
+            [&::-webkit-slider-thumb]:hover:scale-110
+            [&::-webkit-slider-thumb]:transition-transform
+            [&::-moz-range-thumb]:w-5
+            [&::-moz-range-thumb]:h-5
+            [&::-moz-range-thumb]:rounded-full
+            [&::-moz-range-thumb]:bg-white
+            [&::-moz-range-thumb]:border-2
+            [&::-moz-range-thumb]:border-cyan-500
+            [&::-moz-range-thumb]:shadow-lg
+            [&::-moz-range-thumb]:cursor-grab
+            [&::-moz-range-thumb]:active:cursor-grabbing
+            [&::-moz-range-track]:bg-transparent
+            [&::-webkit-slider-runnable-track]:bg-transparent"
+          aria-label="Novelty level slider"
+        />
       </div>
 
       {/* Level labels - show all 5 */}
-      <div className="flex justify-between text-xs">
+      <div className="flex justify-between text-xs -mt-1">
         {levels.map((level) => (
           <span 
             key={level.id}
