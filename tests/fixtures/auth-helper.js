@@ -27,5 +27,8 @@ export async function setupTestAuth(page) {
 export async function standardSetup(page) {
   await setupTestAuth(page);
   await page.goto('/');
-  await page.waitForLoadState('networkidle');
+  // Wait for DOM to be ready instead of networkidle (which can timeout with Firebase)
+  await page.waitForLoadState('domcontentloaded');
+  // Wait a bit for React to hydrate
+  await page.waitForTimeout(500);
 }
