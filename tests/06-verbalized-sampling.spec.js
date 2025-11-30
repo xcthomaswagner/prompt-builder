@@ -72,12 +72,12 @@ test.describe('Verbalized Sampling', () => {
     await exploratoryButton.click();
     await page.waitForTimeout(300);
     
-    // Check for novelty level labels
-    const conservativeLabel = page.locator('text=/Conservative/i');
-    const creativeLabel = page.locator('text=/Creative/i');
+    // Check for novelty level labels (5 levels: Safe, Balanced, Diverse, Creative, Wild)
+    const safeLabel = page.locator('text=/Safe/i').first();
+    const wildLabel = page.locator('text=/Wild/i');
     
-    await expect(conservativeLabel).toBeVisible();
-    await expect(creativeLabel).toBeVisible();
+    await expect(safeLabel).toBeVisible();
+    await expect(wildLabel).toBeVisible();
   });
 
   test('should show different button in Exploratory mode', async ({ page }) => {

@@ -13,33 +13,77 @@
 
 /**
  * Diversity levels for Verbalized Sampling
+ * 
+ * Based on the paper's findings (Section H.4) which tested probability thresholds
+ * from p=1.0 (full distribution) down to p=0.001 (extreme tail).
+ * 
+ * Uses a logarithmic scale since useful diversity compresses near zero.
+ * 
+ * Slider Position → Probability Threshold (p)
+ * 0%   (Safe)     → p = 1.0   (full distribution)
+ * 25%  (Balanced) → p = 0.50  (upper half excluded)
+ * 50%  (Diverse)  → p = 0.10  (top 90% excluded)
+ * 75%  (Creative) → p = 0.05  (top 95% excluded)
+ * 100% (Wild)     → p = 0.01  (extreme tail only)
  */
 export const DIVERSITY_LEVELS = {
-  low: {
-    id: 'low',
-    label: 'Low',
-    description: 'Sample from full distribution including high-probability responses',
-    probabilityThreshold: null, // No threshold - include typical responses
+  safe: {
+    id: 'safe',
+    label: 'Safe',
+    sliderPosition: 0,
+    description: 'Full distribution (p=1.0) - includes typical, expected responses',
+    probabilityThreshold: 1.0, // Full distribution
     candidateCount: 5,
     temperature: 0.7,
   },
-  medium: {
-    id: 'medium',
-    label: 'Medium',
-    description: 'Balanced mix of typical and novel responses',
-    probabilityThreshold: 0.25,
+  balanced: {
+    id: 'balanced',
+    label: 'Balanced',
+    sliderPosition: 25,
+    description: 'Upper half excluded (p<0.50) - mix of typical and alternative',
+    probabilityThreshold: 0.50,
+    candidateCount: 5,
+    temperature: 0.75,
+  },
+  diverse: {
+    id: 'diverse',
+    label: 'Diverse',
+    sliderPosition: 50,
+    description: 'Top 90% excluded (p<0.10) - primarily alternative approaches',
+    probabilityThreshold: 0.10,
     candidateCount: 5,
     temperature: 0.8,
   },
-  high: {
-    id: 'high',
-    label: 'High',
-    description: 'Sample from tails - ensure novelty with low-probability responses',
-    probabilityThreshold: 0.15,
+  creative: {
+    id: 'creative',
+    label: 'Creative',
+    sliderPosition: 75,
+    description: 'Top 95% excluded (p<0.05) - novel, unexpected angles',
+    probabilityThreshold: 0.05,
+    candidateCount: 5,
+    temperature: 0.85,
+  },
+  wild: {
+    id: 'wild',
+    label: 'Wild',
+    sliderPosition: 100,
+    description: 'Extreme tail only (p<0.01) - highly unconventional options',
+    probabilityThreshold: 0.01,
     candidateCount: 5,
     temperature: 0.9,
   },
 };
+
+/**
+ * Get ordered array of diversity levels for slider
+ */
+export const DIVERSITY_LEVELS_ORDERED = [
+  DIVERSITY_LEVELS.safe,
+  DIVERSITY_LEVELS.balanced,
+  DIVERSITY_LEVELS.diverse,
+  DIVERSITY_LEVELS.creative,
+  DIVERSITY_LEVELS.wild,
+];
 
 /**
  * Labels for option cards based on probability
@@ -95,11 +139,26 @@ Be creative and ensure each variation takes a genuinely different angle or frami
  * @returns {string} Wrapped prompt
  */
 export function buildVSUserPrompt(userPrompt, diversityConfig) {
-  const { candidateCount, probabilityThreshold, id } = diversityConfig;
+  const { candidateCount, probabilityThreshold, id, label } = diversityConfig;
 
-  const thresholdInstruction = probabilityThreshold
-    ? `Ensure novelty by making each response represent a probability below ${probabilityThreshold} in the distribution of possible answers. Avoid the most "obvious" or "expected" response.`
-    : `Include both typical (high-probability) and novel (low-probability) responses to show the full range of approaches.`;
+  // Build threshold instruction based on probability threshold
+  let thresholdInstruction;
+  if (probabilityThreshold >= 1.0) {
+    // Safe mode - full distribution
+    thresholdInstruction = `Sample from the FULL distribution (p=1.0). Include both typical high-probability responses AND some lower-probability alternatives to show the range of approaches.`;
+  } else if (probabilityThreshold >= 0.50) {
+    // Balanced mode
+    thresholdInstruction = `Sample where probability is BELOW ${probabilityThreshold} (p<${probabilityThreshold}). Exclude the single most obvious/expected response. Focus on alternatives that are still reasonable but less common.`;
+  } else if (probabilityThreshold >= 0.10) {
+    // Diverse mode
+    thresholdInstruction = `Sample where probability is BELOW ${probabilityThreshold} (p<${probabilityThreshold}). Exclude typical responses entirely. Focus on genuinely different approaches that most wouldn't think of first.`;
+  } else if (probabilityThreshold >= 0.05) {
+    // Creative mode
+    thresholdInstruction = `Sample where probability is BELOW ${probabilityThreshold} (p<${probabilityThreshold}). Target novel, unexpected angles. These should surprise the user with fresh perspectives they hadn't considered.`;
+  } else {
+    // Wild mode - extreme tail
+    thresholdInstruction = `Sample from the EXTREME TAIL where probability is BELOW ${probabilityThreshold} (p<${probabilityThreshold}). Generate highly unconventional, boundary-pushing options. Be bold and experimental.`;
+  }
 
   return `Generate ${candidateCount} distinct variations of a response to this prompt:
 
