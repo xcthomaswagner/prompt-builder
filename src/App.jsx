@@ -4,6 +4,7 @@ import usePromptForm from './hooks/usePromptForm';
 import useApiSettings from './hooks/useApiSettings';
 import useAuth from './hooks/useAuth';
 import usePromptHistory from './hooks/usePromptHistory';
+import useVersionHistory from './hooks/useVersionHistory';
 import {
   Sparkles,
   History,
@@ -182,9 +183,18 @@ export default function App() {
   // Auto-Improve State
   const [isImproving, setIsImproving] = useState(false);
   const [enableQualityAssessment, setEnableQualityAssessment] = useState(true);
-  const [promptVersions, setPromptVersions] = useState([]); // Array of { text, quality, timestamp }
-  const [currentVersionIndex, setCurrentVersionIndex] = useState(-1);
-  const MAX_IMPROVE_ITERATIONS = 3;
+  
+  // Version history (from custom hook)
+  const {
+    promptVersions,
+    saveVersion,
+    undoVersion,
+    resetVersionHistory,
+    canImprove,
+    canUndo,
+    versionCount,
+    maxIterations: MAX_IMPROVE_ITERATIONS
+  } = useVersionHistory(3);
 
   // Iterate & Refine State
   const [refinementInstructions, setRefinementInstructions] = useState('');
@@ -235,7 +245,7 @@ export default function App() {
     }
 
     // Check iteration limit
-    if (promptVersions.length >= MAX_IMPROVE_ITERATIONS) {
+    if (!canImprove) {
       setErrorMsg(`Maximum of ${MAX_IMPROVE_ITERATIONS} improvement iterations reached.`);
       return;
     }
@@ -275,14 +285,7 @@ Generate an improved version of the prompt that addresses all the feedback point
       }
 
       // Save current version to history before updating
-      const newVersion = {
-        text: generatedResult,
-        quality: qualityResult,
-        timestamp: Date.now()
-      };
-      
-      setPromptVersions(prev => [...prev, newVersion]);
-      setCurrentVersionIndex(prev => prev + 1);
+      saveVersion(generatedResult, qualityResult);
 
       // Update to improved version
       setGeneratedResult(improvedText.trim());
@@ -309,20 +312,13 @@ Generate an improved version of the prompt that addresses all the feedback point
 
   // Undo to a previous version
   const handleUndoImprove = () => {
-    if (promptVersions.length === 0) return;
-
-    const previousVersion = promptVersions[promptVersions.length - 1];
-    setGeneratedResult(previousVersion.text);
-    setQualityResult(previousVersion.quality);
-    setPromptVersions(prev => prev.slice(0, -1));
-    setCurrentVersionIndex(prev => prev - 1);
+    const previousVersion = undoVersion();
+    if (previousVersion) {
+      setGeneratedResult(previousVersion.text);
+      setQualityResult(previousVersion.quality);
+    }
   };
 
-  // Reset version history when generating new prompt
-  const resetVersionHistory = () => {
-    setPromptVersions([]);
-    setCurrentVersionIndex(-1);
-  };
 
   // Iterate & Refine the prompt based on user instructions
   const handleRefinePrompt = async () => {
@@ -360,13 +356,7 @@ Apply the refinement instructions above to modify the prompt. Return only the up
       }
 
       // Save current version to history before updating
-      const newVersion = {
-        text: generatedResult,
-        timestamp: Date.now()
-      };
-      
-      setPromptVersions(prev => [...prev, newVersion]);
-      setCurrentVersionIndex(prev => prev + 1);
+      saveVersion(generatedResult);
 
       // Update to refined version
       setGeneratedResult(refinedText.trim());
