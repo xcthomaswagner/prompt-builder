@@ -30,7 +30,8 @@ import {
   Sun,
   Moon,
   Download,
-  Upload
+  Upload,
+  Clock
 } from 'lucide-react';
 import { initializeApp } from "firebase/app";
 import {
@@ -1718,9 +1719,12 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
                 <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-indigo-500"></div>
               </div>
             ) : promptHistory.length === 0 ? (
-              <div className={`text-center mt-10 text-sm ${darkMode ? 'text-slate-500' : 'text-slate-400'}`}>No history yet.</div>
-            ) : (
-              promptHistory
+              <div className="flex flex-col items-center justify-center py-16">
+                <Clock className={`w-16 h-16 mb-4 ${darkMode ? 'text-slate-600' : 'text-slate-300'}`} strokeWidth={1.5} />
+                <p className={`text-sm ${darkMode ? 'text-slate-500' : 'text-slate-400'}`}>No history yet.</p>
+              </div>
+            ) : (() => {
+              const filteredItems = promptHistory
                 .filter(item => {
                   if (!historySearchQuery) return true;
                   const query = historySearchQuery.toLowerCase();
@@ -1745,8 +1749,19 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
                   }
 
                   return false;
-                })
-                .map((item) => {
+                });
+              
+              // Show empty state if search has no results
+              if (historySearchQuery && filteredItems.length === 0) {
+                return (
+                  <div className="flex flex-col items-center justify-center py-16">
+                    <Clock className={`w-16 h-16 mb-4 ${darkMode ? 'text-slate-600' : 'text-slate-300'}`} strokeWidth={1.5} />
+                    <p className={`text-sm ${darkMode ? 'text-slate-500' : 'text-slate-400'}`}>No history items found</p>
+                  </div>
+                );
+              }
+              
+              return filteredItems.map((item) => {
                   // Calculate match details for display
                   let matchBadge = null;
                   if (historySearchQuery) {
@@ -1895,8 +1910,8 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
                       </div>
                     </div>
                   );
-                })
-            )}
+                });
+            })()}
               </div>
               <div className={`p-4 border-t flex items-center justify-between ${darkMode ? 'border-slate-700' : 'border-slate-100'}`}>
                 <div className={`text-xs ${darkMode ? 'text-slate-500' : 'text-slate-400'}`}>
