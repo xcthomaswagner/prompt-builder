@@ -70,9 +70,12 @@ export default defineConfig({
 
   // Run dev server before starting tests
   webServer: {
-    command: 'npm run dev',
+    command: 'npm run dev -- --mode test',
     url: 'http://localhost:5173',
     reuseExistingServer: !process.env.CI,
     timeout: 120 * 1000,
+    env: {
+      VITE_TEST_MODE: 'true',
+    },
   },
 });

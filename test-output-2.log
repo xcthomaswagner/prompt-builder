@@ -1,0 +1,812 @@
+
+> intelligent-prompt-builder@1.0.0 test
+> playwright test
+
+
+Running 35 tests using 6 workers
+
+  ✘   2 [chromium] › tests/01-core-prompt-building.spec.js:18:3 › Core Prompt Building › should load the application successfully (7.4s)
+  ✘   3 [chromium] › tests/01-core-prompt-building.spec.js:42:3 › Core Prompt Building › should change output type and generate (31.4s)
+  ✘   5 [chromium] › tests/01-core-prompt-building.spec.js:24:3 › Core Prompt Building › should generate a simple prompt (31.4s)
+  ✘   4 [chromium] › tests/01-core-prompt-building.spec.js:109:3 › Core Prompt Building › should show error for empty input (31.5s)
+  ✘   1 [chromium] › tests/01-core-prompt-building.spec.js:82:3 › Core Prompt Building › should change style and format (31.5s)
+  ✘   6 [chromium] › tests/01-core-prompt-building.spec.js:61:3 › Core Prompt Building › should change tone and generate different output (31.5s)
+  ✓  12 [chromium] › tests/02-ui-controls.spec.js:17:3 › UI Controls › should toggle dark mode (1.2s)
+  ✓  10 [chromium] › tests/02-ui-controls.spec.js:63:3 › UI Controls › should open and close settings (1.3s)
+  ✓   9 [chromium] › tests/02-ui-controls.spec.js:43:3 › UI Controls › should expand and collapse sections (1.5s)
+  ✓  13 [chromium] › tests/02-ui-controls.spec.js:87:3 › UI Controls › should show quickstart templates (863ms)
+  ✓  14 [chromium] › tests/02-ui-controls.spec.js:103:3 › UI Controls › should select a quickstart template (906ms)
+  ✓  15 [chromium] › tests/02-ui-controls.spec.js:124:3 › UI Controls › should show history panel (855ms)
+  ✓  17 [chromium] › tests/02-ui-controls.spec.js:161:3 › UI Controls › should show tooltips on hover (843ms)
+  ✘   7 [chromium] › tests/01-core-prompt-building.spec.js:121:3 › Core Prompt Building › should copy prompt to clipboard (31.1s)
+  ✘  16 [chromium] › tests/02-ui-controls.spec.js:140:3 › UI Controls › should handle responsive layout (6.5s)
+  ✘  11 [chromium] › tests/01-core-prompt-building.spec.js:138:3 › Core Prompt Building › should handle multiple consecutive generations (31.0s)
+  ✘   8 [chromium] › tests/01-core-prompt-building.spec.js:154:3 › Core Prompt Building › should show token count estimation (31.0s)
+  ✘  18 [chromium] › tests/02-ui-controls.spec.js:178:3 › UI Controls › should reset form (31.2s)
+  ✘  19 [chromium] › tests/02-ui-controls.spec.js:195:3 › UI Controls › should show loading state during generation (31.2s)
+  ✓  25 [chromium] › tests/03-history-management.spec.js:163:3 › History Management › should show empty state when no history (845ms)
+  ✘  20 [chromium] › tests/03-history-management.spec.js:17:3 › History Management › should save prompt to history after generation (31.2s)
+  ✘  21 [chromium] › tests/03-history-management.spec.js:39:3 › History Management › should load prompt from history (31.4s)
+  ✓  28 [chromium] › tests/04-regression.spec.js:44:3 › Regression Tests - Pre/Post Refactor › REGRESSION: all output types work (904ms)
+  ✘  22 [chromium] › tests/03-history-management.spec.js:102:3 › History Management › should clear all history (31.1s)
+  ✘  23 [chromium] › tests/03-history-management.spec.js:69:3 › History Management › should delete individual history item (31.1s)
+  ✘  24 [chromium] › tests/03-history-management.spec.js:137:3 › History Management › should persist history across page reloads (31.1s)
+  ✘  26 [chromium] › tests/03-history-management.spec.js:190:3 › History Management › should show history item metadata (31.3s)
+  ✘  27 [chromium] › tests/04-regression.spec.js:18:3 › Regression Tests - Pre/Post Refactor › REGRESSION: identical output for same inputs (31.1s)
+  ✘  29 [chromium] › tests/04-regression.spec.js:74:3 › Regression Tests - Pre/Post Refactor › REGRESSION: all tones work (31.2s)
+  ✘  31 [chromium] › tests/04-regression.spec.js:126:3 › Regression Tests - Pre/Post Refactor › REGRESSION: no console errors during normal flow (31.3s)
+  ✘  30 [chromium] › tests/04-regression.spec.js:100:3 › Regression Tests - Pre/Post Refactor › REGRESSION: all formats work (31.3s)
+  ✘  32 [chromium] › tests/04-regression.spec.js:151:3 › Regression Tests - Pre/Post Refactor › REGRESSION: API calls complete successfully (31.1s)
+  ✘  33 [chromium] › tests/04-regression.spec.js:178:3 › Regression Tests - Pre/Post Refactor › REGRESSION: state persists correctly (31.0s)
+  ✘  34 [chromium] › tests/04-regression.spec.js:199:3 › Regression Tests - Pre/Post Refactor › REGRESSION: copy functionality works (31.1s)
+  ✘  35 [chromium] › tests/04-regression.spec.js:216:3 › Regression Tests - Pre/Post Refactor › REGRESSION: error handling works (31.1s)
+
+
+  1) [chromium] › tests/01-core-prompt-building.spec.js:18:3 › Core Prompt Building › should load the application successfully 
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+    Locator: locator('textarea[placeholder*="Make me a deck"]')
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+    [2m  - Expect "toBeVisible" with timeout 5000ms[22m
+    [2m  - waiting for locator('textarea[placeholder*="Make me a deck"]')[22m
+
+
+      18 |   test('should load the application successfully', async ({ page }) => {
+      19 |     await expect(page).toHaveTitle(/Intelligent Prompt Builder/i);
+    > 20 |     await expect(page.locator(selectors.promptInput)).toBeVisible();
+         |                                                       ^
+      21 |     await expect(page.locator(selectors.generateButton)).toBeVisible();
+      22 |   });
+      23 |
+        at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/01-core-prompt-building.spec.js:20:55
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/01-core-prompt-building-Co-98583-he-application-successfully-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/01-core-prompt-building-Co-98583-he-application-successfully-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/01-core-prompt-building-Co-98583-he-application-successfully-chromium/error-context.md
+
+  2) [chromium] › tests/01-core-prompt-building.spec.js:24:3 › Core Prompt Building › should generate a simple prompt 
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: page.fill: Test timeout of 30000ms exceeded.
+    Call log:
+    [2m  - waiting for locator('textarea[placeholder*="Make me a deck"]')[22m
+
+
+      26 |     
+      27 |     // Enter prompt text
+    > 28 |     await page.fill(selectors.promptInput, input);
+         |                ^
+      29 |     
+      30 |     // Click generate
+      31 |     await page.click(selectors.generateButton);
+        at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/01-core-prompt-building.spec.js:28:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/01-core-prompt-building-Co-23e66-ld-generate-a-simple-prompt-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/01-core-prompt-building-Co-23e66-ld-generate-a-simple-prompt-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/01-core-prompt-building-Co-23e66-ld-generate-a-simple-prompt-chromium/error-context.md
+
+  3) [chromium] › tests/01-core-prompt-building.spec.js:42:3 › Core Prompt Building › should change output type and generate 
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: locator.click: Test timeout of 30000ms exceeded.
+    Call log:
+    [2m  - waiting for locator('button:has-text("Doc"), button:has-text("Deck"), button:has-text("Data"), button:has-text("Code"), button:has-text("Copy"), button:has-text("Comms")').filter({ hasText: /deck/i }).first()[22m
+
+
+      45 |     // Select output type (Deck)
+      46 |     const deckButton = page.locator(selectors.outputTypeButtons).filter({ hasText: /deck/i }).first();
+    > 47 |     await deckButton.click();
+         |                      ^
+      48 |     
+      49 |     // Enter prompt
+      50 |     await page.fill(selectors.promptInput, input);
+        at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/01-core-prompt-building.spec.js:47:22
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/01-core-prompt-building-Co-ad9fa-ge-output-type-and-generate-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/01-core-prompt-building-Co-ad9fa-ge-output-type-and-generate-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/01-core-prompt-building-Co-ad9fa-ge-output-type-and-generate-chromium/error-context.md
+
+  4) [chromium] › tests/01-core-prompt-building.spec.js:61:3 › Core Prompt Building › should change tone and generate different output 
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: page.fill: Test timeout of 30000ms exceeded.
+    Call log:
+    [2m  - waiting for locator('textarea[placeholder*="Make me a deck"]')[22m
+
+
+      63 |     
+      64 |     // Fill input
+    > 65 |     await page.fill(selectors.promptInput, input);
+         |                ^
+      66 |     
+      67 |     // Change tone to "Friendly"
+      68 |     const toneSelector = page.locator('select').filter({ hasText: /professional|friendly/i }).first();
+        at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/01-core-prompt-building.spec.js:65:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/01-core-prompt-building-Co-73bb0-d-generate-different-output-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/01-core-prompt-building-Co-73bb0-d-generate-different-output-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/01-core-prompt-building-Co-73bb0-d-generate-different-output-chromium/error-context.md
+
+  5) [chromium] › tests/01-core-prompt-building.spec.js:82:3 › Core Prompt Building › should change style and format 
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: page.fill: Test timeout of 30000ms exceeded.
+    Call log:
+    [2m  - waiting for locator('textarea[placeholder*="Make me a deck"]')[22m
+
+
+      84 |     
+      85 |     // Fill input
+    > 86 |     await page.fill(selectors.promptInput, input);
+         |                ^
+      87 |     
+      88 |     // Change style (if dropdown exists)
+      89 |     const styleDropdown = page.locator('select').filter({ hasText: /direct|narrative/i }).first();
+        at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/01-core-prompt-building.spec.js:86:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/01-core-prompt-building-Co-a2844-uld-change-style-and-format-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/01-core-prompt-building-Co-a2844-uld-change-style-and-format-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/01-core-prompt-building-Co-a2844-uld-change-style-and-format-chromium/error-context.md
+
+  6) [chromium] › tests/01-core-prompt-building.spec.js:109:3 › Core Prompt Building › should show error for empty input 
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: page.click: Test timeout of 30000ms exceeded.
+    Call log:
+    [2m  - waiting for locator('button:has-text("Generate Expanded Prompt")')[22m
+
+
+      109 |   test('should show error for empty input', async ({ page }) => {
+      110 |     // Try to generate without input
+    > 111 |     await page.click(selectors.generateButton);
+          |                ^
+      112 |     
+      113 |     // Should show error or prevent generation
+      114 |     // Check if button is disabled or error message appears
+        at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/01-core-prompt-building.spec.js:111:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/01-core-prompt-building-Co-f25ba--show-error-for-empty-input-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/01-core-prompt-building-Co-f25ba--show-error-for-empty-input-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/01-core-prompt-building-Co-f25ba--show-error-for-empty-input-chromium/error-context.md
+
+  7) [chromium] › tests/01-core-prompt-building.spec.js:121:3 › Core Prompt Building › should copy prompt to clipboard 
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: page.fill: Test timeout of 30000ms exceeded.
+    Call log:
+    [2m  - waiting for locator('textarea[placeholder*="Make me a deck"]')[22m
+
+
+      123 |     
+      124 |     // Generate a prompt
+    > 125 |     await page.fill(selectors.promptInput, input);
+          |                ^
+      126 |     await page.click(selectors.generateButton);
+      127 |     await page.waitForSelector(selectors.promptOutput, { timeout: 15000 });
+      128 |     
+        at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/01-core-prompt-building.spec.js:125:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/01-core-prompt-building-Co-55642-ld-copy-prompt-to-clipboard-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/01-core-prompt-building-Co-55642-ld-copy-prompt-to-clipboard-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/01-core-prompt-building-Co-55642-ld-copy-prompt-to-clipboard-chromium/error-context.md
+
+  8) [chromium] › tests/01-core-prompt-building.spec.js:138:3 › Core Prompt Building › should handle multiple consecutive generations 
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: page.fill: Test timeout of 30000ms exceeded.
+    Call log:
+    [2m  - waiting for locator('textarea[placeholder*="Make me a deck"]')[22m
+
+
+      140 |     
+      141 |     for (const prompt of prompts) {
+    > 142 |       await page.fill(selectors.promptInput, prompt.input);
+          |                  ^
+      143 |       await page.click(selectors.generateButton);
+      144 |       await page.waitForSelector(selectors.promptOutput, { timeout: 15000 });
+      145 |       
+        at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/01-core-prompt-building.spec.js:142:18
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/01-core-prompt-building-Co-2e21c-ple-consecutive-generations-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/01-core-prompt-building-Co-2e21c-ple-consecutive-generations-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/01-core-prompt-building-Co-2e21c-ple-consecutive-generations-chromium/error-context.md
+
+  9) [chromium] › tests/01-core-prompt-building.spec.js:154:3 › Core Prompt Building › should show token count estimation 
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: page.fill: Test timeout of 30000ms exceeded.
+    Call log:
+    [2m  - waiting for locator('textarea[placeholder*="Make me a deck"]')[22m
+
+
+      156 |     
+      157 |     // Fill input
+    > 158 |     await page.fill(selectors.promptInput, input);
+          |                ^
+      159 |     
+      160 |     // Check for token count display
+      161 |     const tokenCount = page.locator('text=/\\d+ tokens/i');
+        at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/01-core-prompt-building.spec.js:158:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/01-core-prompt-building-Co-f5c17-show-token-count-estimation-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/01-core-prompt-building-Co-f5c17-show-token-count-estimation-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/01-core-prompt-building-Co-f5c17-show-token-count-estimation-chromium/error-context.md
+
+  10) [chromium] › tests/02-ui-controls.spec.js:140:3 › UI Controls › should handle responsive layout 
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+    Locator: locator('textarea[placeholder*="Make me a deck"]')
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+    [2m  - Expect "toBeVisible" with timeout 5000ms[22m
+    [2m  - waiting for locator('textarea[placeholder*="Make me a deck"]')[22m
+
+
+      144 |     
+      145 |     // Verify app still loads
+    > 146 |     await expect(page.locator(selectors.promptInput)).toBeVisible();
+          |                                                       ^
+      147 |     
+      148 |     // Test tablet viewport
+      149 |     await page.setViewportSize({ width: 768, height: 1024 });
+        at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/02-ui-controls.spec.js:146:55
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/02-ui-controls-UI-Controls-should-handle-responsive-layout-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/02-ui-controls-UI-Controls-should-handle-responsive-layout-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/02-ui-controls-UI-Controls-should-handle-responsive-layout-chromium/error-context.md
+
+  11) [chromium] › tests/02-ui-controls.spec.js:178:3 › UI Controls › should reset form ────────────
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: page.fill: Test timeout of 30000ms exceeded.
+    Call log:
+    [2m  - waiting for locator('textarea[placeholder*="Make me a deck"]')[22m
+
+
+      178 |   test('should reset form', async ({ page }) => {
+      179 |     // Fill in some data
+    > 180 |     await page.fill(selectors.promptInput, 'Test input');
+          |                ^
+      181 |     
+      182 |     // Look for reset/clear button
+      183 |     const resetButton = page.locator('button').filter({ hasText: /reset|clear|new/i }).first();
+        at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/02-ui-controls.spec.js:180:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/02-ui-controls-UI-Controls-should-reset-form-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/02-ui-controls-UI-Controls-should-reset-form-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/02-ui-controls-UI-Controls-should-reset-form-chromium/error-context.md
+
+  12) [chromium] › tests/02-ui-controls.spec.js:195:3 › UI Controls › should show loading state during generation 
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: page.fill: Test timeout of 30000ms exceeded.
+    Call log:
+    [2m  - waiting for locator('textarea[placeholder*="Make me a deck"]')[22m
+
+
+      194 |
+      195 |   test('should show loading state during generation', async ({ page }) => {
+    > 196 |     await page.fill(selectors.promptInput, 'Test prompt');
+          |                ^
+      197 |     
+      198 |     // Click generate
+      199 |     await page.click(selectors.generateButton);
+        at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/02-ui-controls.spec.js:196:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/02-ui-controls-UI-Controls-53460-ing-state-during-generation-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/02-ui-controls-UI-Controls-53460-ing-state-during-generation-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/02-ui-controls-UI-Controls-53460-ing-state-during-generation-chromium/error-context.md
+
+  13) [chromium] › tests/03-history-management.spec.js:17:3 › History Management › should save prompt to history after generation 
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: page.fill: Test timeout of 30000ms exceeded.
+    Call log:
+    [2m  - waiting for locator('textarea[placeholder*="Make me a deck"]')[22m
+
+
+      19 |     
+      20 |     // Generate a prompt
+    > 21 |     await page.fill(selectors.promptInput, input);
+         |                ^
+      22 |     await page.click(selectors.generateButton);
+      23 |     await page.waitForSelector(selectors.promptOutput, { timeout: 15000 });
+      24 |     
+        at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/03-history-management.spec.js:21:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/03-history-management-Hist-af691-to-history-after-generation-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/03-history-management-Hist-af691-to-history-after-generation-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/03-history-management-Hist-af691-to-history-after-generation-chromium/error-context.md
+
+  14) [chromium] › tests/03-history-management.spec.js:39:3 › History Management › should load prompt from history 
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: page.fill: Test timeout of 30000ms exceeded.
+    Call log:
+    [2m  - waiting for locator('textarea[placeholder*="Make me a deck"]')[22m
+
+
+      41 |     
+      42 |     // Generate a prompt first
+    > 43 |     await page.fill(selectors.promptInput, input);
+         |                ^
+      44 |     await page.click(selectors.generateButton);
+      45 |     await page.waitForSelector(selectors.promptOutput, { timeout: 15000 });
+      46 |     
+        at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/03-history-management.spec.js:43:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/03-history-management-Hist-e2bbc-ld-load-prompt-from-history-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/03-history-management-Hist-e2bbc-ld-load-prompt-from-history-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/03-history-management-Hist-e2bbc-ld-load-prompt-from-history-chromium/error-context.md
+
+  15) [chromium] › tests/03-history-management.spec.js:69:3 › History Management › should delete individual history item 
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: page.fill: Test timeout of 30000ms exceeded.
+    Call log:
+    [2m  - waiting for locator('textarea[placeholder*="Make me a deck"]')[22m
+
+
+      71 |     
+      72 |     // Generate a prompt
+    > 73 |     await page.fill(selectors.promptInput, input);
+         |                ^
+      74 |     await page.click(selectors.generateButton);
+      75 |     await page.waitForSelector(selectors.promptOutput, { timeout: 15000 });
+      76 |     
+        at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/03-history-management.spec.js:73:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/03-history-management-Hist-23e7f-ete-individual-history-item-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/03-history-management-Hist-23e7f-ete-individual-history-item-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/03-history-management-Hist-23e7f-ete-individual-history-item-chromium/error-context.md
+
+  16) [chromium] › tests/03-history-management.spec.js:102:3 › History Management › should clear all history 
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: page.fill: Test timeout of 30000ms exceeded.
+    Call log:
+    [2m  - waiting for locator('textarea[placeholder*="Make me a deck"]')[22m
+
+
+      104 |     
+      105 |     // Generate a prompt
+    > 106 |     await page.fill(selectors.promptInput, input);
+          |                ^
+      107 |     await page.click(selectors.generateButton);
+      108 |     await page.waitForSelector(selectors.promptOutput, { timeout: 15000 });
+      109 |     
+        at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/03-history-management.spec.js:106:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/03-history-management-Hist-aa76f-nt-should-clear-all-history-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/03-history-management-Hist-aa76f-nt-should-clear-all-history-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/03-history-management-Hist-aa76f-nt-should-clear-all-history-chromium/error-context.md
+
+  17) [chromium] › tests/03-history-management.spec.js:137:3 › History Management › should persist history across page reloads 
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: page.fill: Test timeout of 30000ms exceeded.
+    Call log:
+    [2m  - waiting for locator('textarea[placeholder*="Make me a deck"]')[22m
+
+
+      139 |     
+      140 |     // Generate a prompt
+    > 141 |     await page.fill(selectors.promptInput, input);
+          |                ^
+      142 |     await page.click(selectors.generateButton);
+      143 |     await page.waitForSelector(selectors.promptOutput, { timeout: 15000 });
+      144 |     
+        at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/03-history-management.spec.js:141:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/03-history-management-Hist-18d8b-history-across-page-reloads-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/03-history-management-Hist-18d8b-history-across-page-reloads-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/03-history-management-Hist-18d8b-history-across-page-reloads-chromium/error-context.md
+
+  18) [chromium] › tests/03-history-management.spec.js:190:3 › History Management › should show history item metadata 
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: page.fill: Test timeout of 30000ms exceeded.
+    Call log:
+    [2m  - waiting for locator('textarea[placeholder*="Make me a deck"]')[22m
+
+
+      192 |     
+      193 |     // Generate a prompt
+    > 194 |     await page.fill(selectors.promptInput, input);
+          |                ^
+      195 |     await page.click(selectors.generateButton);
+      196 |     await page.waitForSelector(selectors.promptOutput, { timeout: 15000 });
+      197 |     
+        at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/03-history-management.spec.js:194:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/03-history-management-Hist-a8c22--show-history-item-metadata-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/03-history-management-Hist-a8c22--show-history-item-metadata-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/03-history-management-Hist-a8c22--show-history-item-metadata-chromium/error-context.md
+
+  19) [chromium] › tests/04-regression.spec.js:18:3 › Regression Tests - Pre/Post Refactor › REGRESSION: identical output for same inputs 
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: page.fill: Test timeout of 30000ms exceeded.
+    Call log:
+    [2m  - waiting for locator('textarea[placeholder*="Make me a deck"]')[22m
+
+
+      28 |     
+      29 |     // Fill input
+    > 30 |     await page.fill(selectors.promptInput, testCase.input);
+         |                ^
+      31 |     
+      32 |     // Generate
+      33 |     await page.click(selectors.generateButton);
+        at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/04-regression.spec.js:30:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/04-regression-Regression-T-29ecd-ical-output-for-same-inputs-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/04-regression-Regression-T-29ecd-ical-output-for-same-inputs-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/04-regression-Regression-T-29ecd-ical-output-for-same-inputs-chromium/error-context.md
+
+  20) [chromium] › tests/04-regression.spec.js:74:3 › Regression Tests - Pre/Post Refactor › REGRESSION: all tones work 
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: page.fill: Test timeout of 30000ms exceeded.
+    Call log:
+    [2m  - waiting for locator('textarea[placeholder*="Make me a deck"]')[22m
+
+
+      75 |     const tones = ['professional', 'friendly', 'casual', 'executive', 'technical'];
+      76 |     
+    > 77 |     await page.fill(selectors.promptInput, 'Test prompt');
+         |                ^
+      78 |     
+      79 |     for (const tone of tones) {
+      80 |       // Select tone
+        at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/04-regression.spec.js:77:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/04-regression-Regression-T-0f3db-r-REGRESSION-all-tones-work-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/04-regression-Regression-T-0f3db-r-REGRESSION-all-tones-work-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/04-regression-Regression-T-0f3db-r-REGRESSION-all-tones-work-chromium/error-context.md
+
+  21) [chromium] › tests/04-regression.spec.js:100:3 › Regression Tests - Pre/Post Refactor › REGRESSION: all formats work 
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: page.fill: Test timeout of 30000ms exceeded.
+    Call log:
+    [2m  - waiting for locator('textarea[placeholder*="Make me a deck"]')[22m
+
+
+      101 |     const formats = ['paragraph', 'bullets', 'numbered', 'sections', 'table'];
+      102 |     
+    > 103 |     await page.fill(selectors.promptInput, 'Test prompt');
+          |                ^
+      104 |     
+      105 |     for (const format of formats) {
+      106 |       // Select format
+        at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/04-regression.spec.js:103:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/04-regression-Regression-T-e4864-REGRESSION-all-formats-work-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/04-regression-Regression-T-e4864-REGRESSION-all-formats-work-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/04-regression-Regression-T-e4864-REGRESSION-all-formats-work-chromium/error-context.md
+
+  22) [chromium] › tests/04-regression.spec.js:126:3 › Regression Tests - Pre/Post Refactor › REGRESSION: no console errors during normal flow 
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: page.fill: Test timeout of 30000ms exceeded.
+    Call log:
+    [2m  - waiting for locator('textarea[placeholder*="Make me a deck"]')[22m
+
+
+      135 |     
+      136 |     // Perform normal flow
+    > 137 |     await page.fill(selectors.promptInput, testPrompts.simple.input);
+          |                ^
+      138 |     await page.click(selectors.generateButton);
+      139 |     await page.waitForSelector(selectors.promptOutput, { timeout: 15000 });
+      140 |     
+        at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/04-regression.spec.js:137:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/04-regression-Regression-T-128c6-e-errors-during-normal-flow-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/04-regression-Regression-T-128c6-e-errors-during-normal-flow-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/04-regression-Regression-T-128c6-e-errors-during-normal-flow-chromium/error-context.md
+
+  23) [chromium] › tests/04-regression.spec.js:151:3 › Regression Tests - Pre/Post Refactor › REGRESSION: API calls complete successfully 
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: page.fill: Test timeout of 30000ms exceeded.
+    Call log:
+    [2m  - waiting for locator('textarea[placeholder*="Make me a deck"]')[22m
+
+
+      167 |     
+      168 |     // Generate prompt
+    > 169 |     await page.fill(selectors.promptInput, testPrompts.simple.input);
+          |                ^
+      170 |     await page.click(selectors.generateButton);
+      171 |     await page.waitForSelector(selectors.promptOutput, { timeout: 15000 });
+      172 |     
+        at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/04-regression.spec.js:169:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/04-regression-Regression-T-05314-calls-complete-successfully-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/04-regression-Regression-T-05314-calls-complete-successfully-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/04-regression-Regression-T-05314-calls-complete-successfully-chromium/error-context.md
+
+  24) [chromium] › tests/04-regression.spec.js:178:3 › Regression Tests - Pre/Post Refactor › REGRESSION: state persists correctly 
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: page.fill: Test timeout of 30000ms exceeded.
+    Call log:
+    [2m  - waiting for locator('textarea[placeholder*="Make me a deck"]')[22m
+
+
+      178 |   test('REGRESSION: state persists correctly', async ({ page }) => {
+      179 |     // Set some state
+    > 180 |     await page.fill(selectors.promptInput, 'Test input');
+          |                ^
+      181 |     
+      182 |     // Select output type
+      183 |     const deckButton = page.locator(selectors.outputTypeButtons)
+        at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/04-regression.spec.js:180:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/04-regression-Regression-T-787c2-ON-state-persists-correctly-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/04-regression-Regression-T-787c2-ON-state-persists-correctly-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/04-regression-Regression-T-787c2-ON-state-persists-correctly-chromium/error-context.md
+
+  25) [chromium] › tests/04-regression.spec.js:199:3 › Regression Tests - Pre/Post Refactor › REGRESSION: copy functionality works 
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: page.fill: Test timeout of 30000ms exceeded.
+    Call log:
+    [2m  - waiting for locator('textarea[placeholder*="Make me a deck"]')[22m
+
+
+      199 |   test('REGRESSION: copy functionality works', async ({ page }) => {
+      200 |     // Generate prompt
+    > 201 |     await page.fill(selectors.promptInput, testPrompts.simple.input);
+          |                ^
+      202 |     await page.click(selectors.generateButton);
+      203 |     await page.waitForSelector(selectors.promptOutput, { timeout: 15000 });
+      204 |     
+        at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/04-regression.spec.js:201:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/04-regression-Regression-T-fb337-ON-copy-functionality-works-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/04-regression-Regression-T-fb337-ON-copy-functionality-works-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/04-regression-Regression-T-fb337-ON-copy-functionality-works-chromium/error-context.md
+
+  26) [chromium] › tests/04-regression.spec.js:216:3 › Regression Tests - Pre/Post Refactor › REGRESSION: error handling works 
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: page.click: Test timeout of 30000ms exceeded.
+    Call log:
+    [2m  - waiting for locator('button:has-text("Generate Expanded Prompt")')[22m
+
+
+      216 |   test('REGRESSION: error handling works', async ({ page }) => {
+      217 |     // Try to generate without input (should handle gracefully)
+    > 218 |     await page.click(selectors.generateButton);
+          |                ^
+      219 |     
+      220 |     // Should either disable button or show error
+      221 |     const hasError = await page.locator('text=/error|required|empty/i').count() > 0;
+        at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/04-regression.spec.js:218:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/04-regression-Regression-T-47719-ESSION-error-handling-works-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/04-regression-Regression-T-47719-ESSION-error-handling-works-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/04-regression-Regression-T-47719-ESSION-error-handling-works-chromium/error-context.md
+
+  26 failed
+    [chromium] › tests/01-core-prompt-building.spec.js:18:3 › Core Prompt Building › should load the application successfully 
+    [chromium] › tests/01-core-prompt-building.spec.js:24:3 › Core Prompt Building › should generate a simple prompt 
+    [chromium] › tests/01-core-prompt-building.spec.js:42:3 › Core Prompt Building › should change output type and generate 
+    [chromium] › tests/01-core-prompt-building.spec.js:61:3 › Core Prompt Building › should change tone and generate different output 
+    [chromium] › tests/01-core-prompt-building.spec.js:82:3 › Core Prompt Building › should change style and format 
+    [chromium] › tests/01-core-prompt-building.spec.js:109:3 › Core Prompt Building › should show error for empty input 
+    [chromium] › tests/01-core-prompt-building.spec.js:121:3 › Core Prompt Building › should copy prompt to clipboard 
+    [chromium] › tests/01-core-prompt-building.spec.js:138:3 › Core Prompt Building › should handle multiple consecutive generations 
+    [chromium] › tests/01-core-prompt-building.spec.js:154:3 › Core Prompt Building › should show token count estimation 
+    [chromium] › tests/02-ui-controls.spec.js:140:3 › UI Controls › should handle responsive layout 
+    [chromium] › tests/02-ui-controls.spec.js:178:3 › UI Controls › should reset form ──────────────
+    [chromium] › tests/02-ui-controls.spec.js:195:3 › UI Controls › should show loading state during generation 
+    [chromium] › tests/03-history-management.spec.js:17:3 › History Management › should save prompt to history after generation 
+    [chromium] › tests/03-history-management.spec.js:39:3 › History Management › should load prompt from history 
+    [chromium] › tests/03-history-management.spec.js:69:3 › History Management › should delete individual history item 
+    [chromium] › tests/03-history-management.spec.js:102:3 › History Management › should clear all history 
+    [chromium] › tests/03-history-management.spec.js:137:3 › History Management › should persist history across page reloads 
+    [chromium] › tests/03-history-management.spec.js:190:3 › History Management › should show history item metadata 
+    [chromium] › tests/04-regression.spec.js:18:3 › Regression Tests - Pre/Post Refactor › REGRESSION: identical output for same inputs 
+    [chromium] › tests/04-regression.spec.js:74:3 › Regression Tests - Pre/Post Refactor › REGRESSION: all tones work 
+    [chromium] › tests/04-regression.spec.js:100:3 › Regression Tests - Pre/Post Refactor › REGRESSION: all formats work 
+    [chromium] › tests/04-regression.spec.js:126:3 › Regression Tests - Pre/Post Refactor › REGRESSION: no console errors during normal flow 
+    [chromium] › tests/04-regression.spec.js:151:3 › Regression Tests - Pre/Post Refactor › REGRESSION: API calls complete successfully 
+    [chromium] › tests/04-regression.spec.js:178:3 › Regression Tests - Pre/Post Refactor › REGRESSION: state persists correctly 
+    [chromium] › tests/04-regression.spec.js:199:3 › Regression Tests - Pre/Post Refactor › REGRESSION: copy functionality works 
+    [chromium] › tests/04-regression.spec.js:216:3 › Regression Tests - Pre/Post Refactor › REGRESSION: error handling works 
+  9 passed (2.4m)
+
+[36m  Serving HTML report at http://localhost:56770. Press Ctrl+C to quit.[39m

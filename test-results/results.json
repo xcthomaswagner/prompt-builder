@@ -96,7 +96,7 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "failed",
-                      "duration": 6638,
+                      "duration": 7377,
                       "error": {
                         "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('textarea[placeholder*=\"Make me a deck\"]')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('textarea[placeholder*=\"Make me a deck\"]')\u001b[22m\n",
                         "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('textarea[placeholder*=\"Make me a deck\"]')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('textarea[placeholder*=\"Make me a deck\"]')\u001b[22m\n\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/01-core-prompt-building.spec.js:20:55",
@@ -120,7 +120,7 @@
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-11-30T00:46:20.534Z",
+                      "startTime": "2025-11-30T00:51:31.836Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -170,7 +170,7 @@
                       "workerIndex": 1,
                       "parallelIndex": 1,
                       "status": "timedOut",
-                      "duration": 31508,
+                      "duration": 31436,
                       "error": {
                         "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m",
                         "stack": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
@@ -191,7 +191,7 @@
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-11-30T00:46:20.556Z",
+                      "startTime": "2025-11-30T00:51:31.878Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -236,7 +236,7 @@
                       "workerIndex": 2,
                       "parallelIndex": 2,
                       "status": "timedOut",
-                      "duration": 31539,
+                      "duration": 31367,
                       "error": {
                         "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m",
                         "stack": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
@@ -257,7 +257,7 @@
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-11-30T00:46:20.580Z",
+                      "startTime": "2025-11-30T00:51:31.843Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -302,7 +302,7 @@
                       "workerIndex": 3,
                       "parallelIndex": 3,
                       "status": "timedOut",
-                      "duration": 31492,
+                      "duration": 31493,
                       "error": {
                         "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m",
                         "stack": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
@@ -323,7 +323,7 @@
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-11-30T00:46:20.568Z",
+                      "startTime": "2025-11-30T00:51:31.896Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -368,7 +368,7 @@
                       "workerIndex": 4,
                       "parallelIndex": 4,
                       "status": "timedOut",
-                      "duration": 31567,
+                      "duration": 31478,
                       "error": {
                         "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m",
                         "stack": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
@@ -389,7 +389,7 @@
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-11-30T00:46:20.599Z",
+                      "startTime": "2025-11-30T00:51:31.836Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -434,7 +434,7 @@
                       "workerIndex": 5,
                       "parallelIndex": 5,
                       "status": "timedOut",
-                      "duration": 31471,
+                      "duration": 31457,
                       "error": {
                         "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m",
                         "stack": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
@@ -455,7 +455,7 @@
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-11-30T00:46:20.578Z",
+                      "startTime": "2025-11-30T00:51:31.855Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -500,7 +500,7 @@
                       "workerIndex": 6,
                       "parallelIndex": 0,
                       "status": "timedOut",
-                      "duration": 31115,
+                      "duration": 31066,
                       "error": {
                         "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m",
                         "stack": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
@@ -521,7 +521,7 @@
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-11-30T00:46:28.617Z",
+                      "startTime": "2025-11-30T00:51:40.858Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -564,9 +564,9 @@
                   "results": [
                     {
                       "workerIndex": 7,
-                      "parallelIndex": 5,
+                      "parallelIndex": 2,
                       "status": "timedOut",
-                      "duration": 31077,
+                      "duration": 31016,
                       "error": {
                         "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m",
                         "stack": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
@@ -587,7 +587,7 @@
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-11-30T00:46:53.635Z",
+                      "startTime": "2025-11-30T00:52:05.140Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -630,9 +630,9 @@
                   "results": [
                     {
                       "workerIndex": 8,
-                      "parallelIndex": 3,
+                      "parallelIndex": 1,
                       "status": "timedOut",
-                      "duration": 31063,
+                      "duration": 31003,
                       "error": {
                         "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m",
                         "stack": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
@@ -653,7 +653,7 @@
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-11-30T00:46:53.635Z",
+                      "startTime": "2025-11-30T00:52:05.137Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -712,15 +712,15 @@
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 10,
-                      "parallelIndex": 2,
+                      "workerIndex": 9,
+                      "parallelIndex": 5,
                       "status": "passed",
-                      "duration": 1671,
+                      "duration": 1222,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-11-30T00:46:53.640Z",
+                      "startTime": "2025-11-30T00:52:05.140Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -746,15 +746,15 @@
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 9,
-                      "parallelIndex": 1,
+                      "workerIndex": 10,
+                      "parallelIndex": 4,
                       "status": "passed",
-                      "duration": 1548,
+                      "duration": 1512,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-11-30T00:46:53.641Z",
+                      "startTime": "2025-11-30T00:52:05.139Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -781,14 +781,14 @@
                   "results": [
                     {
                       "workerIndex": 11,
-                      "parallelIndex": 4,
+                      "parallelIndex": 3,
                       "status": "passed",
-                      "duration": 1276,
+                      "duration": 1282,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-11-30T00:46:53.637Z",
+                      "startTime": "2025-11-30T00:52:05.139Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -814,15 +814,15 @@
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 11,
-                      "parallelIndex": 4,
+                      "workerIndex": 9,
+                      "parallelIndex": 5,
                       "status": "passed",
-                      "duration": 860,
+                      "duration": 863,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-11-30T00:46:55.367Z",
+                      "startTime": "2025-11-30T00:52:06.782Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -848,15 +848,15 @@
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 9,
-                      "parallelIndex": 1,
+                      "workerIndex": 11,
+                      "parallelIndex": 3,
                       "status": "passed",
-                      "duration": 850,
+                      "duration": 906,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-11-30T00:46:55.632Z",
+                      "startTime": "2025-11-30T00:52:06.853Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -883,14 +883,14 @@
                   "results": [
                     {
                       "workerIndex": 10,
-                      "parallelIndex": 2,
+                      "parallelIndex": 4,
                       "status": "passed",
-                      "duration": 946,
+                      "duration": 855,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-11-30T00:46:55.769Z",
+                      "startTime": "2025-11-30T00:52:07.085Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -916,10 +916,10 @@
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 11,
-                      "parallelIndex": 4,
+                      "workerIndex": 9,
+                      "parallelIndex": 5,
                       "status": "failed",
-                      "duration": 6224,
+                      "duration": 6496,
                       "error": {
                         "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('textarea[placeholder*=\"Make me a deck\"]')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('textarea[placeholder*=\"Make me a deck\"]')\u001b[22m\n",
                         "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('textarea[placeholder*=\"Make me a deck\"]')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('textarea[placeholder*=\"Make me a deck\"]')\u001b[22m\n\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/02-ui-controls.spec.js:146:55",
@@ -943,7 +943,7 @@
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-11-30T00:46:56.246Z",
+                      "startTime": "2025-11-30T00:52:07.664Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -990,15 +990,15 @@
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 9,
-                      "parallelIndex": 1,
+                      "workerIndex": 11,
+                      "parallelIndex": 3,
                       "status": "passed",
-                      "duration": 801,
+                      "duration": 843,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-11-30T00:46:56.498Z",
+                      "startTime": "2025-11-30T00:52:07.787Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -1025,9 +1025,9 @@
                   "results": [
                     {
                       "workerIndex": 10,
-                      "parallelIndex": 2,
+                      "parallelIndex": 4,
                       "status": "timedOut",
-                      "duration": 31132,
+                      "duration": 31208,
                       "error": {
                         "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m",
                         "stack": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
@@ -1048,7 +1048,7 @@
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-11-30T00:46:56.745Z",
+                      "startTime": "2025-11-30T00:52:07.960Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -1090,10 +1090,10 @@
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 9,
-                      "parallelIndex": 1,
+                      "workerIndex": 11,
+                      "parallelIndex": 3,
                       "status": "timedOut",
-                      "duration": 31311,
+                      "duration": 31240,
                       "error": {
                         "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m",
                         "stack": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
@@ -1114,7 +1114,7 @@
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-11-30T00:46:57.315Z",
+                      "startTime": "2025-11-30T00:52:08.669Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -1176,7 +1176,7 @@
                       "workerIndex": 12,
                       "parallelIndex": 0,
                       "status": "timedOut",
-                      "duration": 31078,
+                      "duration": 31207,
                       "error": {
                         "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m",
                         "stack": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
@@ -1197,7 +1197,7 @@
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-11-30T00:47:00.815Z",
+                      "startTime": "2025-11-30T00:52:13.203Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -1240,9 +1240,9 @@
                   "results": [
                     {
                       "workerIndex": 13,
-                      "parallelIndex": 4,
+                      "parallelIndex": 5,
                       "status": "timedOut",
-                      "duration": 31182,
+                      "duration": 31383,
                       "error": {
                         "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m",
                         "stack": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
@@ -1263,7 +1263,7 @@
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-11-30T00:47:03.200Z",
+                      "startTime": "2025-11-30T00:52:14.910Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -1305,10 +1305,10 @@
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 14,
-                      "parallelIndex": 3,
+                      "workerIndex": 15,
+                      "parallelIndex": 2,
                       "status": "timedOut",
-                      "duration": 31092,
+                      "duration": 31119,
                       "error": {
                         "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m",
                         "stack": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
@@ -1329,7 +1329,7 @@
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-11-30T00:47:26.042Z",
+                      "startTime": "2025-11-30T00:52:37.405Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -1371,10 +1371,10 @@
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 15,
-                      "parallelIndex": 5,
+                      "workerIndex": 14,
+                      "parallelIndex": 1,
                       "status": "timedOut",
-                      "duration": 31078,
+                      "duration": 31116,
                       "error": {
                         "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m",
                         "stack": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
@@ -1395,7 +1395,7 @@
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-11-30T00:47:26.041Z",
+                      "startTime": "2025-11-30T00:52:37.402Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -1438,9 +1438,9 @@
                   "results": [
                     {
                       "workerIndex": 16,
-                      "parallelIndex": 2,
+                      "parallelIndex": 4,
                       "status": "timedOut",
-                      "duration": 31079,
+                      "duration": 31080,
                       "error": {
                         "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m",
                         "stack": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
@@ -1461,7 +1461,7 @@
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-11-30T00:47:28.932Z",
+                      "startTime": "2025-11-30T00:52:40.202Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -1504,14 +1504,14 @@
                   "results": [
                     {
                       "workerIndex": 17,
-                      "parallelIndex": 1,
+                      "parallelIndex": 3,
                       "status": "passed",
-                      "duration": 905,
+                      "duration": 845,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-11-30T00:47:29.536Z",
+                      "startTime": "2025-11-30T00:52:40.875Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -1538,9 +1538,9 @@
                   "results": [
                     {
                       "workerIndex": 17,
-                      "parallelIndex": 1,
+                      "parallelIndex": 3,
                       "status": "timedOut",
-                      "duration": 31162,
+                      "duration": 31261,
                       "error": {
                         "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m",
                         "stack": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
@@ -1561,7 +1561,7 @@
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-11-30T00:47:30.738Z",
+                      "startTime": "2025-11-30T00:52:41.961Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -1623,7 +1623,7 @@
                       "workerIndex": 18,
                       "parallelIndex": 0,
                       "status": "timedOut",
-                      "duration": 31149,
+                      "duration": 31078,
                       "error": {
                         "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m",
                         "stack": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
@@ -1644,7 +1644,7 @@
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-11-30T00:47:32.912Z",
+                      "startTime": "2025-11-30T00:52:45.848Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -1687,14 +1687,14 @@
                   "results": [
                     {
                       "workerIndex": 19,
-                      "parallelIndex": 4,
+                      "parallelIndex": 5,
                       "status": "passed",
-                      "duration": 1023,
+                      "duration": 904,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-11-30T00:47:35.442Z",
+                      "startTime": "2025-11-30T00:52:47.370Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -1721,9 +1721,9 @@
                   "results": [
                     {
                       "workerIndex": 19,
-                      "parallelIndex": 4,
+                      "parallelIndex": 5,
                       "status": "timedOut",
-                      "duration": 31058,
+                      "duration": 31198,
                       "error": {
                         "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m",
                         "stack": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
@@ -1744,7 +1744,7 @@
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-11-30T00:47:36.729Z",
+                      "startTime": "2025-11-30T00:52:48.541Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -1787,9 +1787,9 @@
                   "results": [
                     {
                       "workerIndex": 20,
-                      "parallelIndex": 5,
+                      "parallelIndex": 1,
                       "status": "timedOut",
-                      "duration": 31078,
+                      "duration": 31283,
                       "error": {
                         "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m",
                         "stack": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
@@ -1810,7 +1810,7 @@
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-11-30T00:47:58.450Z",
+                      "startTime": "2025-11-30T00:53:09.827Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -1853,9 +1853,9 @@
                   "results": [
                     {
                       "workerIndex": 21,
-                      "parallelIndex": 3,
+                      "parallelIndex": 2,
                       "status": "timedOut",
-                      "duration": 31108,
+                      "duration": 31281,
                       "error": {
                         "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m",
                         "stack": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
@@ -1876,7 +1876,7 @@
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-11-30T00:47:58.451Z",
+                      "startTime": "2025-11-30T00:53:09.829Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -1919,9 +1919,9 @@
                   "results": [
                     {
                       "workerIndex": 22,
-                      "parallelIndex": 2,
+                      "parallelIndex": 4,
                       "status": "timedOut",
-                      "duration": 30999,
+                      "duration": 31135,
                       "error": {
                         "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m",
                         "stack": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
@@ -1942,7 +1942,7 @@
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-11-30T00:48:01.216Z",
+                      "startTime": "2025-11-30T00:53:12.477Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -1985,9 +1985,9 @@
                   "results": [
                     {
                       "workerIndex": 23,
-                      "parallelIndex": 1,
+                      "parallelIndex": 3,
                       "status": "timedOut",
-                      "duration": 30978,
+                      "duration": 30992,
                       "error": {
                         "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m",
                         "stack": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
@@ -2008,7 +2008,7 @@
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-11-30T00:48:02.628Z",
+                      "startTime": "2025-11-30T00:53:13.977Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -2053,7 +2053,7 @@
                       "workerIndex": 24,
                       "parallelIndex": 0,
                       "status": "timedOut",
-                      "duration": 31248,
+                      "duration": 31058,
                       "error": {
                         "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m",
                         "stack": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
@@ -2074,7 +2074,7 @@
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-11-30T00:48:05.147Z",
+                      "startTime": "2025-11-30T00:53:18.247Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -2117,9 +2117,9 @@
                   "results": [
                     {
                       "workerIndex": 25,
-                      "parallelIndex": 4,
+                      "parallelIndex": 5,
                       "status": "timedOut",
-                      "duration": 31033,
+                      "duration": 31099,
                       "error": {
                         "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m",
                         "stack": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
@@ -2140,7 +2140,7 @@
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-11-30T00:48:08.598Z",
+                      "startTime": "2025-11-30T00:53:20.589Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -2176,8 +2176,8 @@
   ],
   "errors": [],
   "stats": {
-    "startTime": "2025-11-30T00:46:19.154Z",
-    "duration": 140783.297,
+    "startTime": "2025-11-30T00:51:30.571Z",
+    "duration": 141409.561,
     "expected": 9,
     "skipped": 0,
     "unexpected": 26,
