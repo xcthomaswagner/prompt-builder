@@ -243,7 +243,7 @@ export default function OutcomeFeedback({
                 px-4 py-2 rounded-lg text-sm font-medium transition-colors
                 ${canSubmit && !isSubmitting
                   ? 'bg-indigo-600 text-white hover:bg-indigo-700'
-                  : 'bg-slate-100 text-slate-400 cursor-not-allowed'
+                  : darkMode ? 'bg-slate-700 text-slate-500 cursor-not-allowed' : 'bg-slate-100 text-slate-400 cursor-not-allowed'
                 }
               `}
             >

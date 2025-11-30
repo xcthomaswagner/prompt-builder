@@ -461,7 +461,7 @@ export default function ExperimentSettings({ isOpen, onClose, baselines = {}, ju
                         <button
                           onClick={() => updateJudgeOption('dualJudge', !localJudgeOptions.dualJudge)}
                           className={`relative w-12 h-6 rounded-full transition-colors ${
-                            localJudgeOptions.dualJudge ? 'bg-purple-500' : 'bg-slate-300'
+                            localJudgeOptions.dualJudge ? 'bg-purple-500' : darkMode ? 'bg-slate-600' : 'bg-slate-300'
                           }`}
                         >
                           <span className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-transform ${
@@ -521,7 +521,7 @@ export default function ExperimentSettings({ isOpen, onClose, baselines = {}, ju
                             <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${
                               localJudgeOptions.rubricEnforcement === mode.id
                                 ? 'border-blue-500'
-                                : 'border-slate-300'
+                                : darkMode ? 'border-slate-500' : 'border-slate-300'
                             }`}>
                               {localJudgeOptions.rubricEnforcement === mode.id && (
                                 <div className="w-2 h-2 rounded-full bg-blue-500" />
@@ -564,7 +564,7 @@ export default function ExperimentSettings({ isOpen, onClose, baselines = {}, ju
               className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                 hasChanges
                   ? 'bg-cyan-500 text-white hover:bg-cyan-600'
-                  : 'bg-slate-200 text-slate-400 cursor-not-allowed'
+                  : darkMode ? 'bg-slate-700 text-slate-500 cursor-not-allowed' : 'bg-slate-200 text-slate-400 cursor-not-allowed'
               }`}
             >
               <Save size={16} />

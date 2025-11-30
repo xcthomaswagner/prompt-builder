@@ -509,7 +509,7 @@ export default function ExperimentMode({ callLLM, defaultOutputType = 'doc', db,
             isRunning
               ? 'bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 cursor-pointer'
               : !canRun
-                ? 'bg-slate-300 cursor-not-allowed shadow-none'
+                ? darkMode ? 'bg-slate-700 cursor-not-allowed shadow-none' : 'bg-slate-300 cursor-not-allowed shadow-none'
                 : 'bg-gradient-to-r from-cyan-500 to-blue-600 hover:shadow-cyan-200 hover:shadow-xl'
           }`}
         >

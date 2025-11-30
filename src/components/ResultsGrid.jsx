@@ -82,10 +82,10 @@ export default function ResultsGrid({ results, darkMode = false }) {
   // Render status indicator (circle for pending/running, nothing for complete)
   const renderStatusIndicator = (result) => {
     if (result.status === 'pending') {
-      return <Loader2 size={14} className="text-slate-300" />;
+      return <Loader2 size={14} className={darkMode ? 'text-slate-600' : 'text-slate-300'} />;
     }
     if (result.status === 'running') {
-      return <Loader2 size={14} className="text-slate-400 animate-spin" />;
+      return <Loader2 size={14} className={darkMode ? 'text-slate-400 animate-spin' : 'text-slate-400 animate-spin'} />;
     }
     if (result.status === 'error' || result.error) {
       return <span className="w-3 h-3 rounded-full bg-red-400" />;
@@ -263,10 +263,10 @@ export default function ResultsGrid({ results, darkMode = false }) {
                                 <div className={`text-2xl font-bold ${getScoreColor(result.evaluation.ai.composite || result.evaluation.ai.score).split(' ')[0]}`}>
                                   {result.evaluation.ai.composite || result.evaluation.ai.score}
                                 </div>
-                                <div className="text-xs text-slate-400">/ 10</div>
+                                <div className={`text-xs ${darkMode ? 'text-slate-500' : 'text-slate-400'}`}>/ 10</div>
                               </div>
                               <div className="flex-1">
-                                <p className="text-sm text-slate-700">{result.evaluation.ai.summary || result.evaluation.ai.critique}</p>
+                                <p className={`text-sm ${darkMode ? 'text-slate-300' : 'text-slate-700'}`}>{result.evaluation.ai.summary || result.evaluation.ai.critique}</p>
                               </div>
                             </div>
                             
@@ -276,7 +276,7 @@ export default function ResultsGrid({ results, darkMode = false }) {
                                 <div className="grid grid-cols-2 gap-2 text-xs">
                                   {DIMENSION_LABELS.map(({ key, label }) => (
                                     <div key={key} className="flex items-center justify-between bg-white/50 rounded px-2 py-1">
-                                      <span className="text-slate-500">{label}</span>
+                                      <span className={darkMode ? 'text-slate-400' : 'text-slate-500'}>{label}</span>
                                       <span className={`font-semibold ${getScoreColor(result.evaluation.ai.dimensions[key]).split(' ')[0]}`}>
                                         {result.evaluation.ai.dimensions[key]}
                                       </span>
@@ -290,11 +290,11 @@ export default function ResultsGrid({ results, darkMode = false }) {
                                     <summary className="text-xs text-purple-600 cursor-pointer hover:text-purple-800">
                                       View justifications
                                     </summary>
-                                    <div className="mt-2 space-y-2 text-xs text-slate-600">
+                                    <div className={`mt-2 space-y-2 text-xs ${darkMode ? 'text-slate-400' : 'text-slate-600'}`}>
                                       {DIMENSION_LABELS.map(({ key, label }) => (
                                         result.evaluation.ai.justifications[key] && (
                                           <div key={key} className="bg-white/70 rounded p-2">
-                                            <span className="font-medium text-slate-700">{label}:</span>{' '}
+                                            <span className={`font-medium ${darkMode ? 'text-slate-300' : 'text-slate-700'}`}>{label}:</span>{' '}
                                             {result.evaluation.ai.justifications[key]}
                                           </div>
                                         )

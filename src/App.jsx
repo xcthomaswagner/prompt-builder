@@ -1887,7 +1887,7 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
                 <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-cyan-500"></div>
               </div>
             ) : experimentHistory.experiments?.length === 0 ? (
-              <div className="text-center text-slate-400 mt-10 text-sm">No experiments yet.</div>
+              <div className={`text-center mt-10 text-sm ${darkMode ? 'text-slate-500' : 'text-slate-400'}`}>No experiments yet.</div>
             ) : (
               experimentHistory.experiments?.map((exp) => (
                 <div
@@ -1904,7 +1904,7 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
                         {exp.originalPrompt?.substring(0, 40) || 'Untitled'}
                         {exp.originalPrompt?.length > 40 ? '...' : ''}
                       </div>
-                      <div className="flex items-center gap-2 mt-1 text-xs text-slate-400">
+                      <div className={`flex items-center gap-2 mt-1 text-xs ${darkMode ? 'text-slate-500' : 'text-slate-400'}`}>
                         <span>{exp.totalCells || 0} cells</span>
                         <span>•</span>
                         <span className={
@@ -1915,7 +1915,7 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
                           {exp.status || 'unknown'}
                         </span>
                       </div>
-                      <div className="text-xs text-slate-400 mt-1">
+                      <div className={`text-xs mt-1 ${darkMode ? 'text-slate-500' : 'text-slate-400'}`}>
                         {exp.createdAt?.seconds
                           ? new Date(exp.createdAt.seconds * 1000).toLocaleDateString(undefined, {
                             month: 'short',
@@ -1928,7 +1928,7 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
                     </div>
                     <button
                       onClick={(e) => experimentHistory.handleDeleteExperiment(exp.id, e)}
-                      className="p-1 text-slate-300 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity"
+                      className={`p-1 opacity-0 group-hover:opacity-100 transition-opacity ${darkMode ? 'text-slate-500 hover:text-red-400' : 'text-slate-300 hover:text-red-500'}`}
                       title="Delete experiment"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
