@@ -961,8 +961,8 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
                 </div>
 
                 {showSystemPrompt && (
-                  <div className="mb-6 p-4 bg-slate-100 rounded-lg border border-slate-200 text-xs font-mono text-slate-600 overflow-auto max-h-64">
-                    <h3 className="font-bold mb-2 text-slate-700">System Prompt Preview:</h3>
+                  <div className={`mb-6 p-4 rounded-lg border text-xs font-mono overflow-auto max-h-64 ${darkMode ? 'bg-slate-700 border-slate-600 text-slate-300' : 'bg-slate-100 border-slate-200 text-slate-600'}`}>
+                    <h3 className={`font-bold mb-2 ${darkMode ? 'text-slate-200' : 'text-slate-700'}`}>System Prompt Preview:</h3>
                     <pre className="whitespace-pre-wrap">
                       {(() => {
                         try {
@@ -1398,7 +1398,7 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
                       {/* Copy Button */}
                       <button
                         onClick={handleCopy}
-                        className="p-2 text-slate-500 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors"
+                        className={`p-2 rounded-lg transition-colors ${darkMode ? 'text-slate-400 hover:text-slate-200 hover:bg-slate-700' : 'text-slate-500 hover:text-slate-700 hover:bg-slate-100'}`}
                         title="Copy to clipboard"
                       >
                         <CopyIcon className="w-4 h-4" />
@@ -1414,7 +1414,7 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
                           a.click();
                           URL.revokeObjectURL(url);
                         }}
-                        className="p-2 text-slate-500 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors"
+                        className={`p-2 rounded-lg transition-colors ${darkMode ? 'text-slate-400 hover:text-slate-200 hover:bg-slate-700' : 'text-slate-500 hover:text-slate-700 hover:bg-slate-100'}`}
                         title="Download as markdown file"
                       >
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1426,7 +1426,7 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
                         href={`https://chat.openai.com/?q=${encodeURIComponent(generatedResult)}`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors cursor-pointer"
+                        className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg transition-colors cursor-pointer ${darkMode ? 'text-slate-300 bg-slate-700 hover:bg-slate-600' : 'text-slate-700 bg-slate-100 hover:bg-slate-200'}`}
                         title="Opens ChatGPT with prompt pre-filled"
                       >
                         <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor">
@@ -1439,7 +1439,7 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
                         href={`https://claude.ai/new?q=${encodeURIComponent(generatedResult)}`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors cursor-pointer"
+                        className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg transition-colors cursor-pointer ${darkMode ? 'text-slate-300 bg-slate-700 hover:bg-slate-600' : 'text-slate-700 bg-slate-100 hover:bg-slate-200'}`}
                         title="Opens Claude with prompt pre-filled"
                       >
                         <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor">
@@ -1452,7 +1452,7 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
                         href={`https://gemini.google.com/app?prompt=${encodeURIComponent(generatedResult)}`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors cursor-pointer"
+                        className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg transition-colors cursor-pointer ${darkMode ? 'text-slate-300 bg-slate-700 hover:bg-slate-600' : 'text-slate-700 bg-slate-100 hover:bg-slate-200'}`}
                         title="Opens Gemini with prompt pre-filled"
                       >
                         <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor">
