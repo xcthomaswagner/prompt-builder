@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { estimateTokens } from './lib/tokenEstimator';
+import { generateSignature } from './lib/utils';
 import usePromptForm from './hooks/usePromptForm';
 import useApiSettings from './hooks/useApiSettings';
 import useAuth from './hooks/useAuth';
@@ -370,18 +371,6 @@ Apply the refinement instructions above to modify the prompt. Return only the up
     } finally {
       setIsRefining(false);
     }
-  };
-
-  // Helper: Generate a hash signature for the prompt (first 60 chars)
-  const generateSignature = (text) => {
-    const prefix = text.trim().substring(0, 60).toLowerCase();
-    let hash = 0;
-    for (let i = 0; i < prefix.length; i++) {
-      const char = prefix.charCodeAt(i);
-      hash = ((hash << 5) - hash) + char;
-      hash = hash & hash; // Convert to 32bit integer
-    }
-    return hash.toString();
   };
 
   // API Settings (from custom hook)
