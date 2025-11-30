@@ -41,7 +41,6 @@ import {
 } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 import buildPromptPlan from './lib/promptAssembler';
-import PROMPT_SPECS from './lib/promptSpecs';
 import ExperimentMode from './components/ExperimentMode';
 import SettingsModal from './components/SettingsModal';
 import {
@@ -1313,7 +1312,9 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
                               key={length.id}
                               className={`flex-1 min-w-[100px] cursor-pointer rounded-lg border px-3 py-2 text-sm font-medium transition-all text-center ${
                                 isSelected
-                                  ? 'border-cyan-500 bg-cyan-50 text-cyan-700'
+                                  ? darkMode
+                                    ? 'border-cyan-500 bg-cyan-900/50 text-cyan-300'
+                                    : 'border-cyan-500 bg-cyan-50 text-cyan-700'
                                   : darkMode
                                     ? 'border-slate-600 bg-slate-700 text-slate-200 hover:border-slate-500'
                                     : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300'
