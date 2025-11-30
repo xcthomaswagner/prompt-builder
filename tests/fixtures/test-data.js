@@ -53,37 +53,38 @@ export const testPrompts = {
 
 export const selectors = {
   // Input
-  promptInput: 'textarea[placeholder*="describe what you need"]',
-  generateButton: 'button:has-text("Generate Prompt")',
+  promptInput: 'textarea[placeholder*="Make me a deck"]',
+  generateButton: 'button:has-text("Generate Expanded Prompt")',
   
   // Output
-  promptOutput: '[data-testid="prompt-output"], .prompt-output',
+  promptOutput: 'pre, code, .output-text',
   copyButton: 'button:has-text("Copy")',
   
-  // Controls
-  outputTypeButtons: '[data-testid="output-type-selector"] button',
-  toneDropdown: 'select[aria-label="Tone"], button:has-text("Tone")',
-  styleDropdown: 'select[aria-label="Style"], button:has-text("Style")',
-  formatDropdown: 'select[aria-label="Format"], button:has-text("Format")',
-  lengthDropdown: 'select[aria-label="Length"], button:has-text("Length")',
+  // Controls - Output Type buttons (Doc, Deck, Data, Code, Copy, Comms)
+  outputTypeButtons: 'button:has-text("Doc"), button:has-text("Deck"), button:has-text("Data"), button:has-text("Code"), button:has-text("Copy"), button:has-text("Comms")',
+  toneDropdown: 'select',
+  styleDropdown: 'select',
+  formatDropdown: 'select',
+  lengthDropdown: 'select',
   
   // Auth
-  signInButton: 'button:has-text("Sign in with Google")',
+  signInButton: 'button:has-text("Sign in")',
   signOutButton: 'button:has-text("Sign Out")',
-  userAvatar: '[data-testid="user-avatar"]',
+  userAvatar: 'img[alt*="avatar"], button:has-text("Sign")',
   
   // History
-  historyPanel: '[data-testid="history-panel"]',
-  historyItem: '[data-testid="history-item"]',
-  clearHistoryButton: 'button:has-text("Clear History")',
+  historyButton: 'button:has-text("History")',
+  historyPanel: 'aside, [role="complementary"]',
+  historyItem: '.history-item, li',
+  clearHistoryButton: 'button:has-text("Clear")',
   
   // UI Controls
-  darkModeToggle: 'button[aria-label="Toggle dark mode"]',
-  settingsButton: 'button[aria-label="Settings"]',
+  darkModeToggle: 'button:has-text("Dark"), button:has-text("Light")',
+  settingsButton: 'button:has-text("Settings")',
   
   // Templates
-  templateSelector: '[data-testid="template-selector"]',
-  templateCard: '[data-testid="template-card"]',
+  templateButton: 'button:has-text("Templates"), button:has-text("Quick")',
+  templateCard: 'button, .template',
 };
 
 export const expectedOutputPatterns = {

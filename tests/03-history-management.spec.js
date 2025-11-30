@@ -23,7 +23,7 @@ test.describe('History Management', () => {
     await page.waitForSelector(selectors.promptOutput, { timeout: 15000 });
     
     // Open history panel
-    const historyButton = page.locator('button').filter({ hasText: /history/i }).first();
+    const historyButton = page.locator(selectors.historyButton).first();
     if (await historyButton.count() > 0) {
       await historyButton.click();
       await page.waitForTimeout(500);
