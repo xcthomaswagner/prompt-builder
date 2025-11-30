@@ -1,0 +1,213 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e3]:
+  - generic [ref=e4]:
+    - banner [ref=e5]:
+      - generic [ref=e6]:
+        - generic [ref=e7]:
+          - img [ref=e9]
+          - heading "Intelligent Prompt Builder" [level=1] [ref=e11]
+        - generic [ref=e12]:
+          - button "Builder" [ref=e13] [cursor=pointer]:
+            - img [ref=e14]
+            - text: Builder
+          - button "Experiment" [ref=e17] [cursor=pointer]:
+            - img [ref=e18]
+            - text: Experiment
+      - generic [ref=e20]:
+        - button "Switch to dark mode" [ref=e21] [cursor=pointer]:
+          - img [ref=e22]
+        - generic [ref=e24]:
+          - img "avatar" [ref=e26]
+          - generic [ref=e27]:
+            - generic [ref=e28]: Playwright Test User
+            - generic [ref=e29]: test@playwright.test
+          - button "Sign out" [ref=e30] [cursor=pointer]
+    - generic [ref=e32]:
+      - button "Quick Start Templates" [ref=e34] [cursor=pointer]:
+        - img [ref=e35]
+        - text: Quick Start Templates
+        - img [ref=e37]
+      - generic [ref=e39]:
+        - button "Show System Prompt" [ref=e41] [cursor=pointer]:
+          - img [ref=e42]
+          - text: Show System Prompt
+        - generic [ref=e45]:
+          - generic [ref=e46]: Your Original Prompt
+          - generic [ref=e47]:
+            - generic [ref=e48]: 0 chars
+            - generic [ref=e49]: •
+            - generic [ref=e50]: 0 tokens
+            - generic [ref=e51]: •
+            - button "Reset" [ref=e52] [cursor=pointer]
+        - textbox "e.g., Make me a deck about Andrej Karpathy software 3.0" [ref=e53]
+        - generic [ref=e55]:
+          - generic [ref=e56]: Token Usage
+          - generic [ref=e57]: 0 / 2000 tokens
+      - generic [ref=e59]:
+        - generic [ref=e60]: Output Type
+        - generic [ref=e61]:
+          - generic [ref=e62]:
+            - button "Deck" [ref=e63] [cursor=pointer]:
+              - img [ref=e64]
+              - generic [ref=e66]: Deck
+            - generic [ref=e67]:
+              - generic [ref=e69]: Slides, narratives, exec briefings
+              - generic [ref=e70]: Perfect for investor updates, executive briefings, and internal pitches. Creates structured slide content with clear narratives and key points.
+          - button "Doc" [ref=e72] [cursor=pointer]:
+            - img [ref=e73]
+            - generic [ref=e76]: Doc
+          - button "Data" [ref=e78] [cursor=pointer]:
+            - img [ref=e79]
+            - generic [ref=e83]: Data
+          - button "Code" [ref=e85] [cursor=pointer]:
+            - img [ref=e86]
+            - generic [ref=e89]: Code
+          - button "Copy" [ref=e91] [cursor=pointer]:
+            - img [ref=e92]
+            - generic [ref=e95]: Copy
+          - button "Comms" [ref=e97] [cursor=pointer]:
+            - img [ref=e98]
+            - generic [ref=e100]: Comms
+      - button "Document Settings" [ref=e102] [cursor=pointer]:
+        - generic [ref=e103]:
+          - img [ref=e104]
+          - text: Document Settings
+        - img [ref=e107]
+      - button "Generate Expanded Prompt" [disabled] [ref=e109]:
+        - img [ref=e110]
+        - text: Generate Expanded Prompt
+      - button "Advanced Configuration (optional)" [ref=e113] [cursor=pointer]:
+        - generic [ref=e114]:
+          - img [ref=e115]
+          - text: Advanced Configuration (optional)
+        - img [ref=e118]
+  - generic [ref=e120]:
+    - generic [ref=e121]:
+      - generic [ref=e122]:
+        - img [ref=e123]
+        - heading "Prompt History" [level=2] [ref=e127]
+      - generic [ref=e128]:
+        - generic [ref=e129]: "5"
+        - button "Collapse sidebar" [ref=e130] [cursor=pointer]:
+          - img [ref=e131]
+    - generic [ref=e135]:
+      - img [ref=e136]
+      - textbox "Search prompts..." [ref=e139]
+    - generic [ref=e140]:
+      - generic [ref=e141] [cursor=pointer]:
+        - generic [ref=e142]:
+          - generic [ref=e143]: Write a blog post about AI
+          - generic [ref=e144]:
+            - generic [ref=e145]: doc
+            - generic [ref=e146]: paragraph
+            - generic [ref=e147]: medium
+            - generic [ref=e148]: professional
+          - generic [ref=e149]:
+            - generic [ref=e150]: Nov 29, 5:28 PM
+            - generic [ref=e151]: •
+            - generic [ref=e152]: •
+            - button "4 versions" [ref=e153]
+            - generic [ref=e154]: •
+            - generic "Reverse Prompting Used" [ref=e155]:
+              - img [ref=e156]
+              - generic [ref=e158]: RP
+        - generic [ref=e159]:
+          - button "Private" [ref=e160]:
+            - img [ref=e161]
+          - button "Delete" [ref=e164]:
+            - img [ref=e165]
+      - generic [ref=e168] [cursor=pointer]:
+        - generic [ref=e169]:
+          - generic [ref=e170]: Create investor pitch deck for AI startup
+          - generic [ref=e171]:
+            - generic [ref=e172]: deck
+            - generic [ref=e173]: paragraph
+            - generic [ref=e174]: medium
+            - generic [ref=e175]: professional
+          - generic [ref=e176]:
+            - generic [ref=e177]: Nov 29, 5:28 PM
+            - generic [ref=e178]: •
+            - generic [ref=e179]: •
+            - button "1 version" [ref=e180]
+            - generic [ref=e181]: •
+            - generic "Reverse Prompting Used" [ref=e182]:
+              - img [ref=e183]
+              - generic [ref=e185]: RP
+        - generic [ref=e186]:
+          - button "Private" [ref=e187]:
+            - img [ref=e188]
+          - button "Delete" [ref=e191]:
+            - img [ref=e192]
+      - generic [ref=e195] [cursor=pointer]:
+        - generic [ref=e196]:
+          - generic [ref=e197]: Write a blog post about AI
+          - generic [ref=e198]:
+            - generic [ref=e199]: doc
+            - generic [ref=e200]: paragraph
+            - generic [ref=e201]: medium
+            - generic [ref=e202]: professional
+          - generic [ref=e203]:
+            - generic [ref=e204]: Nov 29, 5:28 PM
+            - generic [ref=e205]: •
+            - generic [ref=e206]: •
+            - button "1 version" [ref=e207]
+            - generic [ref=e208]: •
+            - generic "Reverse Prompting Used" [ref=e209]:
+              - img [ref=e210]
+              - generic [ref=e212]: RP
+        - generic [ref=e213]:
+          - button "Private" [ref=e214]:
+            - img [ref=e215]
+          - button "Delete" [ref=e218]:
+            - img [ref=e219]
+      - generic [ref=e222] [cursor=pointer]:
+        - generic [ref=e223]:
+          - generic [ref=e224]: Write a blog post about AI
+          - generic [ref=e225]:
+            - generic [ref=e226]: doc
+            - generic [ref=e227]: paragraph
+            - generic [ref=e228]: medium
+            - generic [ref=e229]: professional
+          - generic [ref=e230]:
+            - generic [ref=e231]: Nov 29, 5:28 PM
+            - generic [ref=e232]: •
+            - generic [ref=e233]: •
+            - button "1 version" [ref=e234]
+            - generic [ref=e235]: •
+            - generic "Reverse Prompting Used" [ref=e236]:
+              - img [ref=e237]
+              - generic [ref=e239]: RP
+        - generic [ref=e240]:
+          - button "Private" [ref=e241]:
+            - img [ref=e242]
+          - button "Delete" [ref=e245]:
+            - img [ref=e246]
+      - generic [ref=e249] [cursor=pointer]:
+        - generic [ref=e250]:
+          - generic [ref=e251]: Write a blog post about AI
+          - generic [ref=e252]:
+            - generic [ref=e253]: doc
+            - generic [ref=e254]: paragraph
+            - generic [ref=e255]: medium
+            - generic [ref=e256]: professional
+          - generic [ref=e257]:
+            - generic [ref=e258]: Nov 29, 5:28 PM
+            - generic [ref=e259]: •
+            - generic [ref=e260]: •
+            - button "1 version" [ref=e261]
+            - generic [ref=e262]: •
+            - generic "Reverse Prompting Used" [ref=e263]:
+              - img [ref=e264]
+              - generic [ref=e266]: RP
+        - generic [ref=e267]:
+          - button "Private" [ref=e268]:
+            - img [ref=e269]
+          - button "Delete" [ref=e272]:
+            - img [ref=e273]
+    - generic [ref=e276]:
+      - generic [ref=e277]: "Signed in as: Playwright Test User"
+      - button "Settings" [ref=e278] [cursor=pointer]:
+        - img [ref=e279]
+```

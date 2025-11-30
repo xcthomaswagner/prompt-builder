@@ -1,0 +1,514 @@
+
+> intelligent-prompt-builder@1.0.0 test
+> playwright test
+
+
+Running 35 tests using 6 workers
+
+  ✓   5 [chromium] › tests/01-core-prompt-building.spec.js:17:3 › Core Prompt Building › should load the application successfully (1.8s)
+  ✓   1 [chromium] › tests/01-core-prompt-building.spec.js:24:3 › Core Prompt Building › should generate a simple prompt (8.0s)
+  ✓   4 [chromium] › tests/01-core-prompt-building.spec.js:61:3 › Core Prompt Building › should change tone and generate different output (8.1s)
+  ✓   6 [chromium] › tests/01-core-prompt-building.spec.js:82:3 › Core Prompt Building › should change style and format (8.2s)
+  ✘   7 [chromium] › tests/01-core-prompt-building.spec.js:121:3 › Core Prompt Building › should copy prompt to clipboard (7.3s)
+  ✘   9 [chromium] › tests/01-core-prompt-building.spec.js:154:3 › Core Prompt Building › should show token count estimation (1.3s)
+  ✓  10 [chromium] › tests/02-ui-controls.spec.js:17:3 › UI Controls › should toggle dark mode (1.3s)
+  ✓  11 [chromium] › tests/02-ui-controls.spec.js:87:3 › UI Controls › should show quickstart templates (1.5s)
+  ✓  12 [chromium] › tests/02-ui-controls.spec.js:43:3 › UI Controls › should expand and collapse sections (1.8s)
+  ✓  13 [chromium] › tests/02-ui-controls.spec.js:63:3 › UI Controls › should open and close settings (1.7s)
+  ✓  14 [chromium] › tests/02-ui-controls.spec.js:103:3 › UI Controls › should select a quickstart template (1.6s)
+  ✓   2 [chromium] › tests/01-core-prompt-building.spec.js:42:3 › Core Prompt Building › should change output type and generate (13.4s)
+  ✓  15 [chromium] › tests/02-ui-controls.spec.js:124:3 › UI Controls › should show history panel (995ms)
+  ✓  17 [chromium] › tests/02-ui-controls.spec.js:161:3 › UI Controls › should show tooltips on hover (1.6s)
+  ✓  18 [chromium] › tests/02-ui-controls.spec.js:178:3 › UI Controls › should reset form (1.4s)
+  ✘  19 [chromium] › tests/02-ui-controls.spec.js:195:3 › UI Controls › should show loading state during generation (1.2s)
+  ✓  16 [chromium] › tests/02-ui-controls.spec.js:140:3 › UI Controls › should handle responsive layout (2.3s)
+  ✓  20 [chromium] › tests/03-history-management.spec.js:17:3 › History Management › should save prompt to history after generation (6.5s)
+  ✓  21 [chromium] › tests/03-history-management.spec.js:39:3 › History Management › should load prompt from history (6.9s)
+  ✓  25 [chromium] › tests/03-history-management.spec.js:163:3 › History Management › should show empty state when no history (1.0s)
+  ✓  23 [chromium] › tests/03-history-management.spec.js:69:3 › History Management › should delete individual history item (6.6s)
+  ✓   8 [chromium] › tests/01-core-prompt-building.spec.js:138:3 › Core Prompt Building › should handle multiple consecutive generations (17.6s)
+  ✘   3 [chromium] › tests/01-core-prompt-building.spec.js:109:3 › Core Prompt Building › should show error for empty input (30.5s)
+  ✘  22 [chromium] › tests/03-history-management.spec.js:102:3 › History Management › should clear all history (16.1s)
+  ✘  26 [chromium] › tests/03-history-management.spec.js:190:3 › History Management › should show history item metadata (16.3s)
+  ✘  27 [chromium] › tests/04-regression.spec.js:18:3 › Regression Tests - Pre/Post Refactor › REGRESSION: identical output for same inputs (16.4s)
+  ✘  28 [chromium] › tests/04-regression.spec.js:44:3 › Regression Tests - Pre/Post Refactor › REGRESSION: all output types work (16.9s)
+  ✘  29 [chromium] › tests/04-regression.spec.js:74:3 › Regression Tests - Pre/Post Refactor › REGRESSION: all tones work (16.4s)
+  ✘  30 [chromium] › tests/04-regression.spec.js:100:3 › Regression Tests - Pre/Post Refactor › REGRESSION: all formats work (16.3s)
+  ✘  24 [chromium] › tests/03-history-management.spec.js:137:3 › History Management › should persist history across page reloads (31.0s)
+  ✘  31 [chromium] › tests/04-regression.spec.js:126:3 › Regression Tests - Pre/Post Refactor › REGRESSION: no console errors during normal flow (16.5s)
+  ✘  32 [chromium] › tests/04-regression.spec.js:151:3 › Regression Tests - Pre/Post Refactor › REGRESSION: API calls complete successfully (16.6s)
+  ✘  34 [chromium] › tests/04-regression.spec.js:199:3 › Regression Tests - Pre/Post Refactor › REGRESSION: copy functionality works (16.3s)
+  ✘  33 [chromium] › tests/04-regression.spec.js:178:3 › Regression Tests - Pre/Post Refactor › REGRESSION: state persists correctly (30.7s)
+  ✘  35 [chromium] › tests/04-regression.spec.js:216:3 › Regression Tests - Pre/Post Refactor › REGRESSION: error handling works (30.8s)
+
+
+  1) [chromium] › tests/01-core-prompt-building.spec.js:109:3 › Core Prompt Building › should show error for empty input 
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: page.click: Test timeout of 30000ms exceeded.
+    Call log:
+    [2m  - waiting for locator('button:has-text("Generate Expanded Prompt")')[22m
+    [2m    - locator resolved to <button disabled class="w-full py-4 rounded-xl text-white font-bold text-lg shadow-lg flex items-center justify-center gap-3 transition-all transform active:scale-[0.99] bg-slate-300 cursor-not-allowed shadow-none">…</button>[22m
+    [2m  - attempting click action[22m
+    [2m    2 × waiting for element to be visible, enabled and stable[22m
+    [2m      - element is not enabled[22m
+    [2m    - retrying click action[22m
+    [2m    - waiting 20ms[22m
+    [2m    2 × waiting for element to be visible, enabled and stable[22m
+    [2m      - element is not enabled[22m
+    [2m    - retrying click action[22m
+    [2m      - waiting 100ms[22m
+    [2m    55 × waiting for element to be visible, enabled and stable[22m
+    [2m       - element is not enabled[22m
+    [2m     - retrying click action[22m
+    [2m       - waiting 500ms[22m
+
+
+      109 |   test('should show error for empty input', async ({ page }) => {
+      110 |     // Try to generate without input
+    > 111 |     await page.click(selectors.generateButton);
+          |                ^
+      112 |     
+      113 |     // Should show error or prevent generation
+      114 |     // Check if button is disabled or error message appears
+        at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/01-core-prompt-building.spec.js:111:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/01-core-prompt-building-Co-f25ba--show-error-for-empty-input-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/01-core-prompt-building-Co-f25ba--show-error-for-empty-input-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/01-core-prompt-building-Co-f25ba--show-error-for-empty-input-chromium/error-context.md
+
+  2) [chromium] › tests/01-core-prompt-building.spec.js:121:3 › Core Prompt Building › should copy prompt to clipboard 
+
+    Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBeTruthy[2m()[22m
+
+    Received: [31mfalse[39m
+
+      133 |     // Verify copy feedback (toast, checkmark, etc.)
+      134 |     const hasFeedback = await page.locator('text=/copied|success/i').count() > 0;
+    > 135 |     expect(hasFeedback).toBeTruthy();
+          |                         ^
+      136 |   });
+      137 |
+      138 |   test('should handle multiple consecutive generations', async ({ page }) => {
+        at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/01-core-prompt-building.spec.js:135:25
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/01-core-prompt-building-Co-55642-ld-copy-prompt-to-clipboard-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/01-core-prompt-building-Co-55642-ld-copy-prompt-to-clipboard-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/01-core-prompt-building-Co-55642-ld-copy-prompt-to-clipboard-chromium/error-context.md
+
+  3) [chromium] › tests/01-core-prompt-building.spec.js:154:3 › Core Prompt Building › should show token count estimation 
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+    Locator: locator('text=/\\d+ tokens/i')
+    Expected: visible
+    Error: strict mode violation: locator('text=/\\d+ tokens/i') resolved to 2 elements:
+        1) <span class="text-cyan-600 font-semibold">8 tokens</span> aka getByText('8 tokens')
+        2) <span class="text-slate-400">8 / 2000 tokens</span> aka getByText('/ 2000 tokens')
+
+    Call log:
+    [2m  - Expect "toBeVisible" with timeout 5000ms[22m
+    [2m  - waiting for locator('text=/\\d+ tokens/i')[22m
+
+
+      160 |     // Check for token count display
+      161 |     const tokenCount = page.locator('text=/\\d+ tokens/i');
+    > 162 |     await expect(tokenCount).toBeVisible();
+          |                              ^
+      163 |     
+      164 |     // Verify it's a reasonable number
+      165 |     const tokenText = await tokenCount.textContent();
+        at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/01-core-prompt-building.spec.js:162:30
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/01-core-prompt-building-Co-f5c17-show-token-count-estimation-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/01-core-prompt-building-Co-f5c17-show-token-count-estimation-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/01-core-prompt-building-Co-f5c17-show-token-count-estimation-chromium/error-context.md
+
+  4) [chromium] › tests/02-ui-controls.spec.js:195:3 › UI Controls › should show loading state during generation 
+
+    Error: locator.count: Unexpected token "=" while parsing css selector "[data-testid="loading"], .loading, .spinner, text=/generating|loading/i". Did you mean to CSS.escape it?
+
+      203 |     
+      204 |     // Loading should appear briefly
+    > 205 |     if (await loadingIndicator.count() > 0) {
+          |                                ^
+      206 |       await expect(loadingIndicator).toBeVisible({ timeout: 2000 });
+      207 |     }
+      208 |     
+        at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/02-ui-controls.spec.js:205:32
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/02-ui-controls-UI-Controls-53460-ing-state-during-generation-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/02-ui-controls-UI-Controls-53460-ing-state-during-generation-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/02-ui-controls-UI-Controls-53460-ing-state-during-generation-chromium/error-context.md
+
+  5) [chromium] › tests/03-history-management.spec.js:102:3 › History Management › should clear all history 
+
+    TimeoutError: page.waitForSelector: Timeout 15000ms exceeded.
+    Call log:
+    [2m  - waiting for locator('pre, code, .output-text') to be visible[22m
+
+
+      106 |     await page.fill(selectors.promptInput, input);
+      107 |     await page.click(selectors.generateButton);
+    > 108 |     await page.waitForSelector(selectors.promptOutput, { timeout: 15000 });
+          |                ^
+      109 |     
+      110 |     // Open history
+      111 |     const historyButton = page.locator('button').filter({ hasText: /history/i }).first();
+        at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/03-history-management.spec.js:108:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/03-history-management-Hist-aa76f-nt-should-clear-all-history-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/03-history-management-Hist-aa76f-nt-should-clear-all-history-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/03-history-management-Hist-aa76f-nt-should-clear-all-history-chromium/error-context.md
+
+  6) [chromium] › tests/03-history-management.spec.js:137:3 › History Management › should persist history across page reloads 
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: page.waitForLoadState: Test timeout of 30000ms exceeded.
+
+      145 |     // Reload page
+      146 |     await page.reload();
+    > 147 |     await page.waitForLoadState('networkidle');
+          |                ^
+      148 |     
+      149 |     // Open history
+      150 |     const historyButton = page.locator('button').filter({ hasText: /history/i }).first();
+        at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/03-history-management.spec.js:147:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/03-history-management-Hist-18d8b-history-across-page-reloads-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/03-history-management-Hist-18d8b-history-across-page-reloads-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/03-history-management-Hist-18d8b-history-across-page-reloads-chromium/error-context.md
+
+  7) [chromium] › tests/03-history-management.spec.js:190:3 › History Management › should show history item metadata 
+
+    TimeoutError: page.waitForSelector: Timeout 15000ms exceeded.
+    Call log:
+    [2m  - waiting for locator('pre, code, .output-text') to be visible[22m
+
+
+      194 |     await page.fill(selectors.promptInput, input);
+      195 |     await page.click(selectors.generateButton);
+    > 196 |     await page.waitForSelector(selectors.promptOutput, { timeout: 15000 });
+          |                ^
+      197 |     
+      198 |     // Open history
+      199 |     const historyButton = page.locator('button').filter({ hasText: /history/i }).first();
+        at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/03-history-management.spec.js:196:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/03-history-management-Hist-a8c22--show-history-item-metadata-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/03-history-management-Hist-a8c22--show-history-item-metadata-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/03-history-management-Hist-a8c22--show-history-item-metadata-chromium/error-context.md
+
+  8) [chromium] › tests/04-regression.spec.js:18:3 › Regression Tests - Pre/Post Refactor › REGRESSION: identical output for same inputs 
+
+    TimeoutError: page.waitForSelector: Timeout 15000ms exceeded.
+    Call log:
+    [2m  - waiting for locator('pre, code, .output-text') to be visible[22m
+
+
+      32 |     // Generate
+      33 |     await page.click(selectors.generateButton);
+    > 34 |     await page.waitForSelector(selectors.promptOutput, { timeout: 15000 });
+         |                ^
+      35 |     
+      36 |     // Get output
+      37 |     const output = await page.textContent(selectors.promptOutput);
+        at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/04-regression.spec.js:34:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/04-regression-Regression-T-29ecd-ical-output-for-same-inputs-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/04-regression-Regression-T-29ecd-ical-output-for-same-inputs-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/04-regression-Regression-T-29ecd-ical-output-for-same-inputs-chromium/error-context.md
+
+  9) [chromium] › tests/04-regression.spec.js:44:3 › Regression Tests - Pre/Post Refactor › REGRESSION: all output types work 
+
+    TimeoutError: page.waitForSelector: Timeout 15000ms exceeded.
+    Call log:
+    [2m  - waiting for locator('pre, code, .output-text') to be visible[22m
+
+
+      60 |         // Generate
+      61 |         await page.click(selectors.generateButton);
+    > 62 |         await page.waitForSelector(selectors.promptOutput, { timeout: 15000 });
+         |                    ^
+      63 |         
+      64 |         // Verify output
+      65 |         const output = await page.textContent(selectors.promptOutput);
+        at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/04-regression.spec.js:62:20
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/04-regression-Regression-T-df9c7-SSION-all-output-types-work-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/04-regression-Regression-T-df9c7-SSION-all-output-types-work-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/04-regression-Regression-T-df9c7-SSION-all-output-types-work-chromium/error-context.md
+
+  10) [chromium] › tests/04-regression.spec.js:74:3 › Regression Tests - Pre/Post Refactor › REGRESSION: all tones work 
+
+    TimeoutError: page.waitForSelector: Timeout 15000ms exceeded.
+    Call log:
+    [2m  - waiting for locator('pre, code, .output-text') to be visible[22m
+
+
+      93 |     // Final generation to verify no errors
+      94 |     await page.click(selectors.generateButton);
+    > 95 |     await page.waitForSelector(selectors.promptOutput, { timeout: 15000 });
+         |                ^
+      96 |     const output = await page.textContent(selectors.promptOutput);
+      97 |     expect(output.length).toBeGreaterThan(50);
+      98 |   });
+        at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/04-regression.spec.js:95:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/04-regression-Regression-T-0f3db-r-REGRESSION-all-tones-work-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/04-regression-Regression-T-0f3db-r-REGRESSION-all-tones-work-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/04-regression-Regression-T-0f3db-r-REGRESSION-all-tones-work-chromium/error-context.md
+
+  11) [chromium] › tests/04-regression.spec.js:100:3 › Regression Tests - Pre/Post Refactor › REGRESSION: all formats work 
+
+    TimeoutError: page.waitForSelector: Timeout 15000ms exceeded.
+    Call log:
+    [2m  - waiting for locator('pre, code, .output-text') to be visible[22m
+
+
+      119 |     // Final generation
+      120 |     await page.click(selectors.generateButton);
+    > 121 |     await page.waitForSelector(selectors.promptOutput, { timeout: 15000 });
+          |                ^
+      122 |     const output = await page.textContent(selectors.promptOutput);
+      123 |     expect(output.length).toBeGreaterThan(50);
+      124 |   });
+        at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/04-regression.spec.js:121:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/04-regression-Regression-T-e4864-REGRESSION-all-formats-work-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/04-regression-Regression-T-e4864-REGRESSION-all-formats-work-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/04-regression-Regression-T-e4864-REGRESSION-all-formats-work-chromium/error-context.md
+
+  12) [chromium] › tests/04-regression.spec.js:126:3 › Regression Tests - Pre/Post Refactor › REGRESSION: no console errors during normal flow 
+
+    TimeoutError: page.waitForSelector: Timeout 15000ms exceeded.
+    Call log:
+    [2m  - waiting for locator('pre, code, .output-text') to be visible[22m
+
+
+      137 |     await page.fill(selectors.promptInput, testPrompts.simple.input);
+      138 |     await page.click(selectors.generateButton);
+    > 139 |     await page.waitForSelector(selectors.promptOutput, { timeout: 15000 });
+          |                ^
+      140 |     
+      141 |     // Filter out known/acceptable errors (e.g., Firebase warnings)
+      142 |     const criticalErrors = consoleErrors.filter(err => 
+        at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/04-regression.spec.js:139:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/04-regression-Regression-T-128c6-e-errors-during-normal-flow-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/04-regression-Regression-T-128c6-e-errors-during-normal-flow-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/04-regression-Regression-T-128c6-e-errors-during-normal-flow-chromium/error-context.md
+
+  13) [chromium] › tests/04-regression.spec.js:151:3 › Regression Tests - Pre/Post Refactor › REGRESSION: API calls complete successfully 
+
+    TimeoutError: page.waitForSelector: Timeout 15000ms exceeded.
+    Call log:
+    [2m  - waiting for locator('pre, code, .output-text') to be visible[22m
+
+
+      169 |     await page.fill(selectors.promptInput, testPrompts.simple.input);
+      170 |     await page.click(selectors.generateButton);
+    > 171 |     await page.waitForSelector(selectors.promptOutput, { timeout: 15000 });
+          |                ^
+      172 |     
+      173 |     // Verify API was called and succeeded
+      174 |     expect(apiCallMade).toBeTruthy();
+        at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/04-regression.spec.js:171:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/04-regression-Regression-T-05314-calls-complete-successfully-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/04-regression-Regression-T-05314-calls-complete-successfully-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/04-regression-Regression-T-05314-calls-complete-successfully-chromium/error-context.md
+
+  14) [chromium] › tests/04-regression.spec.js:178:3 › Regression Tests - Pre/Post Refactor › REGRESSION: state persists correctly 
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: page.waitForLoadState: Test timeout of 30000ms exceeded.
+
+      190 |     // Reload page
+      191 |     await page.reload();
+    > 192 |     await page.waitForLoadState('networkidle');
+          |                ^
+      193 |     
+      194 |     // Verify input is cleared (expected behavior)
+      195 |     const inputValue = await page.inputValue(selectors.promptInput);
+        at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/04-regression.spec.js:192:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/04-regression-Regression-T-787c2-ON-state-persists-correctly-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/04-regression-Regression-T-787c2-ON-state-persists-correctly-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/04-regression-Regression-T-787c2-ON-state-persists-correctly-chromium/error-context.md
+
+  15) [chromium] › tests/04-regression.spec.js:199:3 › Regression Tests - Pre/Post Refactor › REGRESSION: copy functionality works 
+
+    TimeoutError: page.waitForSelector: Timeout 15000ms exceeded.
+    Call log:
+    [2m  - waiting for locator('pre, code, .output-text') to be visible[22m
+
+
+      201 |     await page.fill(selectors.promptInput, testPrompts.simple.input);
+      202 |     await page.click(selectors.generateButton);
+    > 203 |     await page.waitForSelector(selectors.promptOutput, { timeout: 15000 });
+          |                ^
+      204 |     
+      205 |     // Copy
+      206 |     const copyButton = page.locator(selectors.copyButton).first();
+        at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/04-regression.spec.js:203:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/04-regression-Regression-T-fb337-ON-copy-functionality-works-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/04-regression-Regression-T-fb337-ON-copy-functionality-works-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/04-regression-Regression-T-fb337-ON-copy-functionality-works-chromium/error-context.md
+
+  16) [chromium] › tests/04-regression.spec.js:216:3 › Regression Tests - Pre/Post Refactor › REGRESSION: error handling works 
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: page.click: Test timeout of 30000ms exceeded.
+    Call log:
+    [2m  - waiting for locator('button:has-text("Generate Expanded Prompt")')[22m
+    [2m    - locator resolved to <button disabled class="w-full py-4 rounded-xl text-white font-bold text-lg shadow-lg flex items-center justify-center gap-3 transition-all transform active:scale-[0.99] bg-slate-300 cursor-not-allowed shadow-none">…</button>[22m
+    [2m  - attempting click action[22m
+    [2m    2 × waiting for element to be visible, enabled and stable[22m
+    [2m      - element is not enabled[22m
+    [2m    - retrying click action[22m
+    [2m    - waiting 20ms[22m
+    [2m    2 × waiting for element to be visible, enabled and stable[22m
+    [2m      - element is not enabled[22m
+    [2m    - retrying click action[22m
+    [2m      - waiting 100ms[22m
+    [2m    57 × waiting for element to be visible, enabled and stable[22m
+    [2m       - element is not enabled[22m
+    [2m     - retrying click action[22m
+    [2m       - waiting 500ms[22m
+
+
+      216 |   test('REGRESSION: error handling works', async ({ page }) => {
+      217 |     // Try to generate without input (should handle gracefully)
+    > 218 |     await page.click(selectors.generateButton);
+          |                ^
+      219 |     
+      220 |     // Should either disable button or show error
+      221 |     const hasError = await page.locator('text=/error|required|empty/i').count() > 0;
+        at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/04-regression.spec.js:218:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/04-regression-Regression-T-47719-ESSION-error-handling-works-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/04-regression-Regression-T-47719-ESSION-error-handling-works-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/04-regression-Regression-T-47719-ESSION-error-handling-works-chromium/error-context.md
+
+  16 failed
+    [chromium] › tests/01-core-prompt-building.spec.js:109:3 › Core Prompt Building › should show error for empty input 
+    [chromium] › tests/01-core-prompt-building.spec.js:121:3 › Core Prompt Building › should copy prompt to clipboard 
+    [chromium] › tests/01-core-prompt-building.spec.js:154:3 › Core Prompt Building › should show token count estimation 
+    [chromium] › tests/02-ui-controls.spec.js:195:3 › UI Controls › should show loading state during generation 
+    [chromium] › tests/03-history-management.spec.js:102:3 › History Management › should clear all history 
+    [chromium] › tests/03-history-management.spec.js:137:3 › History Management › should persist history across page reloads 
+    [chromium] › tests/03-history-management.spec.js:190:3 › History Management › should show history item metadata 
+    [chromium] › tests/04-regression.spec.js:18:3 › Regression Tests - Pre/Post Refactor › REGRESSION: identical output for same inputs 
+    [chromium] › tests/04-regression.spec.js:44:3 › Regression Tests - Pre/Post Refactor › REGRESSION: all output types work 
+    [chromium] › tests/04-regression.spec.js:74:3 › Regression Tests - Pre/Post Refactor › REGRESSION: all tones work 
+    [chromium] › tests/04-regression.spec.js:100:3 › Regression Tests - Pre/Post Refactor › REGRESSION: all formats work 
+    [chromium] › tests/04-regression.spec.js:126:3 › Regression Tests - Pre/Post Refactor › REGRESSION: no console errors during normal flow 
+    [chromium] › tests/04-regression.spec.js:151:3 › Regression Tests - Pre/Post Refactor › REGRESSION: API calls complete successfully 
+    [chromium] › tests/04-regression.spec.js:178:3 › Regression Tests - Pre/Post Refactor › REGRESSION: state persists correctly 
+    [chromium] › tests/04-regression.spec.js:199:3 › Regression Tests - Pre/Post Refactor › REGRESSION: copy functionality works 
+    [chromium] › tests/04-regression.spec.js:216:3 › Regression Tests - Pre/Post Refactor › REGRESSION: error handling works 
+  19 passed (1.4m)
+
+[36m  Serving HTML report at http://localhost:62877. Press Ctrl+C to quit.[39m
