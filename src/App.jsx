@@ -28,7 +28,9 @@ import {
   PanelRightClose,
   PanelRight,
   Sun,
-  Moon
+  Moon,
+  Download,
+  Upload
 } from 'lucide-react';
 import { initializeApp } from "firebase/app";
 import {
@@ -123,7 +125,9 @@ export default function App() {
     historySearchQuery,
     setHistorySearchQuery,
     handleDeleteHistory,
-    handleTogglePrivate
+    handleTogglePrivate,
+    handleExportHistory,
+    handleImportHistory
   } = usePromptHistory(db, user);
 
   // Form State (from custom hook)
@@ -1666,6 +1670,46 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
                     aria-label="Search prompt history"
                     className={`w-full pl-9 pr-3 py-1.5 text-xs border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all ${darkMode ? 'bg-slate-700 border-slate-600 text-slate-200 placeholder:text-slate-500' : 'bg-slate-50 border-slate-200'}`}
                   />
+                </div>
+                {/* Backup/Restore Buttons */}
+                <div className="flex items-center gap-2 mt-2">
+                  <button
+                    onClick={handleExportHistory}
+                    disabled={promptHistory.length === 0}
+                    className={`flex-1 flex items-center justify-center gap-1.5 px-2 py-1.5 text-xs font-medium rounded-lg transition-colors ${
+                      promptHistory.length === 0
+                        ? darkMode ? 'bg-slate-700 text-slate-500 cursor-not-allowed' : 'bg-slate-100 text-slate-400 cursor-not-allowed'
+                        : darkMode ? 'bg-slate-700 text-slate-300 hover:bg-slate-600' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                    }`}
+                    title="Export history as JSON backup"
+                  >
+                    <Download className="w-3 h-3" />
+                    Backup
+                  </button>
+                  <label
+                    className={`flex-1 flex items-center justify-center gap-1.5 px-2 py-1.5 text-xs font-medium rounded-lg cursor-pointer transition-colors ${
+                      darkMode ? 'bg-slate-700 text-slate-300 hover:bg-slate-600' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                    }`}
+                    title="Import history from JSON backup"
+                  >
+                    <Upload className="w-3 h-3" />
+                    Restore
+                    <input
+                      type="file"
+                      accept=".json"
+                      className="hidden"
+                      onChange={async (e) => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                          const result = await handleImportHistory(file);
+                          if (result.imported > 0 || result.skipped > 0) {
+                            alert(`Import complete:\n• ${result.imported} items imported\n• ${result.skipped} duplicates skipped\n• ${result.errors} errors`);
+                          }
+                          e.target.value = ''; // Reset input
+                        }
+                      }}
+                    />
+                  </label>
                 </div>
               </div>
 

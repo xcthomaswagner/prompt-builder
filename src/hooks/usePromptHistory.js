@@ -5,7 +5,9 @@ import {
   onSnapshot, 
   deleteDoc, 
   doc, 
-  updateDoc 
+  updateDoc,
+  addDoc,
+  serverTimestamp
 } from 'firebase/firestore';
 
 /**
@@ -118,6 +120,110 @@ export default function usePromptHistory(db, user) {
     }
   };
 
+  // Export/Backup history as JSON file
+  const handleExportHistory = () => {
+    if (promptHistory.length === 0) {
+      alert('No history to export.');
+      return;
+    }
+
+    // Prepare export data (exclude Firestore-specific fields like id)
+    const exportData = promptHistory.map(item => {
+      const { id, ...rest } = item;
+      // Convert Firestore timestamps to ISO strings for portability
+      const exportItem = { ...rest };
+      if (exportItem.createdAt?.seconds) {
+        exportItem.createdAt = new Date(exportItem.createdAt.seconds * 1000).toISOString();
+      }
+      return exportItem;
+    });
+
+    const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `prompt-history-backup-${new Date().toISOString().split('T')[0]}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  // Import/Restore history from JSON file
+  const handleImportHistory = async (file) => {
+    if (!db || !user) {
+      alert('You must be signed in to import history.');
+      return { imported: 0, skipped: 0, errors: 0 };
+    }
+
+    try {
+      const text = await file.text();
+      const importData = JSON.parse(text);
+
+      if (!Array.isArray(importData)) {
+        alert('Invalid backup file format. Expected an array of history items.');
+        return { imported: 0, skipped: 0, errors: 0 };
+      }
+
+      // Get existing signatures for deduplication
+      const existingSignatures = new Set(
+        promptHistory.map(item => item.signature).filter(Boolean)
+      );
+
+      let imported = 0;
+      let skipped = 0;
+      let errors = 0;
+
+      const collectionRef = collection(db, 'users', user.uid, 'prompt_history');
+
+      for (const item of importData) {
+        try {
+          // Skip if signature already exists (duplicate)
+          if (item.signature && existingSignatures.has(item.signature)) {
+            skipped++;
+            continue;
+          }
+
+          // Prepare item for Firestore
+          const newItem = {
+            originalText: item.originalText || '',
+            finalPrompt: item.finalPrompt || '',
+            outputType: item.outputType || 'doc',
+            tone: item.tone || 'professional',
+            format: item.format || 'paragraph',
+            length: item.length || 'medium',
+            notes: item.notes || '',
+            toggles: item.toggles || {},
+            typeSpecific: item.typeSpecific || {},
+            isReversePrompted: item.isReversePrompted || false,
+            isPrivate: item.isPrivate || false,
+            signature: item.signature || '',
+            version: item.version || 1,
+            versions: item.versions || [],
+            createdAt: serverTimestamp(), // Use server timestamp for imported items
+            importedAt: serverTimestamp(),
+            importedFrom: item.createdAt || null // Preserve original creation date
+          };
+
+          await addDoc(collectionRef, newItem);
+          imported++;
+
+          // Add to existing signatures to prevent duplicates within same import
+          if (item.signature) {
+            existingSignatures.add(item.signature);
+          }
+        } catch (itemError) {
+          console.error('Error importing item:', itemError);
+          errors++;
+        }
+      }
+
+      return { imported, skipped, errors };
+    } catch (error) {
+      console.error('Error parsing import file:', error);
+      alert('Failed to parse backup file. Please ensure it is a valid JSON file.');
+      return { imported: 0, skipped: 0, errors: 0 };
+    }
+  };
+
   return {
     promptHistory,
     filteredHistory,
@@ -126,6 +232,8 @@ export default function usePromptHistory(db, user) {
     setHistorySearchQuery,
     handleDeleteHistory,
     handleTogglePrivate,
-    handleClearAllHistory
+    handleClearAllHistory,
+    handleExportHistory,
+    handleImportHistory
   };
 }
