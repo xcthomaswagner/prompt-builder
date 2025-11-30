@@ -1721,7 +1721,13 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
 
                   return (
                     <div key={item.id} className={`group p-3 rounded-lg border transition-all cursor-pointer relative ${item.isPrivate ? (darkMode ? 'bg-slate-700 border-slate-600 opacity-75' : 'bg-slate-50 border-slate-100 opacity-75') : (darkMode ? 'bg-slate-700 border-slate-600 hover:bg-slate-600 hover:border-slate-500' : 'bg-white border-transparent hover:bg-slate-50 hover:border-slate-200')}`}>
-                      <div onClick={() => loadFromHistory(item)}>
+                      <div 
+                        onClick={() => loadFromHistory(item)}
+                        onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); loadFromHistory(item); } }}
+                        role="button"
+                        tabIndex={0}
+                        aria-label={`Load prompt: ${item.originalText || 'Untitled Prompt'}`}
+                      >
                         <div className={`font-medium text-sm truncate pr-16 ${darkMode ? 'text-slate-200' : 'text-slate-800'}`}>{item.originalText || "Untitled Prompt"}</div>
 
                         {/* Metadata Tags */}
@@ -1739,7 +1745,6 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
                             {item.createdAt?.seconds ? new Date(item.createdAt.seconds * 1000).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) : 'Just now'}
                             {item.createdAt?.seconds && `, ${new Date(item.createdAt.seconds * 1000).toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' })}`}
                           </span>
-                          <span>•</span>
                           <span>•</span>
                           <button
                             onClick={(e) => {
