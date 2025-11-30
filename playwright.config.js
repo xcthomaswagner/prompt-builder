@@ -37,8 +37,8 @@ export default defineConfig({
   ],
   
   use: {
-    // Base URL for tests
-    baseURL: 'http://localhost:5173',
+    // Base URL for tests (with test mode enabled)
+    baseURL: 'http://localhost:5173?test=true',
     
     // Collect trace when retrying the failed test
     trace: 'on-first-retry',

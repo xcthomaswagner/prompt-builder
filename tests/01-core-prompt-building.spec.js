@@ -11,7 +11,7 @@ test.describe('Core Prompt Building', () => {
   
   test.beforeEach(async ({ page }) => {
     await page.goto('/');
-    // Wait for app to load
+    // Wait for app to load (test mode bypasses auth via ?test=true)
     await page.waitForLoadState('networkidle');
   });
 

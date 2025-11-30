@@ -488,7 +488,9 @@ const STYLES = [
 ];
 
 export default function App() {
-  const [user, setUser] = useState(null);
+  // Test mode: bypass authentication for E2E tests
+  const isTestMode = import.meta.env.VITE_TEST_MODE === 'true' || window.location.search.includes('test=true');
+  const [user, setUser] = useState(isTestMode ? { uid: 'test-user', email: 'test@test.com', displayName: 'Test User' } : null);
   const [promptHistory, setPromptHistory] = useState([]);
 
   // Form State
