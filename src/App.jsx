@@ -996,7 +996,7 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
                 )}
 
                 <div className="flex justify-between items-center mb-3">
-                  <label htmlFor="prompt-input" className="text-sm font-semibold text-slate-700">Your Original Prompt</label>
+                  <label htmlFor="prompt-input" className={`text-sm font-semibold ${darkMode ? 'text-slate-300' : 'text-slate-700'}`}>Your Original Prompt</label>
                   <div className="flex items-center gap-3 text-xs font-mono">
                     <span className="text-slate-400">{inputText.length} chars</span>
                     <span className="text-slate-300">•</span>
@@ -1141,7 +1141,7 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
               )}
 
               {errorMsg && (
-                <div className="p-4 bg-red-50 text-red-600 rounded-lg text-sm border border-red-100 flex items-center gap-2">
+                <div className={`p-4 rounded-lg text-sm border flex items-center gap-2 ${darkMode ? 'bg-red-900/30 text-red-400 border-red-800' : 'bg-red-50 text-red-600 border-red-100'}`}>
                   <AlertCircle className="w-4 h-4" />
                   {errorMsg}
                 </div>
