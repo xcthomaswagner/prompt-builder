@@ -69,7 +69,8 @@ function NoveltySlider({ value, onChange, darkMode }) {
       </div>
 
       {/* Custom slider */}
-      <div className="relative">
+      <div className="relative pt-2">
+        {/* Track background */}
         <div className={`h-2 rounded-full ${darkMode ? 'bg-slate-600' : 'bg-slate-200'}`}>
           <div 
             className={`h-full rounded-full transition-all ${
@@ -81,22 +82,25 @@ function NoveltySlider({ value, onChange, darkMode }) {
             }`}
           />
         </div>
-        <div className="flex justify-between mt-1">
+        
+        {/* Clickable buttons positioned on track */}
+        <div className="absolute inset-x-0 top-0 flex justify-between">
           {levels.map((level) => (
             <button
               key={level.id}
               type="button"
               onClick={() => onChange(level.id)}
               className={`
-                w-4 h-4 rounded-full border-2 transition-all transform -translate-y-3
+                w-6 h-6 rounded-full border-2 transition-all cursor-pointer
                 ${value === level.id 
-                  ? 'bg-cyan-500 border-cyan-600 scale-125 shadow-lg' 
+                  ? 'bg-cyan-500 border-cyan-600 scale-110 shadow-lg ring-2 ring-cyan-300' 
                   : darkMode 
-                    ? 'bg-slate-700 border-slate-500 hover:border-slate-400' 
-                    : 'bg-white border-slate-300 hover:border-slate-400'
+                    ? 'bg-slate-700 border-slate-500 hover:border-cyan-400 hover:bg-slate-600' 
+                    : 'bg-white border-slate-300 hover:border-cyan-400 hover:bg-slate-50'
                 }
               `}
               title={level.label}
+              aria-label={`Set novelty to ${level.label}`}
             />
           ))}
         </div>
