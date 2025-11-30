@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { estimateTokens } from './lib/tokenEstimator';
 import {
   Sparkles,
   History,
@@ -96,16 +97,6 @@ const appId = firebaseConfig.appId || 'default-app-id';
 // --- Token Estimation Function ---
 // Simple token estimation: ~4 characters per token on average for English text
 // This is a rough approximation similar to GPT tokenization
-const estimateTokens = (text) => {
-  if (!text) return 0;
-  // More accurate estimation: split by whitespace and punctuation
-  const words = text.trim().split(/\s+/);
-  const tokens = words.reduce((count, word) => {
-    // Average: 1 word ≈ 1.3 tokens (accounting for punctuation and subword tokens)
-    return count + Math.ceil(word.length / 4);
-  }, 0);
-  return tokens;
-};
 
 // --- Model Lists per Provider ---
 const OPENAI_MODELS = [
@@ -130,8 +121,9 @@ const GEMINI_MODELS = [
 // --- Gemini API Configuration ---
 const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
 const openAiEnvKey = import.meta.env.VITE_OPENAI_API_KEY;
+const defaultModelId = import.meta.env.VITE_GEMINI_MODEL || 'gemini-2.0-flash-exp';
 
-const callGemini = async (prompt, systemInstruction, apiKey, modelId = 'gemini-2.0-flash') => {
+const callGemini = async (prompt, systemInstruction, apiKey, modelId = defaultModelId) => {
   if (!apiKey) throw new Error("Gemini API Key is missing");
 
   const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelId}:generateContent?key=${apiKey}`;
