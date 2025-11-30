@@ -1,0 +1,3021 @@
+{
+  "config": {
+    "configFile": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/playwright.config.js",
+    "rootDir": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests",
+    "forbidOnly": false,
+    "fullyParallel": true,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 6
+    },
+    "preserveOutput": "always",
+    "reporter": [
+      [
+        "html",
+        null
+      ],
+      [
+        "list",
+        null
+      ],
+      [
+        "json",
+        {
+          "outputFile": "test-results/results.json"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "quiet": false,
+    "projects": [
+      {
+        "outputDir": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 6
+        },
+        "id": "chromium",
+        "name": "chromium",
+        "testDir": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      }
+    ],
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.57.0",
+    "workers": 6,
+    "webServer": {
+      "command": "npm run dev -- --mode test",
+      "url": "http://localhost:5173",
+      "reuseExistingServer": true,
+      "timeout": 120000,
+      "env": {
+        "VITE_TEST_MODE": "true"
+      }
+    }
+  },
+  "suites": [
+    {
+      "title": "01-core-prompt-building.spec.js",
+      "file": "01-core-prompt-building.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Core Prompt Building",
+          "file": "01-core-prompt-building.spec.js",
+          "line": 11,
+          "column": 6,
+          "specs": [
+            {
+              "title": "should load the application successfully",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "timedOut",
+                      "duration": 31616,
+                      "error": {
+                        "message": "\u001b[31mTest timeout of 30000ms exceeded while running \"beforeEach\" hook.\u001b[39m",
+                        "stack": "\u001b[31mTest timeout of 30000ms exceeded while running \"beforeEach\" hook.\u001b[39m\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/01-core-prompt-building.spec.js:13:8",
+                        "location": {
+                          "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/01-core-prompt-building.spec.js",
+                          "column": 8,
+                          "line": 13
+                        },
+                        "snippet": "  11 | test.describe('Core Prompt Building', () => {\n  12 |   \n> 13 |   test.beforeEach(async ({ page }) => {\n     |        ^\n  14 |     await standardSetup(page);\n  15 |   });\n  16 |"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/01-core-prompt-building.spec.js",
+                            "column": 8,
+                            "line": 13
+                          },
+                          "message": "\u001b[31mTest timeout of 30000ms exceeded while running \"beforeEach\" hook.\u001b[39m\n\n  11 | test.describe('Core Prompt Building', () => {\n  12 |   \n> 13 |   test.beforeEach(async ({ page }) => {\n     |        ^\n  14 |     await standardSetup(page);\n  15 |   });\n  16 |\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/01-core-prompt-building.spec.js:13:8"
+                        },
+                        {
+                          "location": {
+                            "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/fixtures/auth-helper.js",
+                            "column": 14,
+                            "line": 30
+                          },
+                          "message": "Error: page.waitForLoadState: Test timeout of 30000ms exceeded.\n\n   at fixtures/auth-helper.js:30\n\n  28 |   await setupTestAuth(page);\n  29 |   await page.goto('/');\n> 30 |   await page.waitForLoadState('networkidle');\n     |              ^\n  31 | }\n  32 |\n    at standardSetup (/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/fixtures/auth-helper.js:30:14)\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/01-core-prompt-building.spec.js:14:5"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-11-30T01:21:42.582Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/01-core-prompt-building-Co-98583-he-application-successfully-chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/01-core-prompt-building-Co-98583-he-application-successfully-chromium/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/01-core-prompt-building-Co-98583-he-application-successfully-chromium/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/01-core-prompt-building.spec.js",
+                        "column": 8,
+                        "line": 13
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "25b2d92b04ccbdcfd305-ab2e96cb54bd6203afaa",
+              "file": "01-core-prompt-building.spec.js",
+              "line": 17,
+              "column": 3
+            },
+            {
+              "title": "should generate a simple prompt",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "timedOut",
+                      "duration": 31619,
+                      "error": {
+                        "message": "\u001b[31mTest timeout of 30000ms exceeded while running \"beforeEach\" hook.\u001b[39m",
+                        "stack": "\u001b[31mTest timeout of 30000ms exceeded while running \"beforeEach\" hook.\u001b[39m\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/01-core-prompt-building.spec.js:13:8",
+                        "location": {
+                          "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/01-core-prompt-building.spec.js",
+                          "column": 8,
+                          "line": 13
+                        },
+                        "snippet": "  11 | test.describe('Core Prompt Building', () => {\n  12 |   \n> 13 |   test.beforeEach(async ({ page }) => {\n     |        ^\n  14 |     await standardSetup(page);\n  15 |   });\n  16 |"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/01-core-prompt-building.spec.js",
+                            "column": 8,
+                            "line": 13
+                          },
+                          "message": "\u001b[31mTest timeout of 30000ms exceeded while running \"beforeEach\" hook.\u001b[39m\n\n  11 | test.describe('Core Prompt Building', () => {\n  12 |   \n> 13 |   test.beforeEach(async ({ page }) => {\n     |        ^\n  14 |     await standardSetup(page);\n  15 |   });\n  16 |\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/01-core-prompt-building.spec.js:13:8"
+                        },
+                        {
+                          "location": {
+                            "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/fixtures/auth-helper.js",
+                            "column": 14,
+                            "line": 30
+                          },
+                          "message": "Error: page.waitForLoadState: Test timeout of 30000ms exceeded.\n\n   at fixtures/auth-helper.js:30\n\n  28 |   await setupTestAuth(page);\n  29 |   await page.goto('/');\n> 30 |   await page.waitForLoadState('networkidle');\n     |              ^\n  31 | }\n  32 |\n    at standardSetup (/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/fixtures/auth-helper.js:30:14)\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/01-core-prompt-building.spec.js:14:5"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-11-30T01:21:42.563Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/01-core-prompt-building-Co-23e66-ld-generate-a-simple-prompt-chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/01-core-prompt-building-Co-23e66-ld-generate-a-simple-prompt-chromium/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/01-core-prompt-building-Co-23e66-ld-generate-a-simple-prompt-chromium/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/01-core-prompt-building.spec.js",
+                        "column": 8,
+                        "line": 13
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "25b2d92b04ccbdcfd305-a13b50f8cd64bb97898c",
+              "file": "01-core-prompt-building.spec.js",
+              "line": 23,
+              "column": 3
+            },
+            {
+              "title": "should change output type and generate",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 2,
+                      "status": "timedOut",
+                      "duration": 31735,
+                      "error": {
+                        "message": "\u001b[31mTest timeout of 30000ms exceeded while running \"beforeEach\" hook.\u001b[39m",
+                        "stack": "\u001b[31mTest timeout of 30000ms exceeded while running \"beforeEach\" hook.\u001b[39m\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/01-core-prompt-building.spec.js:13:8",
+                        "location": {
+                          "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/01-core-prompt-building.spec.js",
+                          "column": 8,
+                          "line": 13
+                        },
+                        "snippet": "  11 | test.describe('Core Prompt Building', () => {\n  12 |   \n> 13 |   test.beforeEach(async ({ page }) => {\n     |        ^\n  14 |     await standardSetup(page);\n  15 |   });\n  16 |"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/01-core-prompt-building.spec.js",
+                            "column": 8,
+                            "line": 13
+                          },
+                          "message": "\u001b[31mTest timeout of 30000ms exceeded while running \"beforeEach\" hook.\u001b[39m\n\n  11 | test.describe('Core Prompt Building', () => {\n  12 |   \n> 13 |   test.beforeEach(async ({ page }) => {\n     |        ^\n  14 |     await standardSetup(page);\n  15 |   });\n  16 |\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/01-core-prompt-building.spec.js:13:8"
+                        },
+                        {
+                          "location": {
+                            "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/fixtures/auth-helper.js",
+                            "column": 14,
+                            "line": 30
+                          },
+                          "message": "Error: page.waitForLoadState: Test timeout of 30000ms exceeded.\n\n   at fixtures/auth-helper.js:30\n\n  28 |   await setupTestAuth(page);\n  29 |   await page.goto('/');\n> 30 |   await page.waitForLoadState('networkidle');\n     |              ^\n  31 | }\n  32 |\n    at standardSetup (/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/fixtures/auth-helper.js:30:14)\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/01-core-prompt-building.spec.js:14:5"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-11-30T01:21:42.562Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/01-core-prompt-building-Co-ad9fa-ge-output-type-and-generate-chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/01-core-prompt-building-Co-ad9fa-ge-output-type-and-generate-chromium/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/01-core-prompt-building-Co-ad9fa-ge-output-type-and-generate-chromium/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/01-core-prompt-building.spec.js",
+                        "column": 8,
+                        "line": 13
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "25b2d92b04ccbdcfd305-d5e5cc724818d861cd8a",
+              "file": "01-core-prompt-building.spec.js",
+              "line": 41,
+              "column": 3
+            },
+            {
+              "title": "should change tone and generate different output",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 3,
+                      "status": "timedOut",
+                      "duration": 31538,
+                      "error": {
+                        "message": "\u001b[31mTest timeout of 30000ms exceeded while running \"beforeEach\" hook.\u001b[39m",
+                        "stack": "\u001b[31mTest timeout of 30000ms exceeded while running \"beforeEach\" hook.\u001b[39m\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/01-core-prompt-building.spec.js:13:8",
+                        "location": {
+                          "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/01-core-prompt-building.spec.js",
+                          "column": 8,
+                          "line": 13
+                        },
+                        "snippet": "  11 | test.describe('Core Prompt Building', () => {\n  12 |   \n> 13 |   test.beforeEach(async ({ page }) => {\n     |        ^\n  14 |     await standardSetup(page);\n  15 |   });\n  16 |"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/01-core-prompt-building.spec.js",
+                            "column": 8,
+                            "line": 13
+                          },
+                          "message": "\u001b[31mTest timeout of 30000ms exceeded while running \"beforeEach\" hook.\u001b[39m\n\n  11 | test.describe('Core Prompt Building', () => {\n  12 |   \n> 13 |   test.beforeEach(async ({ page }) => {\n     |        ^\n  14 |     await standardSetup(page);\n  15 |   });\n  16 |\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/01-core-prompt-building.spec.js:13:8"
+                        },
+                        {
+                          "location": {
+                            "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/fixtures/auth-helper.js",
+                            "column": 14,
+                            "line": 30
+                          },
+                          "message": "Error: page.waitForLoadState: Test timeout of 30000ms exceeded.\n\n   at fixtures/auth-helper.js:30\n\n  28 |   await setupTestAuth(page);\n  29 |   await page.goto('/');\n> 30 |   await page.waitForLoadState('networkidle');\n     |              ^\n  31 | }\n  32 |\n    at standardSetup (/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/fixtures/auth-helper.js:30:14)\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/01-core-prompt-building.spec.js:14:5"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-11-30T01:21:42.565Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/01-core-prompt-building-Co-73bb0-d-generate-different-output-chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/01-core-prompt-building-Co-73bb0-d-generate-different-output-chromium/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/01-core-prompt-building-Co-73bb0-d-generate-different-output-chromium/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/01-core-prompt-building.spec.js",
+                        "column": 8,
+                        "line": 13
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "25b2d92b04ccbdcfd305-d0fa3e080e1d14124336",
+              "file": "01-core-prompt-building.spec.js",
+              "line": 60,
+              "column": 3
+            },
+            {
+              "title": "should change style and format",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 4,
+                      "parallelIndex": 4,
+                      "status": "timedOut",
+                      "duration": 31672,
+                      "error": {
+                        "message": "\u001b[31mTest timeout of 30000ms exceeded while running \"beforeEach\" hook.\u001b[39m",
+                        "stack": "\u001b[31mTest timeout of 30000ms exceeded while running \"beforeEach\" hook.\u001b[39m\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/01-core-prompt-building.spec.js:13:8",
+                        "location": {
+                          "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/01-core-prompt-building.spec.js",
+                          "column": 8,
+                          "line": 13
+                        },
+                        "snippet": "  11 | test.describe('Core Prompt Building', () => {\n  12 |   \n> 13 |   test.beforeEach(async ({ page }) => {\n     |        ^\n  14 |     await standardSetup(page);\n  15 |   });\n  16 |"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/01-core-prompt-building.spec.js",
+                            "column": 8,
+                            "line": 13
+                          },
+                          "message": "\u001b[31mTest timeout of 30000ms exceeded while running \"beforeEach\" hook.\u001b[39m\n\n  11 | test.describe('Core Prompt Building', () => {\n  12 |   \n> 13 |   test.beforeEach(async ({ page }) => {\n     |        ^\n  14 |     await standardSetup(page);\n  15 |   });\n  16 |\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/01-core-prompt-building.spec.js:13:8"
+                        },
+                        {
+                          "location": {
+                            "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/fixtures/auth-helper.js",
+                            "column": 14,
+                            "line": 30
+                          },
+                          "message": "Error: page.waitForLoadState: Test timeout of 30000ms exceeded.\n\n   at fixtures/auth-helper.js:30\n\n  28 |   await setupTestAuth(page);\n  29 |   await page.goto('/');\n> 30 |   await page.waitForLoadState('networkidle');\n     |              ^\n  31 | }\n  32 |\n    at standardSetup (/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/fixtures/auth-helper.js:30:14)\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/01-core-prompt-building.spec.js:14:5"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-11-30T01:21:42.561Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/01-core-prompt-building-Co-a2844-uld-change-style-and-format-chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/01-core-prompt-building-Co-a2844-uld-change-style-and-format-chromium/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/01-core-prompt-building-Co-a2844-uld-change-style-and-format-chromium/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/01-core-prompt-building.spec.js",
+                        "column": 8,
+                        "line": 13
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "25b2d92b04ccbdcfd305-e80162b26d987366a293",
+              "file": "01-core-prompt-building.spec.js",
+              "line": 81,
+              "column": 3
+            },
+            {
+              "title": "should show error for empty input",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 5,
+                      "parallelIndex": 5,
+                      "status": "timedOut",
+                      "duration": 31601,
+                      "error": {
+                        "message": "\u001b[31mTest timeout of 30000ms exceeded while running \"beforeEach\" hook.\u001b[39m",
+                        "stack": "\u001b[31mTest timeout of 30000ms exceeded while running \"beforeEach\" hook.\u001b[39m\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/01-core-prompt-building.spec.js:13:8",
+                        "location": {
+                          "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/01-core-prompt-building.spec.js",
+                          "column": 8,
+                          "line": 13
+                        },
+                        "snippet": "  11 | test.describe('Core Prompt Building', () => {\n  12 |   \n> 13 |   test.beforeEach(async ({ page }) => {\n     |        ^\n  14 |     await standardSetup(page);\n  15 |   });\n  16 |"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/01-core-prompt-building.spec.js",
+                            "column": 8,
+                            "line": 13
+                          },
+                          "message": "\u001b[31mTest timeout of 30000ms exceeded while running \"beforeEach\" hook.\u001b[39m\n\n  11 | test.describe('Core Prompt Building', () => {\n  12 |   \n> 13 |   test.beforeEach(async ({ page }) => {\n     |        ^\n  14 |     await standardSetup(page);\n  15 |   });\n  16 |\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/01-core-prompt-building.spec.js:13:8"
+                        },
+                        {
+                          "location": {
+                            "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/fixtures/auth-helper.js",
+                            "column": 14,
+                            "line": 30
+                          },
+                          "message": "Error: page.waitForLoadState: Test timeout of 30000ms exceeded.\n\n   at fixtures/auth-helper.js:30\n\n  28 |   await setupTestAuth(page);\n  29 |   await page.goto('/');\n> 30 |   await page.waitForLoadState('networkidle');\n     |              ^\n  31 | }\n  32 |\n    at standardSetup (/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/fixtures/auth-helper.js:30:14)\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/01-core-prompt-building.spec.js:14:5"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-11-30T01:21:42.565Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/01-core-prompt-building-Co-f25ba--show-error-for-empty-input-chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/01-core-prompt-building-Co-f25ba--show-error-for-empty-input-chromium/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/01-core-prompt-building-Co-f25ba--show-error-for-empty-input-chromium/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/01-core-prompt-building.spec.js",
+                        "column": 8,
+                        "line": 13
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "25b2d92b04ccbdcfd305-0f9289ebf11acc75557e",
+              "file": "01-core-prompt-building.spec.js",
+              "line": 108,
+              "column": 3
+            },
+            {
+              "title": "should copy prompt to clipboard",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 6,
+                      "parallelIndex": 3,
+                      "status": "timedOut",
+                      "duration": 31867,
+                      "error": {
+                        "message": "\u001b[31mTest timeout of 30000ms exceeded while running \"beforeEach\" hook.\u001b[39m",
+                        "stack": "\u001b[31mTest timeout of 30000ms exceeded while running \"beforeEach\" hook.\u001b[39m\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/01-core-prompt-building.spec.js:13:8",
+                        "location": {
+                          "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/01-core-prompt-building.spec.js",
+                          "column": 8,
+                          "line": 13
+                        },
+                        "snippet": "  11 | test.describe('Core Prompt Building', () => {\n  12 |   \n> 13 |   test.beforeEach(async ({ page }) => {\n     |        ^\n  14 |     await standardSetup(page);\n  15 |   });\n  16 |"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/01-core-prompt-building.spec.js",
+                            "column": 8,
+                            "line": 13
+                          },
+                          "message": "\u001b[31mTest timeout of 30000ms exceeded while running \"beforeEach\" hook.\u001b[39m\n\n  11 | test.describe('Core Prompt Building', () => {\n  12 |   \n> 13 |   test.beforeEach(async ({ page }) => {\n     |        ^\n  14 |     await standardSetup(page);\n  15 |   });\n  16 |\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/01-core-prompt-building.spec.js:13:8"
+                        },
+                        {
+                          "location": {
+                            "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/fixtures/auth-helper.js",
+                            "column": 14,
+                            "line": 30
+                          },
+                          "message": "Error: page.waitForLoadState: Test timeout of 30000ms exceeded.\n\n   at fixtures/auth-helper.js:30\n\n  28 |   await setupTestAuth(page);\n  29 |   await page.goto('/');\n> 30 |   await page.waitForLoadState('networkidle');\n     |              ^\n  31 | }\n  32 |\n    at standardSetup (/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/fixtures/auth-helper.js:30:14)\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/01-core-prompt-building.spec.js:14:5"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-11-30T01:22:15.915Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/01-core-prompt-building-Co-55642-ld-copy-prompt-to-clipboard-chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/01-core-prompt-building-Co-55642-ld-copy-prompt-to-clipboard-chromium/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/01-core-prompt-building-Co-55642-ld-copy-prompt-to-clipboard-chromium/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/01-core-prompt-building.spec.js",
+                        "column": 8,
+                        "line": 13
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "25b2d92b04ccbdcfd305-0d95cdc19ed905090aa0",
+              "file": "01-core-prompt-building.spec.js",
+              "line": 120,
+              "column": 3
+            },
+            {
+              "title": "should handle multiple consecutive generations",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 7,
+                      "parallelIndex": 5,
+                      "status": "timedOut",
+                      "duration": 31980,
+                      "error": {
+                        "message": "\u001b[31mTest timeout of 30000ms exceeded while running \"beforeEach\" hook.\u001b[39m",
+                        "stack": "\u001b[31mTest timeout of 30000ms exceeded while running \"beforeEach\" hook.\u001b[39m\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/01-core-prompt-building.spec.js:13:8",
+                        "location": {
+                          "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/01-core-prompt-building.spec.js",
+                          "column": 8,
+                          "line": 13
+                        },
+                        "snippet": "  11 | test.describe('Core Prompt Building', () => {\n  12 |   \n> 13 |   test.beforeEach(async ({ page }) => {\n     |        ^\n  14 |     await standardSetup(page);\n  15 |   });\n  16 |"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/01-core-prompt-building.spec.js",
+                            "column": 8,
+                            "line": 13
+                          },
+                          "message": "\u001b[31mTest timeout of 30000ms exceeded while running \"beforeEach\" hook.\u001b[39m\n\n  11 | test.describe('Core Prompt Building', () => {\n  12 |   \n> 13 |   test.beforeEach(async ({ page }) => {\n     |        ^\n  14 |     await standardSetup(page);\n  15 |   });\n  16 |\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/01-core-prompt-building.spec.js:13:8"
+                        },
+                        {
+                          "location": {
+                            "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/fixtures/auth-helper.js",
+                            "column": 14,
+                            "line": 30
+                          },
+                          "message": "Error: page.waitForLoadState: Test timeout of 30000ms exceeded.\n\n   at fixtures/auth-helper.js:30\n\n  28 |   await setupTestAuth(page);\n  29 |   await page.goto('/');\n> 30 |   await page.waitForLoadState('networkidle');\n     |              ^\n  31 | }\n  32 |\n    at standardSetup (/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/fixtures/auth-helper.js:30:14)\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/01-core-prompt-building.spec.js:14:5"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-11-30T01:22:15.911Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/01-core-prompt-building-Co-2e21c-ple-consecutive-generations-chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/01-core-prompt-building-Co-2e21c-ple-consecutive-generations-chromium/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/01-core-prompt-building-Co-2e21c-ple-consecutive-generations-chromium/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/01-core-prompt-building.spec.js",
+                        "column": 8,
+                        "line": 13
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "25b2d92b04ccbdcfd305-fec36d690449dfd94cb8",
+              "file": "01-core-prompt-building.spec.js",
+              "line": 137,
+              "column": 3
+            },
+            {
+              "title": "should show token count estimation",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 8,
+                      "parallelIndex": 1,
+                      "status": "timedOut",
+                      "duration": 32028,
+                      "error": {
+                        "message": "\u001b[31mTest timeout of 30000ms exceeded while running \"beforeEach\" hook.\u001b[39m",
+                        "stack": "\u001b[31mTest timeout of 30000ms exceeded while running \"beforeEach\" hook.\u001b[39m\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/01-core-prompt-building.spec.js:13:8",
+                        "location": {
+                          "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/01-core-prompt-building.spec.js",
+                          "column": 8,
+                          "line": 13
+                        },
+                        "snippet": "  11 | test.describe('Core Prompt Building', () => {\n  12 |   \n> 13 |   test.beforeEach(async ({ page }) => {\n     |        ^\n  14 |     await standardSetup(page);\n  15 |   });\n  16 |"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/01-core-prompt-building.spec.js",
+                            "column": 8,
+                            "line": 13
+                          },
+                          "message": "\u001b[31mTest timeout of 30000ms exceeded while running \"beforeEach\" hook.\u001b[39m\n\n  11 | test.describe('Core Prompt Building', () => {\n  12 |   \n> 13 |   test.beforeEach(async ({ page }) => {\n     |        ^\n  14 |     await standardSetup(page);\n  15 |   });\n  16 |\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/01-core-prompt-building.spec.js:13:8"
+                        },
+                        {
+                          "location": {
+                            "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/fixtures/auth-helper.js",
+                            "column": 14,
+                            "line": 30
+                          },
+                          "message": "Error: page.waitForLoadState: Test timeout of 30000ms exceeded.\n\n   at fixtures/auth-helper.js:30\n\n  28 |   await setupTestAuth(page);\n  29 |   await page.goto('/');\n> 30 |   await page.waitForLoadState('networkidle');\n     |              ^\n  31 | }\n  32 |\n    at standardSetup (/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/fixtures/auth-helper.js:30:14)\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/01-core-prompt-building.spec.js:14:5"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-11-30T01:22:15.923Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/01-core-prompt-building-Co-f5c17-show-token-count-estimation-chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/01-core-prompt-building-Co-f5c17-show-token-count-estimation-chromium/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/01-core-prompt-building-Co-f5c17-show-token-count-estimation-chromium/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/01-core-prompt-building.spec.js",
+                        "column": 8,
+                        "line": 13
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "25b2d92b04ccbdcfd305-09b6a6269b55ec87da54",
+              "file": "01-core-prompt-building.spec.js",
+              "line": 153,
+              "column": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "02-ui-controls.spec.js",
+      "file": "02-ui-controls.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "UI Controls",
+          "file": "02-ui-controls.spec.js",
+          "line": 11,
+          "column": 6,
+          "specs": [
+            {
+              "title": "should toggle dark mode",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 9,
+                      "parallelIndex": 0,
+                      "status": "timedOut",
+                      "duration": 32058,
+                      "error": {
+                        "message": "\u001b[31mTest timeout of 30000ms exceeded while running \"beforeEach\" hook.\u001b[39m",
+                        "stack": "\u001b[31mTest timeout of 30000ms exceeded while running \"beforeEach\" hook.\u001b[39m\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/02-ui-controls.spec.js:13:8",
+                        "location": {
+                          "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/02-ui-controls.spec.js",
+                          "column": 8,
+                          "line": 13
+                        },
+                        "snippet": "  11 | test.describe('UI Controls', () => {\n  12 |   \n> 13 |   test.beforeEach(async ({ page }) => {\n     |        ^\n  14 |     await standardSetup(page);\n  15 |   });\n  16 |"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/02-ui-controls.spec.js",
+                            "column": 8,
+                            "line": 13
+                          },
+                          "message": "\u001b[31mTest timeout of 30000ms exceeded while running \"beforeEach\" hook.\u001b[39m\n\n  11 | test.describe('UI Controls', () => {\n  12 |   \n> 13 |   test.beforeEach(async ({ page }) => {\n     |        ^\n  14 |     await standardSetup(page);\n  15 |   });\n  16 |\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/02-ui-controls.spec.js:13:8"
+                        },
+                        {
+                          "location": {
+                            "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/fixtures/auth-helper.js",
+                            "column": 14,
+                            "line": 30
+                          },
+                          "message": "Error: page.waitForLoadState: Test timeout of 30000ms exceeded.\n\n   at fixtures/auth-helper.js:30\n\n  28 |   await setupTestAuth(page);\n  29 |   await page.goto('/');\n> 30 |   await page.waitForLoadState('networkidle');\n     |              ^\n  31 | }\n  32 |\n    at standardSetup (/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/fixtures/auth-helper.js:30:14)\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/02-ui-controls.spec.js:14:5"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-11-30T01:22:15.914Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/02-ui-controls-UI-Controls-should-toggle-dark-mode-chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/02-ui-controls-UI-Controls-should-toggle-dark-mode-chromium/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/02-ui-controls-UI-Controls-should-toggle-dark-mode-chromium/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/02-ui-controls.spec.js",
+                        "column": 8,
+                        "line": 13
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "b6109629cd75689700e2-3b8465d43771b3a7d6bf",
+              "file": "02-ui-controls.spec.js",
+              "line": 17,
+              "column": 3
+            },
+            {
+              "title": "should expand and collapse sections",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 10,
+                      "parallelIndex": 4,
+                      "status": "timedOut",
+                      "duration": 31995,
+                      "error": {
+                        "message": "\u001b[31mTest timeout of 30000ms exceeded while running \"beforeEach\" hook.\u001b[39m",
+                        "stack": "\u001b[31mTest timeout of 30000ms exceeded while running \"beforeEach\" hook.\u001b[39m\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/02-ui-controls.spec.js:13:8",
+                        "location": {
+                          "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/02-ui-controls.spec.js",
+                          "column": 8,
+                          "line": 13
+                        },
+                        "snippet": "  11 | test.describe('UI Controls', () => {\n  12 |   \n> 13 |   test.beforeEach(async ({ page }) => {\n     |        ^\n  14 |     await standardSetup(page);\n  15 |   });\n  16 |"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/02-ui-controls.spec.js",
+                            "column": 8,
+                            "line": 13
+                          },
+                          "message": "\u001b[31mTest timeout of 30000ms exceeded while running \"beforeEach\" hook.\u001b[39m\n\n  11 | test.describe('UI Controls', () => {\n  12 |   \n> 13 |   test.beforeEach(async ({ page }) => {\n     |        ^\n  14 |     await standardSetup(page);\n  15 |   });\n  16 |\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/02-ui-controls.spec.js:13:8"
+                        },
+                        {
+                          "location": {
+                            "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/fixtures/auth-helper.js",
+                            "column": 14,
+                            "line": 30
+                          },
+                          "message": "Error: page.waitForLoadState: Test timeout of 30000ms exceeded.\n\n   at fixtures/auth-helper.js:30\n\n  28 |   await setupTestAuth(page);\n  29 |   await page.goto('/');\n> 30 |   await page.waitForLoadState('networkidle');\n     |              ^\n  31 | }\n  32 |\n    at standardSetup (/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/fixtures/auth-helper.js:30:14)\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/02-ui-controls.spec.js:14:5"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-11-30T01:22:15.920Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/02-ui-controls-UI-Controls-d377e-xpand-and-collapse-sections-chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/02-ui-controls-UI-Controls-d377e-xpand-and-collapse-sections-chromium/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/02-ui-controls-UI-Controls-d377e-xpand-and-collapse-sections-chromium/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/02-ui-controls.spec.js",
+                        "column": 8,
+                        "line": 13
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "b6109629cd75689700e2-6a790c348542a8395034",
+              "file": "02-ui-controls.spec.js",
+              "line": 43,
+              "column": 3
+            },
+            {
+              "title": "should open and close settings",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 11,
+                      "parallelIndex": 2,
+                      "status": "timedOut",
+                      "duration": 31860,
+                      "error": {
+                        "message": "\u001b[31mTest timeout of 30000ms exceeded while running \"beforeEach\" hook.\u001b[39m",
+                        "stack": "\u001b[31mTest timeout of 30000ms exceeded while running \"beforeEach\" hook.\u001b[39m\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/02-ui-controls.spec.js:13:8",
+                        "location": {
+                          "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/02-ui-controls.spec.js",
+                          "column": 8,
+                          "line": 13
+                        },
+                        "snippet": "  11 | test.describe('UI Controls', () => {\n  12 |   \n> 13 |   test.beforeEach(async ({ page }) => {\n     |        ^\n  14 |     await standardSetup(page);\n  15 |   });\n  16 |"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/02-ui-controls.spec.js",
+                            "column": 8,
+                            "line": 13
+                          },
+                          "message": "\u001b[31mTest timeout of 30000ms exceeded while running \"beforeEach\" hook.\u001b[39m\n\n  11 | test.describe('UI Controls', () => {\n  12 |   \n> 13 |   test.beforeEach(async ({ page }) => {\n     |        ^\n  14 |     await standardSetup(page);\n  15 |   });\n  16 |\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/02-ui-controls.spec.js:13:8"
+                        },
+                        {
+                          "location": {
+                            "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/fixtures/auth-helper.js",
+                            "column": 14,
+                            "line": 30
+                          },
+                          "message": "Error: page.waitForLoadState: Test timeout of 30000ms exceeded.\n\n   at fixtures/auth-helper.js:30\n\n  28 |   await setupTestAuth(page);\n  29 |   await page.goto('/');\n> 30 |   await page.waitForLoadState('networkidle');\n     |              ^\n  31 | }\n  32 |\n    at standardSetup (/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/fixtures/auth-helper.js:30:14)\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/02-ui-controls.spec.js:14:5"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-11-30T01:22:15.991Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/02-ui-controls-UI-Controls-should-open-and-close-settings-chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/02-ui-controls-UI-Controls-should-open-and-close-settings-chromium/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/02-ui-controls-UI-Controls-should-open-and-close-settings-chromium/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/02-ui-controls.spec.js",
+                        "column": 8,
+                        "line": 13
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "b6109629cd75689700e2-adbab0a7b441a188f012",
+              "file": "02-ui-controls.spec.js",
+              "line": 63,
+              "column": 3
+            },
+            {
+              "title": "should show quickstart templates",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 12,
+                      "parallelIndex": 3,
+                      "status": "timedOut",
+                      "duration": 31534,
+                      "error": {
+                        "message": "\u001b[31mTest timeout of 30000ms exceeded while running \"beforeEach\" hook.\u001b[39m",
+                        "stack": "\u001b[31mTest timeout of 30000ms exceeded while running \"beforeEach\" hook.\u001b[39m\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/02-ui-controls.spec.js:13:8",
+                        "location": {
+                          "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/02-ui-controls.spec.js",
+                          "column": 8,
+                          "line": 13
+                        },
+                        "snippet": "  11 | test.describe('UI Controls', () => {\n  12 |   \n> 13 |   test.beforeEach(async ({ page }) => {\n     |        ^\n  14 |     await standardSetup(page);\n  15 |   });\n  16 |"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/02-ui-controls.spec.js",
+                            "column": 8,
+                            "line": 13
+                          },
+                          "message": "\u001b[31mTest timeout of 30000ms exceeded while running \"beforeEach\" hook.\u001b[39m\n\n  11 | test.describe('UI Controls', () => {\n  12 |   \n> 13 |   test.beforeEach(async ({ page }) => {\n     |        ^\n  14 |     await standardSetup(page);\n  15 |   });\n  16 |\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/02-ui-controls.spec.js:13:8"
+                        },
+                        {
+                          "location": {
+                            "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/fixtures/auth-helper.js",
+                            "column": 14,
+                            "line": 30
+                          },
+                          "message": "Error: page.waitForLoadState: Test timeout of 30000ms exceeded.\n\n   at fixtures/auth-helper.js:30\n\n  28 |   await setupTestAuth(page);\n  29 |   await page.goto('/');\n> 30 |   await page.waitForLoadState('networkidle');\n     |              ^\n  31 | }\n  32 |\n    at standardSetup (/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/fixtures/auth-helper.js:30:14)\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/02-ui-controls.spec.js:14:5"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-11-30T01:22:49.992Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/02-ui-controls-UI-Controls-should-show-quickstart-templates-chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/02-ui-controls-UI-Controls-should-show-quickstart-templates-chromium/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/02-ui-controls-UI-Controls-should-show-quickstart-templates-chromium/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/02-ui-controls.spec.js",
+                        "column": 8,
+                        "line": 13
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "b6109629cd75689700e2-9676818305c4425f2297",
+              "file": "02-ui-controls.spec.js",
+              "line": 87,
+              "column": 3
+            },
+            {
+              "title": "should select a quickstart template",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 13,
+                      "parallelIndex": 2,
+                      "status": "timedOut",
+                      "duration": 31456,
+                      "error": {
+                        "message": "\u001b[31mTest timeout of 30000ms exceeded while running \"beforeEach\" hook.\u001b[39m",
+                        "stack": "\u001b[31mTest timeout of 30000ms exceeded while running \"beforeEach\" hook.\u001b[39m\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/02-ui-controls.spec.js:13:8",
+                        "location": {
+                          "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/02-ui-controls.spec.js",
+                          "column": 8,
+                          "line": 13
+                        },
+                        "snippet": "  11 | test.describe('UI Controls', () => {\n  12 |   \n> 13 |   test.beforeEach(async ({ page }) => {\n     |        ^\n  14 |     await standardSetup(page);\n  15 |   });\n  16 |"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/02-ui-controls.spec.js",
+                            "column": 8,
+                            "line": 13
+                          },
+                          "message": "\u001b[31mTest timeout of 30000ms exceeded while running \"beforeEach\" hook.\u001b[39m\n\n  11 | test.describe('UI Controls', () => {\n  12 |   \n> 13 |   test.beforeEach(async ({ page }) => {\n     |        ^\n  14 |     await standardSetup(page);\n  15 |   });\n  16 |\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/02-ui-controls.spec.js:13:8"
+                        },
+                        {
+                          "location": {
+                            "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/fixtures/auth-helper.js",
+                            "column": 14,
+                            "line": 30
+                          },
+                          "message": "Error: page.waitForLoadState: Test timeout of 30000ms exceeded.\n\n   at fixtures/auth-helper.js:30\n\n  28 |   await setupTestAuth(page);\n  29 |   await page.goto('/');\n> 30 |   await page.waitForLoadState('networkidle');\n     |              ^\n  31 | }\n  32 |\n    at standardSetup (/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/fixtures/auth-helper.js:30:14)\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/02-ui-controls.spec.js:14:5"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-11-30T01:22:49.994Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/02-ui-controls-UI-Controls-ba208-elect-a-quickstart-template-chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/02-ui-controls-UI-Controls-ba208-elect-a-quickstart-template-chromium/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/02-ui-controls-UI-Controls-ba208-elect-a-quickstart-template-chromium/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/02-ui-controls.spec.js",
+                        "column": 8,
+                        "line": 13
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "b6109629cd75689700e2-383d5c56454cc7efdaee",
+              "file": "02-ui-controls.spec.js",
+              "line": 103,
+              "column": 3
+            },
+            {
+              "title": "should show history panel",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 15,
+                      "parallelIndex": 4,
+                      "status": "timedOut",
+                      "duration": 31498,
+                      "error": {
+                        "message": "\u001b[31mTest timeout of 30000ms exceeded while running \"beforeEach\" hook.\u001b[39m",
+                        "stack": "\u001b[31mTest timeout of 30000ms exceeded while running \"beforeEach\" hook.\u001b[39m\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/02-ui-controls.spec.js:13:8",
+                        "location": {
+                          "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/02-ui-controls.spec.js",
+                          "column": 8,
+                          "line": 13
+                        },
+                        "snippet": "  11 | test.describe('UI Controls', () => {\n  12 |   \n> 13 |   test.beforeEach(async ({ page }) => {\n     |        ^\n  14 |     await standardSetup(page);\n  15 |   });\n  16 |"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/02-ui-controls.spec.js",
+                            "column": 8,
+                            "line": 13
+                          },
+                          "message": "\u001b[31mTest timeout of 30000ms exceeded while running \"beforeEach\" hook.\u001b[39m\n\n  11 | test.describe('UI Controls', () => {\n  12 |   \n> 13 |   test.beforeEach(async ({ page }) => {\n     |        ^\n  14 |     await standardSetup(page);\n  15 |   });\n  16 |\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/02-ui-controls.spec.js:13:8"
+                        },
+                        {
+                          "location": {
+                            "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/fixtures/auth-helper.js",
+                            "column": 14,
+                            "line": 30
+                          },
+                          "message": "Error: page.waitForLoadState: Test timeout of 30000ms exceeded.\n\n   at fixtures/auth-helper.js:30\n\n  28 |   await setupTestAuth(page);\n  29 |   await page.goto('/');\n> 30 |   await page.waitForLoadState('networkidle');\n     |              ^\n  31 | }\n  32 |\n    at standardSetup (/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/fixtures/auth-helper.js:30:14)\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/02-ui-controls.spec.js:14:5"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-11-30T01:22:49.994Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/02-ui-controls-UI-Controls-should-show-history-panel-chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/02-ui-controls-UI-Controls-should-show-history-panel-chromium/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/02-ui-controls-UI-Controls-should-show-history-panel-chromium/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/02-ui-controls.spec.js",
+                        "column": 8,
+                        "line": 13
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "b6109629cd75689700e2-794e9cc76aa6af6ac343",
+              "file": "02-ui-controls.spec.js",
+              "line": 124,
+              "column": 3
+            },
+            {
+              "title": "should handle responsive layout",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 14,
+                      "parallelIndex": 5,
+                      "status": "timedOut",
+                      "duration": 31488,
+                      "error": {
+                        "message": "\u001b[31mTest timeout of 30000ms exceeded while running \"beforeEach\" hook.\u001b[39m",
+                        "stack": "\u001b[31mTest timeout of 30000ms exceeded while running \"beforeEach\" hook.\u001b[39m\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/02-ui-controls.spec.js:13:8",
+                        "location": {
+                          "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/02-ui-controls.spec.js",
+                          "column": 8,
+                          "line": 13
+                        },
+                        "snippet": "  11 | test.describe('UI Controls', () => {\n  12 |   \n> 13 |   test.beforeEach(async ({ page }) => {\n     |        ^\n  14 |     await standardSetup(page);\n  15 |   });\n  16 |"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/02-ui-controls.spec.js",
+                            "column": 8,
+                            "line": 13
+                          },
+                          "message": "\u001b[31mTest timeout of 30000ms exceeded while running \"beforeEach\" hook.\u001b[39m\n\n  11 | test.describe('UI Controls', () => {\n  12 |   \n> 13 |   test.beforeEach(async ({ page }) => {\n     |        ^\n  14 |     await standardSetup(page);\n  15 |   });\n  16 |\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/02-ui-controls.spec.js:13:8"
+                        },
+                        {
+                          "location": {
+                            "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/fixtures/auth-helper.js",
+                            "column": 14,
+                            "line": 30
+                          },
+                          "message": "Error: page.waitForLoadState: Test timeout of 30000ms exceeded.\n\n   at fixtures/auth-helper.js:30\n\n  28 |   await setupTestAuth(page);\n  29 |   await page.goto('/');\n> 30 |   await page.waitForLoadState('networkidle');\n     |              ^\n  31 | }\n  32 |\n    at standardSetup (/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/fixtures/auth-helper.js:30:14)\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/02-ui-controls.spec.js:14:5"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-11-30T01:22:49.990Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/02-ui-controls-UI-Controls-should-handle-responsive-layout-chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/02-ui-controls-UI-Controls-should-handle-responsive-layout-chromium/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/02-ui-controls-UI-Controls-should-handle-responsive-layout-chromium/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/02-ui-controls.spec.js",
+                        "column": 8,
+                        "line": 13
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "b6109629cd75689700e2-25b6a76b82b6e1b563f6",
+              "file": "02-ui-controls.spec.js",
+              "line": 140,
+              "column": 3
+            },
+            {
+              "title": "should show tooltips on hover",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 16,
+                      "parallelIndex": 0,
+                      "status": "timedOut",
+                      "duration": 31645,
+                      "error": {
+                        "message": "\u001b[31mTest timeout of 30000ms exceeded while running \"beforeEach\" hook.\u001b[39m",
+                        "stack": "\u001b[31mTest timeout of 30000ms exceeded while running \"beforeEach\" hook.\u001b[39m\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/02-ui-controls.spec.js:13:8",
+                        "location": {
+                          "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/02-ui-controls.spec.js",
+                          "column": 8,
+                          "line": 13
+                        },
+                        "snippet": "  11 | test.describe('UI Controls', () => {\n  12 |   \n> 13 |   test.beforeEach(async ({ page }) => {\n     |        ^\n  14 |     await standardSetup(page);\n  15 |   });\n  16 |"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/02-ui-controls.spec.js",
+                            "column": 8,
+                            "line": 13
+                          },
+                          "message": "\u001b[31mTest timeout of 30000ms exceeded while running \"beforeEach\" hook.\u001b[39m\n\n  11 | test.describe('UI Controls', () => {\n  12 |   \n> 13 |   test.beforeEach(async ({ page }) => {\n     |        ^\n  14 |     await standardSetup(page);\n  15 |   });\n  16 |\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/02-ui-controls.spec.js:13:8"
+                        },
+                        {
+                          "location": {
+                            "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/fixtures/auth-helper.js",
+                            "column": 14,
+                            "line": 30
+                          },
+                          "message": "Error: page.waitForLoadState: Test timeout of 30000ms exceeded.\n\n   at fixtures/auth-helper.js:30\n\n  28 |   await setupTestAuth(page);\n  29 |   await page.goto('/');\n> 30 |   await page.waitForLoadState('networkidle');\n     |              ^\n  31 | }\n  32 |\n    at standardSetup (/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/fixtures/auth-helper.js:30:14)\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/02-ui-controls.spec.js:14:5"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-11-30T01:22:50.012Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/02-ui-controls-UI-Controls-should-show-tooltips-on-hover-chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/02-ui-controls-UI-Controls-should-show-tooltips-on-hover-chromium/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/02-ui-controls-UI-Controls-should-show-tooltips-on-hover-chromium/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/02-ui-controls.spec.js",
+                        "column": 8,
+                        "line": 13
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "b6109629cd75689700e2-8ccf5c69a66438ef5723",
+              "file": "02-ui-controls.spec.js",
+              "line": 161,
+              "column": 3
+            },
+            {
+              "title": "should reset form",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 17,
+                      "parallelIndex": 1,
+                      "status": "timedOut",
+                      "duration": 31464,
+                      "error": {
+                        "message": "\u001b[31mTest timeout of 30000ms exceeded while running \"beforeEach\" hook.\u001b[39m",
+                        "stack": "\u001b[31mTest timeout of 30000ms exceeded while running \"beforeEach\" hook.\u001b[39m\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/02-ui-controls.spec.js:13:8",
+                        "location": {
+                          "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/02-ui-controls.spec.js",
+                          "column": 8,
+                          "line": 13
+                        },
+                        "snippet": "  11 | test.describe('UI Controls', () => {\n  12 |   \n> 13 |   test.beforeEach(async ({ page }) => {\n     |        ^\n  14 |     await standardSetup(page);\n  15 |   });\n  16 |"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/02-ui-controls.spec.js",
+                            "column": 8,
+                            "line": 13
+                          },
+                          "message": "\u001b[31mTest timeout of 30000ms exceeded while running \"beforeEach\" hook.\u001b[39m\n\n  11 | test.describe('UI Controls', () => {\n  12 |   \n> 13 |   test.beforeEach(async ({ page }) => {\n     |        ^\n  14 |     await standardSetup(page);\n  15 |   });\n  16 |\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/02-ui-controls.spec.js:13:8"
+                        },
+                        {
+                          "location": {
+                            "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/fixtures/auth-helper.js",
+                            "column": 14,
+                            "line": 30
+                          },
+                          "message": "Error: page.waitForLoadState: Test timeout of 30000ms exceeded.\n\n   at fixtures/auth-helper.js:30\n\n  28 |   await setupTestAuth(page);\n  29 |   await page.goto('/');\n> 30 |   await page.waitForLoadState('networkidle');\n     |              ^\n  31 | }\n  32 |\n    at standardSetup (/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/fixtures/auth-helper.js:30:14)\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/02-ui-controls.spec.js:14:5"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-11-30T01:22:49.988Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/02-ui-controls-UI-Controls-should-reset-form-chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/02-ui-controls-UI-Controls-should-reset-form-chromium/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/02-ui-controls-UI-Controls-should-reset-form-chromium/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/02-ui-controls.spec.js",
+                        "column": 8,
+                        "line": 13
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "b6109629cd75689700e2-ab0b9b5e3434c1393341",
+              "file": "02-ui-controls.spec.js",
+              "line": 178,
+              "column": 3
+            },
+            {
+              "title": "should show loading state during generation",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 18,
+                      "parallelIndex": 1,
+                      "status": "timedOut",
+                      "duration": 31496,
+                      "error": {
+                        "message": "\u001b[31mTest timeout of 30000ms exceeded while running \"beforeEach\" hook.\u001b[39m",
+                        "stack": "\u001b[31mTest timeout of 30000ms exceeded while running \"beforeEach\" hook.\u001b[39m\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/02-ui-controls.spec.js:13:8",
+                        "location": {
+                          "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/02-ui-controls.spec.js",
+                          "column": 8,
+                          "line": 13
+                        },
+                        "snippet": "  11 | test.describe('UI Controls', () => {\n  12 |   \n> 13 |   test.beforeEach(async ({ page }) => {\n     |        ^\n  14 |     await standardSetup(page);\n  15 |   });\n  16 |"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/02-ui-controls.spec.js",
+                            "column": 8,
+                            "line": 13
+                          },
+                          "message": "\u001b[31mTest timeout of 30000ms exceeded while running \"beforeEach\" hook.\u001b[39m\n\n  11 | test.describe('UI Controls', () => {\n  12 |   \n> 13 |   test.beforeEach(async ({ page }) => {\n     |        ^\n  14 |     await standardSetup(page);\n  15 |   });\n  16 |\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/02-ui-controls.spec.js:13:8"
+                        },
+                        {
+                          "location": {
+                            "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/fixtures/auth-helper.js",
+                            "column": 14,
+                            "line": 30
+                          },
+                          "message": "Error: page.waitForLoadState: Test timeout of 30000ms exceeded.\n\n   at fixtures/auth-helper.js:30\n\n  28 |   await setupTestAuth(page);\n  29 |   await page.goto('/');\n> 30 |   await page.waitForLoadState('networkidle');\n     |              ^\n  31 | }\n  32 |\n    at standardSetup (/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/fixtures/auth-helper.js:30:14)\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/02-ui-controls.spec.js:14:5"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-11-30T01:23:23.195Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/02-ui-controls-UI-Controls-53460-ing-state-during-generation-chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/02-ui-controls-UI-Controls-53460-ing-state-during-generation-chromium/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/02-ui-controls-UI-Controls-53460-ing-state-during-generation-chromium/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/02-ui-controls.spec.js",
+                        "column": 8,
+                        "line": 13
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "b6109629cd75689700e2-9f16284aceba550ed22a",
+              "file": "02-ui-controls.spec.js",
+              "line": 195,
+              "column": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "03-history-management.spec.js",
+      "file": "03-history-management.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "History Management",
+          "file": "03-history-management.spec.js",
+          "line": 11,
+          "column": 6,
+          "specs": [
+            {
+              "title": "should save prompt to history after generation",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 19,
+                      "parallelIndex": 5,
+                      "status": "timedOut",
+                      "duration": 31514,
+                      "error": {
+                        "message": "\u001b[31mTest timeout of 30000ms exceeded while running \"beforeEach\" hook.\u001b[39m",
+                        "stack": "\u001b[31mTest timeout of 30000ms exceeded while running \"beforeEach\" hook.\u001b[39m\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/03-history-management.spec.js:13:8",
+                        "location": {
+                          "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/03-history-management.spec.js",
+                          "column": 8,
+                          "line": 13
+                        },
+                        "snippet": "  11 | test.describe('History Management', () => {\n  12 |   \n> 13 |   test.beforeEach(async ({ page }) => {\n     |        ^\n  14 |     await standardSetup(page);\n  15 |   });\n  16 |"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/03-history-management.spec.js",
+                            "column": 8,
+                            "line": 13
+                          },
+                          "message": "\u001b[31mTest timeout of 30000ms exceeded while running \"beforeEach\" hook.\u001b[39m\n\n  11 | test.describe('History Management', () => {\n  12 |   \n> 13 |   test.beforeEach(async ({ page }) => {\n     |        ^\n  14 |     await standardSetup(page);\n  15 |   });\n  16 |\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/03-history-management.spec.js:13:8"
+                        },
+                        {
+                          "location": {
+                            "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/fixtures/auth-helper.js",
+                            "column": 14,
+                            "line": 30
+                          },
+                          "message": "Error: page.waitForLoadState: Test timeout of 30000ms exceeded.\n\n   at fixtures/auth-helper.js:30\n\n  28 |   await setupTestAuth(page);\n  29 |   await page.goto('/');\n> 30 |   await page.waitForLoadState('networkidle');\n     |              ^\n  31 | }\n  32 |\n    at standardSetup (/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/fixtures/auth-helper.js:30:14)\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/03-history-management.spec.js:14:5"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-11-30T01:23:23.190Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/03-history-management-Hist-af691-to-history-after-generation-chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/03-history-management-Hist-af691-to-history-after-generation-chromium/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/03-history-management-Hist-af691-to-history-after-generation-chromium/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/03-history-management.spec.js",
+                        "column": 8,
+                        "line": 13
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "a4842d7c80357b1f22e2-0e816769e922f74eeca1",
+              "file": "03-history-management.spec.js",
+              "line": 17,
+              "column": 3
+            },
+            {
+              "title": "should load prompt from history",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 20,
+                      "parallelIndex": 2,
+                      "status": "timedOut",
+                      "duration": 31520,
+                      "error": {
+                        "message": "\u001b[31mTest timeout of 30000ms exceeded while running \"beforeEach\" hook.\u001b[39m",
+                        "stack": "\u001b[31mTest timeout of 30000ms exceeded while running \"beforeEach\" hook.\u001b[39m\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/03-history-management.spec.js:13:8",
+                        "location": {
+                          "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/03-history-management.spec.js",
+                          "column": 8,
+                          "line": 13
+                        },
+                        "snippet": "  11 | test.describe('History Management', () => {\n  12 |   \n> 13 |   test.beforeEach(async ({ page }) => {\n     |        ^\n  14 |     await standardSetup(page);\n  15 |   });\n  16 |"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/03-history-management.spec.js",
+                            "column": 8,
+                            "line": 13
+                          },
+                          "message": "\u001b[31mTest timeout of 30000ms exceeded while running \"beforeEach\" hook.\u001b[39m\n\n  11 | test.describe('History Management', () => {\n  12 |   \n> 13 |   test.beforeEach(async ({ page }) => {\n     |        ^\n  14 |     await standardSetup(page);\n  15 |   });\n  16 |\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/03-history-management.spec.js:13:8"
+                        },
+                        {
+                          "location": {
+                            "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/fixtures/auth-helper.js",
+                            "column": 14,
+                            "line": 30
+                          },
+                          "message": "Error: page.waitForLoadState: Test timeout of 30000ms exceeded.\n\n   at fixtures/auth-helper.js:30\n\n  28 |   await setupTestAuth(page);\n  29 |   await page.goto('/');\n> 30 |   await page.waitForLoadState('networkidle');\n     |              ^\n  31 | }\n  32 |\n    at standardSetup (/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/fixtures/auth-helper.js:30:14)\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/03-history-management.spec.js:14:5"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-11-30T01:23:23.190Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/03-history-management-Hist-e2bbc-ld-load-prompt-from-history-chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/03-history-management-Hist-e2bbc-ld-load-prompt-from-history-chromium/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/03-history-management-Hist-e2bbc-ld-load-prompt-from-history-chromium/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/03-history-management.spec.js",
+                        "column": 8,
+                        "line": 13
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "a4842d7c80357b1f22e2-b62fead45180fe808697",
+              "file": "03-history-management.spec.js",
+              "line": 39,
+              "column": 3
+            },
+            {
+              "title": "should delete individual history item",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 21,
+                      "parallelIndex": 4,
+                      "status": "timedOut",
+                      "duration": 31500,
+                      "error": {
+                        "message": "\u001b[31mTest timeout of 30000ms exceeded while running \"beforeEach\" hook.\u001b[39m",
+                        "stack": "\u001b[31mTest timeout of 30000ms exceeded while running \"beforeEach\" hook.\u001b[39m\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/03-history-management.spec.js:13:8",
+                        "location": {
+                          "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/03-history-management.spec.js",
+                          "column": 8,
+                          "line": 13
+                        },
+                        "snippet": "  11 | test.describe('History Management', () => {\n  12 |   \n> 13 |   test.beforeEach(async ({ page }) => {\n     |        ^\n  14 |     await standardSetup(page);\n  15 |   });\n  16 |"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/03-history-management.spec.js",
+                            "column": 8,
+                            "line": 13
+                          },
+                          "message": "\u001b[31mTest timeout of 30000ms exceeded while running \"beforeEach\" hook.\u001b[39m\n\n  11 | test.describe('History Management', () => {\n  12 |   \n> 13 |   test.beforeEach(async ({ page }) => {\n     |        ^\n  14 |     await standardSetup(page);\n  15 |   });\n  16 |\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/03-history-management.spec.js:13:8"
+                        },
+                        {
+                          "location": {
+                            "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/fixtures/auth-helper.js",
+                            "column": 14,
+                            "line": 30
+                          },
+                          "message": "Error: page.waitForLoadState: Test timeout of 30000ms exceeded.\n\n   at fixtures/auth-helper.js:30\n\n  28 |   await setupTestAuth(page);\n  29 |   await page.goto('/');\n> 30 |   await page.waitForLoadState('networkidle');\n     |              ^\n  31 | }\n  32 |\n    at standardSetup (/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/fixtures/auth-helper.js:30:14)\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/03-history-management.spec.js:14:5"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-11-30T01:23:23.198Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/03-history-management-Hist-23e7f-ete-individual-history-item-chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/03-history-management-Hist-23e7f-ete-individual-history-item-chromium/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/03-history-management-Hist-23e7f-ete-individual-history-item-chromium/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/03-history-management.spec.js",
+                        "column": 8,
+                        "line": 13
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "a4842d7c80357b1f22e2-0f3662220c9c9beb9a91",
+              "file": "03-history-management.spec.js",
+              "line": 69,
+              "column": 3
+            },
+            {
+              "title": "should clear all history",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 22,
+                      "parallelIndex": 3,
+                      "status": "timedOut",
+                      "duration": 31493,
+                      "error": {
+                        "message": "\u001b[31mTest timeout of 30000ms exceeded while running \"beforeEach\" hook.\u001b[39m",
+                        "stack": "\u001b[31mTest timeout of 30000ms exceeded while running \"beforeEach\" hook.\u001b[39m\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/03-history-management.spec.js:13:8",
+                        "location": {
+                          "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/03-history-management.spec.js",
+                          "column": 8,
+                          "line": 13
+                        },
+                        "snippet": "  11 | test.describe('History Management', () => {\n  12 |   \n> 13 |   test.beforeEach(async ({ page }) => {\n     |        ^\n  14 |     await standardSetup(page);\n  15 |   });\n  16 |"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/03-history-management.spec.js",
+                            "column": 8,
+                            "line": 13
+                          },
+                          "message": "\u001b[31mTest timeout of 30000ms exceeded while running \"beforeEach\" hook.\u001b[39m\n\n  11 | test.describe('History Management', () => {\n  12 |   \n> 13 |   test.beforeEach(async ({ page }) => {\n     |        ^\n  14 |     await standardSetup(page);\n  15 |   });\n  16 |\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/03-history-management.spec.js:13:8"
+                        },
+                        {
+                          "location": {
+                            "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/fixtures/auth-helper.js",
+                            "column": 14,
+                            "line": 30
+                          },
+                          "message": "Error: page.waitForLoadState: Test timeout of 30000ms exceeded.\n\n   at fixtures/auth-helper.js:30\n\n  28 |   await setupTestAuth(page);\n  29 |   await page.goto('/');\n> 30 |   await page.waitForLoadState('networkidle');\n     |              ^\n  31 | }\n  32 |\n    at standardSetup (/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/fixtures/auth-helper.js:30:14)\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/03-history-management.spec.js:14:5"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-11-30T01:23:23.190Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/03-history-management-Hist-aa76f-nt-should-clear-all-history-chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/03-history-management-Hist-aa76f-nt-should-clear-all-history-chromium/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/03-history-management-Hist-aa76f-nt-should-clear-all-history-chromium/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/03-history-management.spec.js",
+                        "column": 8,
+                        "line": 13
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "a4842d7c80357b1f22e2-197ec8e77aec30599444",
+              "file": "03-history-management.spec.js",
+              "line": 102,
+              "column": 3
+            },
+            {
+              "title": "should persist history across page reloads",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 23,
+                      "parallelIndex": 0,
+                      "status": "timedOut",
+                      "duration": 31638,
+                      "error": {
+                        "message": "\u001b[31mTest timeout of 30000ms exceeded while running \"beforeEach\" hook.\u001b[39m",
+                        "stack": "\u001b[31mTest timeout of 30000ms exceeded while running \"beforeEach\" hook.\u001b[39m\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/03-history-management.spec.js:13:8",
+                        "location": {
+                          "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/03-history-management.spec.js",
+                          "column": 8,
+                          "line": 13
+                        },
+                        "snippet": "  11 | test.describe('History Management', () => {\n  12 |   \n> 13 |   test.beforeEach(async ({ page }) => {\n     |        ^\n  14 |     await standardSetup(page);\n  15 |   });\n  16 |"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/03-history-management.spec.js",
+                            "column": 8,
+                            "line": 13
+                          },
+                          "message": "\u001b[31mTest timeout of 30000ms exceeded while running \"beforeEach\" hook.\u001b[39m\n\n  11 | test.describe('History Management', () => {\n  12 |   \n> 13 |   test.beforeEach(async ({ page }) => {\n     |        ^\n  14 |     await standardSetup(page);\n  15 |   });\n  16 |\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/03-history-management.spec.js:13:8"
+                        },
+                        {
+                          "location": {
+                            "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/fixtures/auth-helper.js",
+                            "column": 14,
+                            "line": 30
+                          },
+                          "message": "Error: page.waitForLoadState: Test timeout of 30000ms exceeded.\n\n   at fixtures/auth-helper.js:30\n\n  28 |   await setupTestAuth(page);\n  29 |   await page.goto('/');\n> 30 |   await page.waitForLoadState('networkidle');\n     |              ^\n  31 | }\n  32 |\n    at standardSetup (/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/fixtures/auth-helper.js:30:14)\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/03-history-management.spec.js:14:5"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-11-30T01:23:23.240Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/03-history-management-Hist-18d8b-history-across-page-reloads-chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/03-history-management-Hist-18d8b-history-across-page-reloads-chromium/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/03-history-management-Hist-18d8b-history-across-page-reloads-chromium/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/03-history-management.spec.js",
+                        "column": 8,
+                        "line": 13
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "a4842d7c80357b1f22e2-ad737cf4de24f59e4f7b",
+              "file": "03-history-management.spec.js",
+              "line": 137,
+              "column": 3
+            },
+            {
+              "title": "should show empty state when no history",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 25,
+                      "parallelIndex": 1,
+                      "status": "timedOut",
+                      "duration": 31708,
+                      "error": {
+                        "message": "\u001b[31mTest timeout of 30000ms exceeded while running \"beforeEach\" hook.\u001b[39m",
+                        "stack": "\u001b[31mTest timeout of 30000ms exceeded while running \"beforeEach\" hook.\u001b[39m\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/03-history-management.spec.js:13:8",
+                        "location": {
+                          "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/03-history-management.spec.js",
+                          "column": 8,
+                          "line": 13
+                        },
+                        "snippet": "  11 | test.describe('History Management', () => {\n  12 |   \n> 13 |   test.beforeEach(async ({ page }) => {\n     |        ^\n  14 |     await standardSetup(page);\n  15 |   });\n  16 |"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/03-history-management.spec.js",
+                            "column": 8,
+                            "line": 13
+                          },
+                          "message": "\u001b[31mTest timeout of 30000ms exceeded while running \"beforeEach\" hook.\u001b[39m\n\n  11 | test.describe('History Management', () => {\n  12 |   \n> 13 |   test.beforeEach(async ({ page }) => {\n     |        ^\n  14 |     await standardSetup(page);\n  15 |   });\n  16 |\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/03-history-management.spec.js:13:8"
+                        },
+                        {
+                          "location": {
+                            "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/fixtures/auth-helper.js",
+                            "column": 14,
+                            "line": 30
+                          },
+                          "message": "Error: page.waitForLoadState: Test timeout of 30000ms exceeded.\n\n   at fixtures/auth-helper.js:30\n\n  28 |   await setupTestAuth(page);\n  29 |   await page.goto('/');\n> 30 |   await page.waitForLoadState('networkidle');\n     |              ^\n  31 | }\n  32 |\n    at standardSetup (/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/fixtures/auth-helper.js:30:14)\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/03-history-management.spec.js:14:5"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-11-30T01:23:56.667Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/03-history-management-Hist-9969a-empty-state-when-no-history-chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/03-history-management-Hist-9969a-empty-state-when-no-history-chromium/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/03-history-management-Hist-9969a-empty-state-when-no-history-chromium/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/03-history-management.spec.js",
+                        "column": 8,
+                        "line": 13
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "a4842d7c80357b1f22e2-71324cdecb34079bfb15",
+              "file": "03-history-management.spec.js",
+              "line": 163,
+              "column": 3
+            },
+            {
+              "title": "should show history item metadata",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 26,
+                      "parallelIndex": 3,
+                      "status": "timedOut",
+                      "duration": 31835,
+                      "error": {
+                        "message": "\u001b[31mTest timeout of 30000ms exceeded while running \"beforeEach\" hook.\u001b[39m",
+                        "stack": "\u001b[31mTest timeout of 30000ms exceeded while running \"beforeEach\" hook.\u001b[39m\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/03-history-management.spec.js:13:8",
+                        "location": {
+                          "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/03-history-management.spec.js",
+                          "column": 8,
+                          "line": 13
+                        },
+                        "snippet": "  11 | test.describe('History Management', () => {\n  12 |   \n> 13 |   test.beforeEach(async ({ page }) => {\n     |        ^\n  14 |     await standardSetup(page);\n  15 |   });\n  16 |"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/03-history-management.spec.js",
+                            "column": 8,
+                            "line": 13
+                          },
+                          "message": "\u001b[31mTest timeout of 30000ms exceeded while running \"beforeEach\" hook.\u001b[39m\n\n  11 | test.describe('History Management', () => {\n  12 |   \n> 13 |   test.beforeEach(async ({ page }) => {\n     |        ^\n  14 |     await standardSetup(page);\n  15 |   });\n  16 |\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/03-history-management.spec.js:13:8"
+                        },
+                        {
+                          "location": {
+                            "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/fixtures/auth-helper.js",
+                            "column": 14,
+                            "line": 30
+                          },
+                          "message": "Error: page.waitForLoadState: Test timeout of 30000ms exceeded.\n\n   at fixtures/auth-helper.js:30\n\n  28 |   await setupTestAuth(page);\n  29 |   await page.goto('/');\n> 30 |   await page.waitForLoadState('networkidle');\n     |              ^\n  31 | }\n  32 |\n    at standardSetup (/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/fixtures/auth-helper.js:30:14)\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/03-history-management.spec.js:14:5"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-11-30T01:23:56.660Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/03-history-management-Hist-a8c22--show-history-item-metadata-chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/03-history-management-Hist-a8c22--show-history-item-metadata-chromium/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/03-history-management-Hist-a8c22--show-history-item-metadata-chromium/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/03-history-management.spec.js",
+                        "column": 8,
+                        "line": 13
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "a4842d7c80357b1f22e2-48b5116c0063a5e63639",
+              "file": "03-history-management.spec.js",
+              "line": 190,
+              "column": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "04-regression.spec.js",
+      "file": "04-regression.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Regression Tests - Pre/Post Refactor",
+          "file": "04-regression.spec.js",
+          "line": 12,
+          "column": 6,
+          "specs": [
+            {
+              "title": "REGRESSION: identical output for same inputs",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 24,
+                      "parallelIndex": 4,
+                      "status": "timedOut",
+                      "duration": 31722,
+                      "error": {
+                        "message": "\u001b[31mTest timeout of 30000ms exceeded while running \"beforeEach\" hook.\u001b[39m",
+                        "stack": "\u001b[31mTest timeout of 30000ms exceeded while running \"beforeEach\" hook.\u001b[39m\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/04-regression.spec.js:14:8",
+                        "location": {
+                          "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/04-regression.spec.js",
+                          "column": 8,
+                          "line": 14
+                        },
+                        "snippet": "  12 | test.describe('Regression Tests - Pre/Post Refactor', () => {\n  13 |   \n> 14 |   test.beforeEach(async ({ page }) => {\n     |        ^\n  15 |     await standardSetup(page);\n  16 |   });\n  17 |"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/04-regression.spec.js",
+                            "column": 8,
+                            "line": 14
+                          },
+                          "message": "\u001b[31mTest timeout of 30000ms exceeded while running \"beforeEach\" hook.\u001b[39m\n\n  12 | test.describe('Regression Tests - Pre/Post Refactor', () => {\n  13 |   \n> 14 |   test.beforeEach(async ({ page }) => {\n     |        ^\n  15 |     await standardSetup(page);\n  16 |   });\n  17 |\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/04-regression.spec.js:14:8"
+                        },
+                        {
+                          "location": {
+                            "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/fixtures/auth-helper.js",
+                            "column": 14,
+                            "line": 30
+                          },
+                          "message": "Error: page.waitForLoadState: Test timeout of 30000ms exceeded.\n\n   at fixtures/auth-helper.js:30\n\n  28 |   await setupTestAuth(page);\n  29 |   await page.goto('/');\n> 30 |   await page.waitForLoadState('networkidle');\n     |              ^\n  31 | }\n  32 |\n    at standardSetup (/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/fixtures/auth-helper.js:30:14)\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/04-regression.spec.js:15:5"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-11-30T01:23:56.660Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/04-regression-Regression-T-29ecd-ical-output-for-same-inputs-chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/04-regression-Regression-T-29ecd-ical-output-for-same-inputs-chromium/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/04-regression-Regression-T-29ecd-ical-output-for-same-inputs-chromium/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/04-regression.spec.js",
+                        "column": 8,
+                        "line": 14
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "95e47460ed48b1129d9d-bc0d780de3cba424cdd0",
+              "file": "04-regression.spec.js",
+              "line": 18,
+              "column": 3
+            },
+            {
+              "title": "REGRESSION: all output types work",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 27,
+                      "parallelIndex": 5,
+                      "status": "timedOut",
+                      "duration": 31551,
+                      "error": {
+                        "message": "\u001b[31mTest timeout of 30000ms exceeded while running \"beforeEach\" hook.\u001b[39m",
+                        "stack": "\u001b[31mTest timeout of 30000ms exceeded while running \"beforeEach\" hook.\u001b[39m\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/04-regression.spec.js:14:8",
+                        "location": {
+                          "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/04-regression.spec.js",
+                          "column": 8,
+                          "line": 14
+                        },
+                        "snippet": "  12 | test.describe('Regression Tests - Pre/Post Refactor', () => {\n  13 |   \n> 14 |   test.beforeEach(async ({ page }) => {\n     |        ^\n  15 |     await standardSetup(page);\n  16 |   });\n  17 |"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/04-regression.spec.js",
+                            "column": 8,
+                            "line": 14
+                          },
+                          "message": "\u001b[31mTest timeout of 30000ms exceeded while running \"beforeEach\" hook.\u001b[39m\n\n  12 | test.describe('Regression Tests - Pre/Post Refactor', () => {\n  13 |   \n> 14 |   test.beforeEach(async ({ page }) => {\n     |        ^\n  15 |     await standardSetup(page);\n  16 |   });\n  17 |\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/04-regression.spec.js:14:8"
+                        },
+                        {
+                          "location": {
+                            "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/fixtures/auth-helper.js",
+                            "column": 14,
+                            "line": 30
+                          },
+                          "message": "Error: page.waitForLoadState: Test timeout of 30000ms exceeded.\n\n   at fixtures/auth-helper.js:30\n\n  28 |   await setupTestAuth(page);\n  29 |   await page.goto('/');\n> 30 |   await page.waitForLoadState('networkidle');\n     |              ^\n  31 | }\n  32 |\n    at standardSetup (/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/fixtures/auth-helper.js:30:14)\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/04-regression.spec.js:15:5"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-11-30T01:23:56.663Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/04-regression-Regression-T-df9c7-SSION-all-output-types-work-chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/04-regression-Regression-T-df9c7-SSION-all-output-types-work-chromium/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/04-regression-Regression-T-df9c7-SSION-all-output-types-work-chromium/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/04-regression.spec.js",
+                        "column": 8,
+                        "line": 14
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "95e47460ed48b1129d9d-b324e404ee59c26134a0",
+              "file": "04-regression.spec.js",
+              "line": 44,
+              "column": 3
+            },
+            {
+              "title": "REGRESSION: all tones work",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 28,
+                      "parallelIndex": 2,
+                      "status": "timedOut",
+                      "duration": 31838,
+                      "error": {
+                        "message": "\u001b[31mTest timeout of 30000ms exceeded while running \"beforeEach\" hook.\u001b[39m",
+                        "stack": "\u001b[31mTest timeout of 30000ms exceeded while running \"beforeEach\" hook.\u001b[39m\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/04-regression.spec.js:14:8",
+                        "location": {
+                          "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/04-regression.spec.js",
+                          "column": 8,
+                          "line": 14
+                        },
+                        "snippet": "  12 | test.describe('Regression Tests - Pre/Post Refactor', () => {\n  13 |   \n> 14 |   test.beforeEach(async ({ page }) => {\n     |        ^\n  15 |     await standardSetup(page);\n  16 |   });\n  17 |"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/04-regression.spec.js",
+                            "column": 8,
+                            "line": 14
+                          },
+                          "message": "\u001b[31mTest timeout of 30000ms exceeded while running \"beforeEach\" hook.\u001b[39m\n\n  12 | test.describe('Regression Tests - Pre/Post Refactor', () => {\n  13 |   \n> 14 |   test.beforeEach(async ({ page }) => {\n     |        ^\n  15 |     await standardSetup(page);\n  16 |   });\n  17 |\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/04-regression.spec.js:14:8"
+                        },
+                        {
+                          "location": {
+                            "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/fixtures/auth-helper.js",
+                            "column": 14,
+                            "line": 30
+                          },
+                          "message": "Error: page.waitForLoadState: Test timeout of 30000ms exceeded.\n\n   at fixtures/auth-helper.js:30\n\n  28 |   await setupTestAuth(page);\n  29 |   await page.goto('/');\n> 30 |   await page.waitForLoadState('networkidle');\n     |              ^\n  31 | }\n  32 |\n    at standardSetup (/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/fixtures/auth-helper.js:30:14)\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/04-regression.spec.js:15:5"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-11-30T01:23:56.714Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/04-regression-Regression-T-0f3db-r-REGRESSION-all-tones-work-chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/04-regression-Regression-T-0f3db-r-REGRESSION-all-tones-work-chromium/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/04-regression-Regression-T-0f3db-r-REGRESSION-all-tones-work-chromium/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/04-regression.spec.js",
+                        "column": 8,
+                        "line": 14
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "95e47460ed48b1129d9d-45a74dc2c92e139da47c",
+              "file": "04-regression.spec.js",
+              "line": 74,
+              "column": 3
+            },
+            {
+              "title": "REGRESSION: all formats work",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 29,
+                      "parallelIndex": 0,
+                      "status": "timedOut",
+                      "duration": 31670,
+                      "error": {
+                        "message": "\u001b[31mTest timeout of 30000ms exceeded while running \"beforeEach\" hook.\u001b[39m",
+                        "stack": "\u001b[31mTest timeout of 30000ms exceeded while running \"beforeEach\" hook.\u001b[39m\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/04-regression.spec.js:14:8",
+                        "location": {
+                          "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/04-regression.spec.js",
+                          "column": 8,
+                          "line": 14
+                        },
+                        "snippet": "  12 | test.describe('Regression Tests - Pre/Post Refactor', () => {\n  13 |   \n> 14 |   test.beforeEach(async ({ page }) => {\n     |        ^\n  15 |     await standardSetup(page);\n  16 |   });\n  17 |"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/04-regression.spec.js",
+                            "column": 8,
+                            "line": 14
+                          },
+                          "message": "\u001b[31mTest timeout of 30000ms exceeded while running \"beforeEach\" hook.\u001b[39m\n\n  12 | test.describe('Regression Tests - Pre/Post Refactor', () => {\n  13 |   \n> 14 |   test.beforeEach(async ({ page }) => {\n     |        ^\n  15 |     await standardSetup(page);\n  16 |   });\n  17 |\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/04-regression.spec.js:14:8"
+                        },
+                        {
+                          "location": {
+                            "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/fixtures/auth-helper.js",
+                            "column": 14,
+                            "line": 30
+                          },
+                          "message": "Error: page.waitForLoadState: Test timeout of 30000ms exceeded.\n\n   at fixtures/auth-helper.js:30\n\n  28 |   await setupTestAuth(page);\n  29 |   await page.goto('/');\n> 30 |   await page.waitForLoadState('networkidle');\n     |              ^\n  31 | }\n  32 |\n    at standardSetup (/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/fixtures/auth-helper.js:30:14)\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/04-regression.spec.js:15:5"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-11-30T01:23:56.756Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/04-regression-Regression-T-e4864-REGRESSION-all-formats-work-chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/04-regression-Regression-T-e4864-REGRESSION-all-formats-work-chromium/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/04-regression-Regression-T-e4864-REGRESSION-all-formats-work-chromium/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/04-regression.spec.js",
+                        "column": 8,
+                        "line": 14
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "95e47460ed48b1129d9d-3f7a34f8c466ca6e0e29",
+              "file": "04-regression.spec.js",
+              "line": 100,
+              "column": 3
+            },
+            {
+              "title": "REGRESSION: no console errors during normal flow",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 30,
+                      "parallelIndex": 5,
+                      "status": "timedOut",
+                      "duration": 31237,
+                      "error": {
+                        "message": "\u001b[31mTest timeout of 30000ms exceeded while running \"beforeEach\" hook.\u001b[39m",
+                        "stack": "\u001b[31mTest timeout of 30000ms exceeded while running \"beforeEach\" hook.\u001b[39m\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/04-regression.spec.js:14:8",
+                        "location": {
+                          "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/04-regression.spec.js",
+                          "column": 8,
+                          "line": 14
+                        },
+                        "snippet": "  12 | test.describe('Regression Tests - Pre/Post Refactor', () => {\n  13 |   \n> 14 |   test.beforeEach(async ({ page }) => {\n     |        ^\n  15 |     await standardSetup(page);\n  16 |   });\n  17 |"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/04-regression.spec.js",
+                            "column": 8,
+                            "line": 14
+                          },
+                          "message": "\u001b[31mTest timeout of 30000ms exceeded while running \"beforeEach\" hook.\u001b[39m\n\n  12 | test.describe('Regression Tests - Pre/Post Refactor', () => {\n  13 |   \n> 14 |   test.beforeEach(async ({ page }) => {\n     |        ^\n  15 |     await standardSetup(page);\n  16 |   });\n  17 |\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/04-regression.spec.js:14:8"
+                        },
+                        {
+                          "location": {
+                            "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/fixtures/auth-helper.js",
+                            "column": 14,
+                            "line": 30
+                          },
+                          "message": "Error: page.waitForLoadState: Test timeout of 30000ms exceeded.\n\n   at fixtures/auth-helper.js:30\n\n  28 |   await setupTestAuth(page);\n  29 |   await page.goto('/');\n> 30 |   await page.waitForLoadState('networkidle');\n     |              ^\n  31 | }\n  32 |\n    at standardSetup (/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/fixtures/auth-helper.js:30:14)\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/04-regression.spec.js:15:5"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-11-30T01:24:30.243Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/04-regression-Regression-T-128c6-e-errors-during-normal-flow-chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/04-regression-Regression-T-128c6-e-errors-during-normal-flow-chromium/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/04-regression-Regression-T-128c6-e-errors-during-normal-flow-chromium/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/04-regression.spec.js",
+                        "column": 8,
+                        "line": 14
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "95e47460ed48b1129d9d-e4582337f83d39212fd3",
+              "file": "04-regression.spec.js",
+              "line": 126,
+              "column": 3
+            },
+            {
+              "title": "REGRESSION: API calls complete successfully",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 31,
+                      "parallelIndex": 0,
+                      "status": "timedOut",
+                      "duration": 31076,
+                      "error": {
+                        "message": "\u001b[31mTest timeout of 30000ms exceeded while running \"beforeEach\" hook.\u001b[39m",
+                        "stack": "\u001b[31mTest timeout of 30000ms exceeded while running \"beforeEach\" hook.\u001b[39m\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/04-regression.spec.js:14:8",
+                        "location": {
+                          "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/04-regression.spec.js",
+                          "column": 8,
+                          "line": 14
+                        },
+                        "snippet": "  12 | test.describe('Regression Tests - Pre/Post Refactor', () => {\n  13 |   \n> 14 |   test.beforeEach(async ({ page }) => {\n     |        ^\n  15 |     await standardSetup(page);\n  16 |   });\n  17 |"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/04-regression.spec.js",
+                            "column": 8,
+                            "line": 14
+                          },
+                          "message": "\u001b[31mTest timeout of 30000ms exceeded while running \"beforeEach\" hook.\u001b[39m\n\n  12 | test.describe('Regression Tests - Pre/Post Refactor', () => {\n  13 |   \n> 14 |   test.beforeEach(async ({ page }) => {\n     |        ^\n  15 |     await standardSetup(page);\n  16 |   });\n  17 |\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/04-regression.spec.js:14:8"
+                        },
+                        {
+                          "location": {
+                            "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/fixtures/auth-helper.js",
+                            "column": 14,
+                            "line": 30
+                          },
+                          "message": "Error: page.waitForLoadState: Test timeout of 30000ms exceeded.\n\n   at fixtures/auth-helper.js:30\n\n  28 |   await setupTestAuth(page);\n  29 |   await page.goto('/');\n> 30 |   await page.waitForLoadState('networkidle');\n     |              ^\n  31 | }\n  32 |\n    at standardSetup (/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/fixtures/auth-helper.js:30:14)\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/04-regression.spec.js:15:5"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-11-30T01:24:30.245Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/04-regression-Regression-T-05314-calls-complete-successfully-chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/04-regression-Regression-T-05314-calls-complete-successfully-chromium/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/04-regression-Regression-T-05314-calls-complete-successfully-chromium/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/04-regression.spec.js",
+                        "column": 8,
+                        "line": 14
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "95e47460ed48b1129d9d-fd225d607bfb2b9ee9f2",
+              "file": "04-regression.spec.js",
+              "line": 151,
+              "column": 3
+            },
+            {
+              "title": "REGRESSION: state persists correctly",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 33,
+                      "parallelIndex": 1,
+                      "status": "timedOut",
+                      "duration": 31111,
+                      "error": {
+                        "message": "\u001b[31mTest timeout of 30000ms exceeded while running \"beforeEach\" hook.\u001b[39m",
+                        "stack": "\u001b[31mTest timeout of 30000ms exceeded while running \"beforeEach\" hook.\u001b[39m\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/04-regression.spec.js:14:8",
+                        "location": {
+                          "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/04-regression.spec.js",
+                          "column": 8,
+                          "line": 14
+                        },
+                        "snippet": "  12 | test.describe('Regression Tests - Pre/Post Refactor', () => {\n  13 |   \n> 14 |   test.beforeEach(async ({ page }) => {\n     |        ^\n  15 |     await standardSetup(page);\n  16 |   });\n  17 |"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/04-regression.spec.js",
+                            "column": 8,
+                            "line": 14
+                          },
+                          "message": "\u001b[31mTest timeout of 30000ms exceeded while running \"beforeEach\" hook.\u001b[39m\n\n  12 | test.describe('Regression Tests - Pre/Post Refactor', () => {\n  13 |   \n> 14 |   test.beforeEach(async ({ page }) => {\n     |        ^\n  15 |     await standardSetup(page);\n  16 |   });\n  17 |\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/04-regression.spec.js:14:8"
+                        },
+                        {
+                          "location": {
+                            "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/fixtures/auth-helper.js",
+                            "column": 14,
+                            "line": 30
+                          },
+                          "message": "Error: page.waitForLoadState: Test timeout of 30000ms exceeded.\n\n   at fixtures/auth-helper.js:30\n\n  28 |   await setupTestAuth(page);\n  29 |   await page.goto('/');\n> 30 |   await page.waitForLoadState('networkidle');\n     |              ^\n  31 | }\n  32 |\n    at standardSetup (/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/fixtures/auth-helper.js:30:14)\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/04-regression.spec.js:15:5"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-11-30T01:24:30.245Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/04-regression-Regression-T-787c2-ON-state-persists-correctly-chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/04-regression-Regression-T-787c2-ON-state-persists-correctly-chromium/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/04-regression-Regression-T-787c2-ON-state-persists-correctly-chromium/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/04-regression.spec.js",
+                        "column": 8,
+                        "line": 14
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "95e47460ed48b1129d9d-79c503309032302915cc",
+              "file": "04-regression.spec.js",
+              "line": 178,
+              "column": 3
+            },
+            {
+              "title": "REGRESSION: copy functionality works",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 32,
+                      "parallelIndex": 4,
+                      "status": "timedOut",
+                      "duration": 31213,
+                      "error": {
+                        "message": "\u001b[31mTest timeout of 30000ms exceeded while running \"beforeEach\" hook.\u001b[39m",
+                        "stack": "\u001b[31mTest timeout of 30000ms exceeded while running \"beforeEach\" hook.\u001b[39m\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/04-regression.spec.js:14:8",
+                        "location": {
+                          "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/04-regression.spec.js",
+                          "column": 8,
+                          "line": 14
+                        },
+                        "snippet": "  12 | test.describe('Regression Tests - Pre/Post Refactor', () => {\n  13 |   \n> 14 |   test.beforeEach(async ({ page }) => {\n     |        ^\n  15 |     await standardSetup(page);\n  16 |   });\n  17 |"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/04-regression.spec.js",
+                            "column": 8,
+                            "line": 14
+                          },
+                          "message": "\u001b[31mTest timeout of 30000ms exceeded while running \"beforeEach\" hook.\u001b[39m\n\n  12 | test.describe('Regression Tests - Pre/Post Refactor', () => {\n  13 |   \n> 14 |   test.beforeEach(async ({ page }) => {\n     |        ^\n  15 |     await standardSetup(page);\n  16 |   });\n  17 |\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/04-regression.spec.js:14:8"
+                        },
+                        {
+                          "location": {
+                            "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/fixtures/auth-helper.js",
+                            "column": 14,
+                            "line": 30
+                          },
+                          "message": "Error: page.waitForLoadState: Test timeout of 30000ms exceeded.\n\n   at fixtures/auth-helper.js:30\n\n  28 |   await setupTestAuth(page);\n  29 |   await page.goto('/');\n> 30 |   await page.waitForLoadState('networkidle');\n     |              ^\n  31 | }\n  32 |\n    at standardSetup (/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/fixtures/auth-helper.js:30:14)\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/04-regression.spec.js:15:5"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-11-30T01:24:30.247Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/04-regression-Regression-T-fb337-ON-copy-functionality-works-chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/04-regression-Regression-T-fb337-ON-copy-functionality-works-chromium/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/04-regression-Regression-T-fb337-ON-copy-functionality-works-chromium/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/04-regression.spec.js",
+                        "column": 8,
+                        "line": 14
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "95e47460ed48b1129d9d-7efc2242bae52f1c86d2",
+              "file": "04-regression.spec.js",
+              "line": 199,
+              "column": 3
+            },
+            {
+              "title": "REGRESSION: error handling works",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 34,
+                      "parallelIndex": 3,
+                      "status": "timedOut",
+                      "duration": 31198,
+                      "error": {
+                        "message": "\u001b[31mTest timeout of 30000ms exceeded while running \"beforeEach\" hook.\u001b[39m",
+                        "stack": "\u001b[31mTest timeout of 30000ms exceeded while running \"beforeEach\" hook.\u001b[39m\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/04-regression.spec.js:14:8",
+                        "location": {
+                          "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/04-regression.spec.js",
+                          "column": 8,
+                          "line": 14
+                        },
+                        "snippet": "  12 | test.describe('Regression Tests - Pre/Post Refactor', () => {\n  13 |   \n> 14 |   test.beforeEach(async ({ page }) => {\n     |        ^\n  15 |     await standardSetup(page);\n  16 |   });\n  17 |"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/04-regression.spec.js",
+                            "column": 8,
+                            "line": 14
+                          },
+                          "message": "\u001b[31mTest timeout of 30000ms exceeded while running \"beforeEach\" hook.\u001b[39m\n\n  12 | test.describe('Regression Tests - Pre/Post Refactor', () => {\n  13 |   \n> 14 |   test.beforeEach(async ({ page }) => {\n     |        ^\n  15 |     await standardSetup(page);\n  16 |   });\n  17 |\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/04-regression.spec.js:14:8"
+                        },
+                        {
+                          "location": {
+                            "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/fixtures/auth-helper.js",
+                            "column": 14,
+                            "line": 30
+                          },
+                          "message": "Error: page.waitForLoadState: Test timeout of 30000ms exceeded.\n\n   at fixtures/auth-helper.js:30\n\n  28 |   await setupTestAuth(page);\n  29 |   await page.goto('/');\n> 30 |   await page.waitForLoadState('networkidle');\n     |              ^\n  31 | }\n  32 |\n    at standardSetup (/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/fixtures/auth-helper.js:30:14)\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/04-regression.spec.js:15:5"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-11-30T01:24:30.283Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/04-regression-Regression-T-47719-ESSION-error-handling-works-chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/04-regression-Regression-T-47719-ESSION-error-handling-works-chromium/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/04-regression-Regression-T-47719-ESSION-error-handling-works-chromium/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/04-regression.spec.js",
+                        "column": 8,
+                        "line": 14
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "95e47460ed48b1129d9d-438c25ce561b1b962e68",
+              "file": "04-regression.spec.js",
+              "line": 216,
+              "column": 3
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2025-11-30T01:21:41.482Z",
+    "duration": 200599.282,
+    "expected": 0,
+    "skipped": 0,
+    "unexpected": 35,
+    "flaky": 0
+  }
+}
