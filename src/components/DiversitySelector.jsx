@@ -142,20 +142,21 @@ function NoveltySlider({ value, onChange, darkMode }) {
             [&::-webkit-slider-thumb]:w-5
             [&::-webkit-slider-thumb]:h-5
             [&::-webkit-slider-thumb]:rounded-full
-            [&::-webkit-slider-thumb]:bg-white
+            [&::-webkit-slider-thumb]:bg-cyan-500
             [&::-webkit-slider-thumb]:border-2
-            [&::-webkit-slider-thumb]:border-cyan-500
+            [&::-webkit-slider-thumb]:border-cyan-600
             [&::-webkit-slider-thumb]:shadow-lg
             [&::-webkit-slider-thumb]:cursor-grab
             [&::-webkit-slider-thumb]:active:cursor-grabbing
+            [&::-webkit-slider-thumb]:hover:bg-cyan-400
             [&::-webkit-slider-thumb]:hover:scale-110
-            [&::-webkit-slider-thumb]:transition-transform
+            [&::-webkit-slider-thumb]:transition-all
             [&::-moz-range-thumb]:w-5
             [&::-moz-range-thumb]:h-5
             [&::-moz-range-thumb]:rounded-full
-            [&::-moz-range-thumb]:bg-white
+            [&::-moz-range-thumb]:bg-cyan-500
             [&::-moz-range-thumb]:border-2
-            [&::-moz-range-thumb]:border-cyan-500
+            [&::-moz-range-thumb]:border-cyan-600
             [&::-moz-range-thumb]:shadow-lg
             [&::-moz-range-thumb]:cursor-grab
             [&::-moz-range-thumb]:active:cursor-grabbing
