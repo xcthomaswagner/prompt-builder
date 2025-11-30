@@ -953,7 +953,7 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
                 <div className="flex justify-end mb-2">
                   <button
                     onClick={() => setShowSystemPrompt(!showSystemPrompt)}
-                    className="text-xs text-slate-500 hover:text-indigo-600 flex items-center gap-1"
+                    className={`text-xs flex items-center gap-1 ${darkMode ? 'text-slate-400 hover:text-indigo-400' : 'text-slate-500 hover:text-indigo-600'}`}
                   >
                     {showSystemPrompt ? <EyeOff className="w-3 h-3" /> : <Eye className="w-3 h-3" />}
                     {showSystemPrompt ? 'Hide System Prompt' : 'Show System Prompt'}
@@ -1592,7 +1592,7 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
                   <div className="px-6 pb-6 flex justify-end">
                     <button
                       onClick={() => setShowOutcomeFeedback(true)}
-                      className="text-sm text-slate-500 hover:text-indigo-600 flex items-center gap-1"
+                      className={`text-sm flex items-center gap-1 ${darkMode ? 'text-slate-400 hover:text-indigo-400' : 'text-slate-500 hover:text-indigo-600'}`}
                     >
                       How did this work for you?
                     </button>
