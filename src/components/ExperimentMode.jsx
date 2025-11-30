@@ -1,9 +1,12 @@
 import { useState, useEffect, useRef } from 'react';
-import { Beaker, Play, Loader2, AlertCircle, Zap, Settings2, ChevronDown, ChevronUp, Layout, FileText, Database, Code, Copy, MessageSquare, XCircle } from 'lucide-react';
+import { Beaker, Play, Loader2, AlertCircle, Zap, Settings2, ChevronDown, ChevronUp, Layout, FileText, Database, Code, Copy, MessageSquare, XCircle, Sparkles } from 'lucide-react';
 import MatrixSelector from './MatrixSelector';
 import ModelSelector from './ModelSelector';
 import ResultsGrid from './ResultsGrid';
 import ExperimentSettings from './ExperimentSettings';
+import DiversitySelector from './DiversitySelector';
+import VerbalizedOptionsGrid from './VerbalizedOptionsGrid';
+import { runVerbalizedSampling, DIVERSITY_LEVELS } from '../lib/verbalizedSampling';
 import { runMatrixExperiment } from '../lib/experimentRunner';
 import {
   createExperiment,
@@ -72,6 +75,14 @@ export default function ExperimentMode({ callLLM, defaultOutputType = 'doc', db,
     dualJudge: false,
     rubricEnforcement: 'standard'
   });
+
+  // Verbalized Sampling state
+  const [generationMode, setGenerationMode] = useState('focused'); // 'focused' | 'exploratory'
+  const [diversityLevel, setDiversityLevel] = useState('medium'); // 'low' | 'medium' | 'high'
+  const [vsOptions, setVsOptions] = useState([]);
+  const [vsLoading, setVsLoading] = useState(false);
+  const [vsError, setVsError] = useState(null);
+  const [selectedVsOption, setSelectedVsOption] = useState(null);
 
   // Persistence enabled check
   const canPersist = db && user?.uid;
@@ -328,6 +339,53 @@ export default function ExperimentMode({ callLLM, defaultOutputType = 'doc', db,
     }
   };
 
+  // Run Verbalized Sampling experiment
+  const handleRunVS = async () => {
+    if (!originalPrompt.trim()) {
+      setError('Please enter a prompt first');
+      return;
+    }
+
+    setVsLoading(true);
+    setVsError(null);
+    setVsOptions([]);
+    setSelectedVsOption(null);
+
+    try {
+      // Use the first tone from matrix config, or default to 'professional'
+      const tone = matrixConfig.tones?.[0] || 'professional';
+      
+      const result = await runVerbalizedSampling({
+        prompt: originalPrompt,
+        tone,
+        outputType,
+        diversityLevel,
+        callLLM,
+      });
+
+      if (result.success) {
+        setVsOptions(result.options);
+      } else {
+        setVsError(result.error || 'Failed to generate options');
+      }
+    } catch (err) {
+      console.error('VS experiment failed:', err);
+      setVsError(err.message || 'Failed to run verbalized sampling');
+    } finally {
+      setVsLoading(false);
+    }
+  };
+
+  // Handle VS option selection
+  const handleVsOptionSelect = (option) => {
+    setSelectedVsOption(option.id === selectedVsOption ? null : option.id);
+  };
+
+  // Copy VS option to clipboard
+  const handleVsOptionCopy = (option) => {
+    console.log('Copied option:', option.approach);
+  };
+
   const OUTPUT_TYPE_OPTIONS = [
     { id: 'deck', label: 'Deck', icon: Layout },
     { id: 'doc', label: 'Doc', icon: FileText },
@@ -403,10 +461,22 @@ export default function ExperimentMode({ callLLM, defaultOutputType = 'doc', db,
           </div>
         </div>
 
-      {/* Matrix Selector */}
-        <MatrixSelector
-          value={matrixConfig}
-          onChange={setMatrixConfig}
+      {/* Matrix Selector - only show in focused mode */}
+        {generationMode === 'focused' && (
+          <MatrixSelector
+            value={matrixConfig}
+            onChange={setMatrixConfig}
+            darkMode={darkMode}
+          />
+        )}
+
+        {/* Generation Mode Selector (Verbalized Sampling) */}
+        <DiversitySelector
+          mode={generationMode}
+          onModeChange={setGenerationMode}
+          diversityLevel={diversityLevel}
+          onDiversityChange={setDiversityLevel}
+          disabled={isRunning || vsLoading}
           darkMode={darkMode}
         />
 
@@ -499,35 +569,65 @@ export default function ExperimentMode({ callLLM, defaultOutputType = 'doc', db,
           )}
         </div>
 
-      {/* Run Button (clickable to cancel when running) */}
-        <button
-          type="button"
-          onClick={isRunning ? handleCancelExperiment : handleRunExperiment}
-          disabled={!canRun && !isRunning}
-          title={isRunning ? 'Click to cancel' : undefined}
-          className={`w-full py-4 rounded-xl text-white font-bold text-lg shadow-lg flex items-center justify-center gap-3 transition-all transform active:scale-[0.99] ${
-            isRunning
-              ? 'bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 cursor-pointer'
-              : !canRun
-                ? darkMode ? 'bg-slate-700 cursor-not-allowed shadow-none' : 'bg-slate-300 cursor-not-allowed shadow-none'
-                : 'bg-gradient-to-r from-cyan-500 to-blue-600 hover:shadow-cyan-200 hover:shadow-xl'
-          }`}
-        >
-          {isRunning ? (
-            <>
-              <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-              Running {progress.completed}/{progress.total}...
-              <span className="text-sm font-normal opacity-75">(click to cancel)</span>
-            </>
-          ) : (
-            <>
-              <Zap className="w-5 h-5 text-yellow-300 fill-current" />
-              Run Experiment ({totalCombos} combination{totalCombos !== 1 ? 's' : ''})
-            </>
-          )}
-        </button>
+      {/* Run Button - different behavior based on mode */}
+        {generationMode === 'focused' ? (
+          // Focused mode: Matrix experiment button
+          <button
+            type="button"
+            onClick={isRunning ? handleCancelExperiment : handleRunExperiment}
+            disabled={!canRun && !isRunning}
+            title={isRunning ? 'Click to cancel' : undefined}
+            className={`w-full py-4 rounded-xl text-white font-bold text-lg shadow-lg flex items-center justify-center gap-3 transition-all transform active:scale-[0.99] ${
+              isRunning
+                ? 'bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 cursor-pointer'
+                : !canRun
+                  ? darkMode ? 'bg-slate-700 cursor-not-allowed shadow-none' : 'bg-slate-300 cursor-not-allowed shadow-none'
+                  : 'bg-gradient-to-r from-cyan-500 to-blue-600 hover:shadow-cyan-200 hover:shadow-xl'
+            }`}
+          >
+            {isRunning ? (
+              <>
+                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                Running {progress.completed}/{progress.total}...
+                <span className="text-sm font-normal opacity-75">(click to cancel)</span>
+              </>
+            ) : (
+              <>
+                <Zap className="w-5 h-5 text-yellow-300 fill-current" />
+                Run Experiment ({totalCombos} combination{totalCombos !== 1 ? 's' : ''})
+              </>
+            )}
+          </button>
+        ) : (
+          // Exploratory mode: Verbalized Sampling button
+          <button
+            type="button"
+            onClick={handleRunVS}
+            disabled={!originalPrompt.trim() || vsLoading}
+            className={`w-full py-4 rounded-xl text-white font-bold text-lg shadow-lg flex items-center justify-center gap-3 transition-all transform active:scale-[0.99] ${
+              vsLoading
+                ? 'bg-gradient-to-r from-purple-500 to-pink-600 cursor-wait'
+                : !originalPrompt.trim()
+                  ? darkMode ? 'bg-slate-700 cursor-not-allowed shadow-none' : 'bg-slate-300 cursor-not-allowed shadow-none'
+                  : 'bg-gradient-to-r from-purple-500 to-pink-600 hover:shadow-purple-200 hover:shadow-xl'
+            }`}
+          >
+            {vsLoading ? (
+              <>
+                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                Generating Options...
+              </>
+            ) : (
+              <>
+                <Sparkles className="w-5 h-5 text-yellow-300 fill-current" />
+                Generate {DIVERSITY_LEVELS[diversityLevel].candidateCount} Diverse Options
+              </>
+            )}
+          </button>
+        )}
 
-        {isRunning && (
+        {/* Focused mode progress bar */}
+        {generationMode === 'focused' && isRunning && (
           <div className="space-y-1">
             <div className="flex justify-between items-center text-xs">
               <span className={`font-medium ${darkMode ? 'text-slate-400' : 'text-slate-500'}`}>Progress</span>
@@ -543,16 +643,31 @@ export default function ExperimentMode({ callLLM, defaultOutputType = 'doc', db,
         )}
 
       {/* Error Display */}
-      {error && (
+      {(error || vsError) && (
         <div className="flex items-center gap-1.5 text-xs text-red-500">
           <AlertCircle size={14} />
-          <span>{error}</span>
+          <span>{error || vsError}</span>
         </div>
       )}
 
-      {/* Results Grid */}
-      {results.length > 0 && (
-        <ResultsGrid results={results} darkMode={darkMode} />
+      {/* Results - different display based on mode */}
+      {generationMode === 'focused' ? (
+        // Focused mode: Matrix results grid
+        results.length > 0 && (
+          <ResultsGrid results={results} darkMode={darkMode} />
+        )
+      ) : (
+        // Exploratory mode: Verbalized Sampling options
+        <VerbalizedOptionsGrid
+          options={vsOptions}
+          selectedId={selectedVsOption}
+          onSelect={handleVsOptionSelect}
+          onCopy={handleVsOptionCopy}
+          isLoading={vsLoading}
+          error={vsError}
+          config={{ diversityLevel }}
+          darkMode={darkMode}
+        />
       )}
 
       {/* Settings Modal */}
