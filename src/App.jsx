@@ -2,6 +2,8 @@ import { useState, useEffect, useRef } from 'react';
 import { estimateTokens } from './lib/tokenEstimator';
 import usePromptForm from './hooks/usePromptForm';
 import useApiSettings from './hooks/useApiSettings';
+import useAuth from './hooks/useAuth';
+import usePromptHistory from './hooks/usePromptHistory';
 import {
   Sparkles,
   History,
@@ -31,16 +33,11 @@ import {
   getFirestore,
   collection,
   addDoc,
-  query,
-  orderBy,
-  onSnapshot,
-  deleteDoc,
   doc,
   serverTimestamp,
-  updateDoc,
   arrayUnion
 } from "firebase/firestore";
-import { getAuth, signInWithPopup, GoogleAuthProvider, OAuthProvider, onAuthStateChanged, signOut } from "firebase/auth";
+import { getAuth } from "firebase/auth";
 import buildPromptPlan from './lib/promptAssembler';
 import PROMPT_SPECS from './lib/promptSpecs';
 import ExperimentMode from './components/ExperimentMode';
@@ -105,24 +102,27 @@ const claudeFunctionUrl = import.meta.env.VITE_CLAUDE_FUNCTION_URL;
 
 
 export default function App() {
-  const [user, setUser] = useState(null);
-  const [promptHistory, setPromptHistory] = useState([]);
-  
-  // Check for test user in localStorage on mount (for E2E tests)
-  const [isTestMode, setIsTestMode] = useState(false);
-  
-  useEffect(() => {
-    try {
-      const testUser = localStorage.getItem('playwright_test_user');
-      if (testUser) {
-        setUser(JSON.parse(testUser));
-        setIsTestMode(true);
-        return; // Skip Firebase auth if test user exists
-      }
-    } catch (e) {
-      // Ignore parse errors
-    }
-  }, []);
+  // Auth state (from custom hook)
+  const {
+    user,
+    isTestMode,
+    authError,
+    setAuthError,
+    handleGoogleSignIn,
+    handleMicrosoftSignIn,
+    handleSignOut
+  } = useAuth(app);
+
+  // History state (from custom hook)
+  const {
+    promptHistory,
+    filteredHistory,
+    isHistoryLoading,
+    historySearchQuery,
+    setHistorySearchQuery,
+    handleDeleteHistory,
+    handleTogglePrivate
+  } = usePromptHistory(db, user);
 
   // Form State (from custom hook)
   const {
@@ -151,12 +151,10 @@ export default function App() {
   const [errorMsg, setErrorMsg] = useState('');
   const [copySuccess, setCopySuccess] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
-  const [historySearchQuery, setHistorySearchQuery] = useState('');
   const [currentHistoryId, setCurrentHistoryId] = useState(null);
   const [isSavingHistory, setIsSavingHistory] = useState(false);
   const [showSystemPrompt, setShowSystemPrompt] = useState(false);
   const [activeVersionHistoryId, setActiveVersionHistoryId] = useState(null);
-  const [isHistoryLoading, setIsHistoryLoading] = useState(true);
   const generationRunRef = useRef(0);
   const generationAbortRef = useRef(null);
 
@@ -406,107 +404,6 @@ Apply the refinement instructions above to modify the prompt. Return only the up
     selectedClaudeModel, setSelectedClaudeModel,
     selectedGeminiModel, setSelectedGeminiModel
   } = useApiSettings();
-
-  // --- History Functions ---
-  const handleDeleteHistory = async (e, itemId) => {
-    e.stopPropagation();
-    if (!db || !user) return;
-    if (window.confirm('Are you sure you want to delete this prompt?')) {
-      try {
-        await deleteDoc(doc(db, 'users', user.uid, 'prompt_history', itemId));
-      } catch (error) {
-        console.error("Error deleting document: ", error);
-      }
-    }
-  };
-
-  const handleTogglePrivate = async (e, item) => {
-    e.stopPropagation();
-    if (!db || !user) return;
-    try {
-      await updateDoc(doc(db, 'users', user.uid, 'prompt_history', item.id), {
-        isPrivate: !item.isPrivate
-      });
-    } catch (error) {
-      console.error("Error updating document: ", error);
-    }
-  };
-
-  // --- Auth & Data Loading ---
-  useEffect(() => {
-    if (!auth || isTestMode) return; // Skip Firebase auth in test mode
-    const unsubscribe = onAuthStateChanged(auth, setUser);
-    return () => unsubscribe();
-  }, [isTestMode]);
-
-  // --- Auth Functions ---
-  const handleGoogleSignIn = async () => {
-    if (!auth) return;
-    const provider = new GoogleAuthProvider();
-    try {
-      await signInWithPopup(auth, provider);
-    } catch (error) {
-      console.error("Google sign-in failed:", error);
-      setErrorMsg("Failed to sign in with Google. Please try again.");
-    }
-  };
-
-  const handleMicrosoftSignIn = async () => {
-    if (!auth) return;
-    const provider = new OAuthProvider('microsoft.com');
-    try {
-      await signInWithPopup(auth, provider);
-    } catch (error) {
-      console.error("Microsoft sign-in failed:", error);
-      setErrorMsg("Failed to sign in with Microsoft. Please try again.");
-    }
-  };
-
-  const handleSignOut = async () => {
-    if (!auth) return;
-    try {
-      await signOut(auth);
-    } catch (error) {
-      console.error("Sign-out failed:", error);
-    }
-  };
-
-  useEffect(() => {
-    if (!user || !db) return;
-    setIsHistoryLoading(true);
-
-    // REMOVED orderBy to avoid index issues. Sorting client-side instead.
-    const q = query(
-      collection(db, 'users', user.uid, 'prompt_history')
-    );
-
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      const items = snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      }));
-
-      // Client-side sort (Newest first)
-      items.sort((a, b) => {
-        // Handle Firestore Timestamps, strings, or nulls (pending writes)
-        const getMillis = (item) => {
-          if (!item.createdAt) return Date.now(); // Pending write = now
-          if (item.createdAt.toMillis) return item.createdAt.toMillis();
-          if (item.createdAt.seconds) return item.createdAt.seconds * 1000;
-          return new Date(item.createdAt).getTime();
-        };
-        return getMillis(b) - getMillis(a);
-      });
-
-      setPromptHistory(items);
-      setIsHistoryLoading(false);
-    }, (error) => {
-      console.error("Error fetching history:", error);
-      setIsHistoryLoading(false);
-    });
-
-    return () => unsubscribe();
-  }, [user]);
 
   // --- Hybrid Logic Rules (Reactive) ---
   useEffect(() => {
