@@ -1200,7 +1200,7 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
                                     }}
                                     className={`w-full flex items-center gap-2 px-3 py-1.5 text-sm text-left transition-colors ${
                                       isSelected 
-                                        ? 'bg-cyan-50 text-cyan-700' 
+                                        ? darkMode ? 'bg-cyan-900/50 text-cyan-300' : 'bg-cyan-50 text-cyan-700' 
                                         : darkMode 
                                           ? 'text-slate-200 hover:bg-cyan-900/30' 
                                           : 'text-slate-700 hover:bg-cyan-50'
@@ -1266,7 +1266,7 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
                                     }}
                                     className={`w-full flex items-center gap-2 px-3 py-1.5 text-sm text-left transition-colors ${
                                       isSelected 
-                                        ? 'bg-cyan-50 text-cyan-700' 
+                                        ? darkMode ? 'bg-cyan-900/50 text-cyan-300' : 'bg-cyan-50 text-cyan-700' 
                                         : darkMode 
                                           ? 'text-slate-200 hover:bg-cyan-900/30' 
                                           : 'text-slate-700 hover:bg-cyan-50'
@@ -1526,7 +1526,7 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
                             disabled={isRefining || !refinementInstructions.trim()}
                             className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
                               isRefining || !refinementInstructions.trim()
-                                ? 'bg-slate-300 text-slate-500 cursor-not-allowed'
+                                ? darkMode ? 'bg-slate-700 text-slate-500 cursor-not-allowed' : 'bg-slate-300 text-slate-500 cursor-not-allowed'
                                 : 'bg-gradient-to-r from-cyan-500 to-blue-500 text-white hover:from-cyan-600 hover:to-blue-600 shadow-sm hover:shadow'
                             }`}
                           >
