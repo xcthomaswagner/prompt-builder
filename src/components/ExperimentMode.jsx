@@ -461,15 +461,6 @@ export default function ExperimentMode({ callLLM, defaultOutputType = 'doc', db,
           </div>
         </div>
 
-      {/* Matrix Selector - only show in focused mode */}
-        {generationMode === 'focused' && (
-          <MatrixSelector
-            value={matrixConfig}
-            onChange={setMatrixConfig}
-            darkMode={darkMode}
-          />
-        )}
-
         {/* Generation Mode Selector (Verbalized Sampling) */}
         <DiversitySelector
           mode={generationMode}
@@ -479,6 +470,15 @@ export default function ExperimentMode({ callLLM, defaultOutputType = 'doc', db,
           disabled={isRunning || vsLoading}
           darkMode={darkMode}
         />
+
+      {/* Matrix Selector - only show in focused mode */}
+        {generationMode === 'focused' && (
+          <MatrixSelector
+            value={matrixConfig}
+            onChange={setMatrixConfig}
+            darkMode={darkMode}
+          />
+        )}
 
         {/* Advanced Settings (Model Selection) */}
         <div className={`rounded-xl shadow-sm border overflow-hidden ${darkMode ? 'bg-slate-800 border-slate-700' : 'bg-white border-slate-200'}`}>
