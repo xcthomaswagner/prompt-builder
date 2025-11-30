@@ -195,7 +195,7 @@ export default function ResultsGrid({ results, darkMode = false }) {
                         e.stopPropagation();
                         handleCopy(result.executionResult || result.blueprintResult, index);
                       }}
-                      className="p-1.5 text-slate-400 hover:text-cyan-600 hover:bg-cyan-50 rounded transition-colors"
+                      className={`p-1.5 rounded transition-colors ${darkMode ? 'text-slate-400 hover:text-cyan-400 hover:bg-cyan-900/30' : 'text-slate-400 hover:text-cyan-600 hover:bg-cyan-50'}`}
                       title="Copy this result"
                     >
                       {copiedId === index ? (

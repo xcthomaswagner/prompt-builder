@@ -734,7 +734,7 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
   // Show sign-in screen if not authenticated
   if (!user) {
     return (
-      <div className="flex h-screen bg-gradient-to-br from-slate-50 via-cyan-50 to-blue-50 text-slate-900 font-sans overflow-hidden">
+      <div className={`flex h-screen font-sans overflow-hidden ${darkMode ? 'bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-slate-100' : 'bg-gradient-to-br from-slate-50 via-cyan-50 to-blue-50 text-slate-900'}`}>
         <div className="flex-1 flex items-center justify-center p-4">
           <div className="w-full max-w-md">
             {/* Logo and Title */}
