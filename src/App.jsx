@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { estimateTokens } from './lib/tokenEstimator';
 import { generateSignature } from './lib/utils';
 import usePromptForm from './hooks/usePromptForm';
@@ -171,6 +171,9 @@ export default function App() {
 
   // Experiment history state (lifted from ExperimentMode for sidebar rendering)
   const [experimentHistory, setExperimentHistory] = useState(null);
+
+  // Memoized token count to avoid recalculating on every render
+  const inputTokenCount = useMemo(() => estimateTokens(inputText), [inputText]);
 
   // Evolution Features State
   const [promptSpec, setPromptSpec] = useState(null);
@@ -993,11 +996,11 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
                 )}
 
                 <div className="flex justify-between items-center mb-3">
-                  <label className="text-sm font-semibold text-slate-700">Your Original Prompt</label>
+                  <label htmlFor="prompt-input" className="text-sm font-semibold text-slate-700">Your Original Prompt</label>
                   <div className="flex items-center gap-3 text-xs font-mono">
                     <span className="text-slate-400">{inputText.length} chars</span>
                     <span className="text-slate-300">•</span>
-                    <span className="text-cyan-600 font-semibold">{estimateTokens(inputText)} tokens</span>
+                    <span className="text-cyan-600 font-semibold">{inputTokenCount} tokens</span>
                     <span className="text-slate-300">•</span>
                     <button
                       onClick={() => {
@@ -1030,6 +1033,7 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
                   </div>
                 </div>
                 <textarea
+                  id="prompt-input"
                   value={inputText}
                   onChange={(e) => setInputText(e.target.value)}
                   placeholder="e.g., Make me a deck about Andrej Karpathy software 3.0"
@@ -1040,12 +1044,12 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
                 <div className="mt-4 space-y-1">
                   <div className="flex justify-between items-center text-xs">
                     <span className={`font-medium ${darkMode ? 'text-slate-400' : 'text-slate-500'}`}>Token Usage</span>
-                    <span className={darkMode ? 'text-slate-500' : 'text-slate-400'}>{estimateTokens(inputText)} / 2000 tokens</span>
+                    <span className={darkMode ? 'text-slate-500' : 'text-slate-400'}>{inputTokenCount} / 2000 tokens</span>
                   </div>
                   <div className={`h-1.5 w-full rounded-full overflow-hidden ${darkMode ? 'bg-slate-700' : 'bg-slate-100'}`}>
                     <div
-                      className={`h-full rounded-full transition-all duration-300 ${estimateTokens(inputText) > 1500 ? 'bg-amber-400' : 'bg-cyan-400'}`}
-                      style={{ width: `${Math.min(100, (estimateTokens(inputText) / 2000) * 100)}%` }}
+                      className={`h-full rounded-full transition-all duration-300 ${inputTokenCount > 1500 ? 'bg-amber-400' : 'bg-cyan-400'}`}
+                      style={{ width: `${Math.min(100, (inputTokenCount / 2000) * 100)}%` }}
                     ></div>
                   </div>
                 </div>
