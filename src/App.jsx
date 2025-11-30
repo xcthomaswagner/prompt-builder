@@ -998,10 +998,10 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
                 <div className="flex justify-between items-center mb-3">
                   <label htmlFor="prompt-input" className={`text-sm font-semibold ${darkMode ? 'text-slate-300' : 'text-slate-700'}`}>Your Original Prompt</label>
                   <div className="flex items-center gap-3 text-xs font-mono">
-                    <span className="text-slate-400">{inputText.length} chars</span>
-                    <span className="text-slate-300">•</span>
+                    <span className={darkMode ? 'text-slate-500' : 'text-slate-400'}>{inputText.length} chars</span>
+                    <span className={darkMode ? 'text-slate-600' : 'text-slate-300'}>•</span>
                     <span className="text-cyan-600 font-semibold">{inputTokenCount} tokens</span>
-                    <span className="text-slate-300">•</span>
+                    <span className={darkMode ? 'text-slate-600' : 'text-slate-300'}>•</span>
                     <button
                       onClick={() => {
                         setInputText('');
@@ -1833,7 +1833,7 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
                 })
             )}
               </div>
-              <div className="p-4 border-t border-slate-100 flex items-center justify-between">
+              <div className={`p-4 border-t flex items-center justify-between ${darkMode ? 'border-slate-700' : 'border-slate-100'}`}>
                 <div className="text-xs text-slate-400">
                   Signed in as: {user?.displayName || user?.email || 'User'}
                 </div>
