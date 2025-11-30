@@ -85,7 +85,7 @@
         - img [ref=e119]
         - heading "Prompt History" [level=2] [ref=e123]
       - generic [ref=e124]:
-        - generic [ref=e125]: "5"
+        - generic [ref=e125]: "8"
         - button "Collapse sidebar" [ref=e126] [cursor=pointer]:
           - img [ref=e127]
     - generic [ref=e131]:
@@ -94,17 +94,17 @@
     - generic [ref=e136]:
       - generic [ref=e137] [cursor=pointer]:
         - generic [ref=e138]:
-          - generic [ref=e139]: Write a blog post about AI
+          - generic [ref=e139]: Test prompt
           - generic [ref=e140]:
             - generic [ref=e141]: doc
             - generic [ref=e142]: paragraph
             - generic [ref=e143]: medium
             - generic [ref=e144]: professional
           - generic [ref=e145]:
-            - generic [ref=e146]: Nov 29, 5:28 PM
+            - generic [ref=e146]: Nov 29, 5:40 PM
             - generic [ref=e147]: •
             - generic [ref=e148]: •
-            - button "4 versions" [ref=e149]
+            - button "3 versions" [ref=e149]
             - generic [ref=e150]: •
             - generic "Reverse Prompting Used" [ref=e151]:
               - img [ref=e152]
@@ -116,17 +116,17 @@
             - img [ref=e161]
       - generic [ref=e164] [cursor=pointer]:
         - generic [ref=e165]:
-          - generic [ref=e166]: Create investor pitch deck for AI startup
+          - generic [ref=e166]: Write a blog post about AI
           - generic [ref=e167]:
-            - generic [ref=e168]: deck
+            - generic [ref=e168]: copy
             - generic [ref=e169]: paragraph
             - generic [ref=e170]: medium
             - generic [ref=e171]: professional
           - generic [ref=e172]:
-            - generic [ref=e173]: Nov 29, 5:28 PM
+            - generic [ref=e173]: Nov 29, 5:40 PM
             - generic [ref=e174]: •
             - generic [ref=e175]: •
-            - button "1 version" [ref=e176]
+            - button "10 versions" [ref=e176]
             - generic [ref=e177]: •
             - generic "Reverse Prompting Used" [ref=e178]:
               - img [ref=e179]
@@ -138,14 +138,14 @@
             - img [ref=e188]
       - generic [ref=e191] [cursor=pointer]:
         - generic [ref=e192]:
-          - generic [ref=e193]: Write a blog post about AI
+          - generic [ref=e193]: Test doc prompt
           - generic [ref=e194]:
             - generic [ref=e195]: doc
             - generic [ref=e196]: paragraph
             - generic [ref=e197]: medium
             - generic [ref=e198]: professional
           - generic [ref=e199]:
-            - generic [ref=e200]: Nov 29, 5:28 PM
+            - generic [ref=e200]: Nov 29, 5:40 PM
             - generic [ref=e201]: •
             - generic [ref=e202]: •
             - button "1 version" [ref=e203]
@@ -167,7 +167,7 @@
             - generic [ref=e224]: medium
             - generic [ref=e225]: professional
           - generic [ref=e226]:
-            - generic [ref=e227]: Nov 29, 5:28 PM
+            - generic [ref=e227]: Nov 29, 5:40 PM
             - generic [ref=e228]: •
             - generic [ref=e229]: •
             - button "1 version" [ref=e230]
@@ -182,17 +182,17 @@
             - img [ref=e242]
       - generic [ref=e245] [cursor=pointer]:
         - generic [ref=e246]:
-          - generic [ref=e247]: Write a blog post about AI
+          - generic [ref=e247]: Create investor pitch deck for AI startup
           - generic [ref=e248]:
-            - generic [ref=e249]: doc
+            - generic [ref=e249]: deck
             - generic [ref=e250]: paragraph
             - generic [ref=e251]: medium
             - generic [ref=e252]: professional
           - generic [ref=e253]:
-            - generic [ref=e254]: Nov 29, 5:28 PM
+            - generic [ref=e254]: Nov 29, 5:39 PM
             - generic [ref=e255]: •
             - generic [ref=e256]: •
-            - button "1 version" [ref=e257]
+            - button "3 versions" [ref=e257]
             - generic [ref=e258]: •
             - generic "Reverse Prompting Used" [ref=e259]:
               - img [ref=e260]
@@ -202,8 +202,74 @@
             - img [ref=e265]
           - button "Delete" [ref=e268]:
             - img [ref=e269]
-    - generic [ref=e272]:
-      - generic [ref=e273]: "Signed in as: Playwright Test User"
-      - button "Settings" [ref=e274] [cursor=pointer]:
-        - img [ref=e275]
+      - generic [ref=e272] [cursor=pointer]:
+        - generic [ref=e273]:
+          - generic [ref=e274]: Write a blog post about AI
+          - generic [ref=e275]:
+            - generic [ref=e276]: doc
+            - generic [ref=e277]: paragraph
+            - generic [ref=e278]: medium
+            - generic [ref=e279]: professional
+          - generic [ref=e280]:
+            - generic [ref=e281]: Nov 29, 5:28 PM
+            - generic [ref=e282]: •
+            - generic [ref=e283]: •
+            - button "1 version" [ref=e284]
+            - generic [ref=e285]: •
+            - generic "Reverse Prompting Used" [ref=e286]:
+              - img [ref=e287]
+              - generic [ref=e289]: RP
+        - generic [ref=e290]:
+          - button "Private" [ref=e291]:
+            - img [ref=e292]
+          - button "Delete" [ref=e295]:
+            - img [ref=e296]
+      - generic [ref=e299] [cursor=pointer]:
+        - generic [ref=e300]:
+          - generic [ref=e301]: Write a blog post about AI
+          - generic [ref=e302]:
+            - generic [ref=e303]: doc
+            - generic [ref=e304]: paragraph
+            - generic [ref=e305]: medium
+            - generic [ref=e306]: professional
+          - generic [ref=e307]:
+            - generic [ref=e308]: Nov 29, 5:28 PM
+            - generic [ref=e309]: •
+            - generic [ref=e310]: •
+            - button "1 version" [ref=e311]
+            - generic [ref=e312]: •
+            - generic "Reverse Prompting Used" [ref=e313]:
+              - img [ref=e314]
+              - generic [ref=e316]: RP
+        - generic [ref=e317]:
+          - button "Private" [ref=e318]:
+            - img [ref=e319]
+          - button "Delete" [ref=e322]:
+            - img [ref=e323]
+      - generic [ref=e326] [cursor=pointer]:
+        - generic [ref=e327]:
+          - generic [ref=e328]: Write a blog post about AI
+          - generic [ref=e329]:
+            - generic [ref=e330]: doc
+            - generic [ref=e331]: paragraph
+            - generic [ref=e332]: medium
+            - generic [ref=e333]: professional
+          - generic [ref=e334]:
+            - generic [ref=e335]: Nov 29, 5:28 PM
+            - generic [ref=e336]: •
+            - generic [ref=e337]: •
+            - button "1 version" [ref=e338]
+            - generic [ref=e339]: •
+            - generic "Reverse Prompting Used" [ref=e340]:
+              - img [ref=e341]
+              - generic [ref=e343]: RP
+        - generic [ref=e344]:
+          - button "Private" [ref=e345]:
+            - img [ref=e346]
+          - button "Delete" [ref=e349]:
+            - img [ref=e350]
+    - generic [ref=e353]:
+      - generic [ref=e354]: "Signed in as: Playwright Test User"
+      - button "Settings" [ref=e355] [cursor=pointer]:
+        - img [ref=e356]
 ```

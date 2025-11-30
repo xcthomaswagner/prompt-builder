@@ -99,12 +99,12 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 1785,
+                      "duration": 2322,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-11-30T01:27:59.921Z",
+                      "startTime": "2025-11-30T01:39:44.217Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -133,12 +133,12 @@
                       "workerIndex": 1,
                       "parallelIndex": 1,
                       "status": "passed",
-                      "duration": 8041,
+                      "duration": 7522,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-11-30T01:27:59.903Z",
+                      "startTime": "2025-11-30T01:39:44.213Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -167,12 +167,12 @@
                       "workerIndex": 2,
                       "parallelIndex": 2,
                       "status": "passed",
-                      "duration": 13425,
+                      "duration": 13089,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-11-30T01:27:59.919Z",
+                      "startTime": "2025-11-30T01:39:44.205Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -201,12 +201,12 @@
                       "workerIndex": 3,
                       "parallelIndex": 3,
                       "status": "passed",
-                      "duration": 8107,
+                      "duration": 9026,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-11-30T01:27:59.920Z",
+                      "startTime": "2025-11-30T01:39:44.217Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -235,12 +235,12 @@
                       "workerIndex": 4,
                       "parallelIndex": 4,
                       "status": "passed",
-                      "duration": 8175,
+                      "duration": 7632,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-11-30T01:27:59.928Z",
+                      "startTime": "2025-11-30T01:39:44.198Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -255,7 +255,7 @@
             },
             {
               "title": "should show error for empty input",
-              "ok": false,
+              "ok": true,
               "tags": [],
               "tests": [
                 {
@@ -268,50 +268,18 @@
                     {
                       "workerIndex": 5,
                       "parallelIndex": 5,
-                      "status": "timedOut",
-                      "duration": 30481,
-                      "error": {
-                        "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m",
-                        "stack": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
-                      },
-                      "errors": [
-                        {
-                          "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
-                        },
-                        {
-                          "location": {
-                            "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/01-core-prompt-building.spec.js",
-                            "column": 16,
-                            "line": 111
-                          },
-                          "message": "Error: page.click: Test timeout of 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:has-text(\"Generate Expanded Prompt\")')\u001b[22m\n\u001b[2m    - locator resolved to <button disabled class=\"w-full py-4 rounded-xl text-white font-bold text-lg shadow-lg flex items-center justify-center gap-3 transition-all transform active:scale-[0.99] bg-slate-300 cursor-not-allowed shadow-none\">…</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not enabled\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not enabled\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    55 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m       - element is not enabled\u001b[22m\n\u001b[2m     - retrying click action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n\n\n  109 |   test('should show error for empty input', async ({ page }) => {\n  110 |     // Try to generate without input\n> 111 |     await page.click(selectors.generateButton);\n      |                ^\n  112 |     \n  113 |     // Should show error or prevent generation\n  114 |     // Check if button is disabled or error message appears\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/01-core-prompt-building.spec.js:111:16"
-                        }
-                      ],
+                      "status": "passed",
+                      "duration": 1776,
+                      "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-11-30T01:27:59.919Z",
+                      "startTime": "2025-11-30T01:39:44.180Z",
                       "annotations": [],
-                      "attachments": [
-                        {
-                          "name": "screenshot",
-                          "contentType": "image/png",
-                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/01-core-prompt-building-Co-f25ba--show-error-for-empty-input-chromium/test-failed-1.png"
-                        },
-                        {
-                          "name": "video",
-                          "contentType": "video/webm",
-                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/01-core-prompt-building-Co-f25ba--show-error-for-empty-input-chromium/video.webm"
-                        },
-                        {
-                          "name": "error-context",
-                          "contentType": "text/markdown",
-                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/01-core-prompt-building-Co-f25ba--show-error-for-empty-input-chromium/error-context.md"
-                        }
-                      ]
+                      "attachments": []
                     }
                   ],
-                  "status": "unexpected"
+                  "status": "expected"
                 }
               ],
               "id": "25b2d92b04ccbdcfd305-0f9289ebf11acc75557e",
@@ -321,7 +289,7 @@
             },
             {
               "title": "should copy prompt to clipboard",
-              "ok": false,
+              "ok": true,
               "tags": [],
               "tests": [
                 {
@@ -332,65 +300,25 @@
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 0,
-                      "parallelIndex": 0,
-                      "status": "failed",
-                      "duration": 7308,
-                      "error": {
-                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeTruthy\u001b[2m()\u001b[22m\n\nReceived: \u001b[31mfalse\u001b[39m",
-                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeTruthy\u001b[2m()\u001b[22m\n\nReceived: \u001b[31mfalse\u001b[39m\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/01-core-prompt-building.spec.js:135:25",
-                        "location": {
-                          "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/01-core-prompt-building.spec.js",
-                          "column": 25,
-                          "line": 135
-                        },
-                        "snippet": "  133 |     // Verify copy feedback (toast, checkmark, etc.)\n  134 |     const hasFeedback = await page.locator('text=/copied|success/i').count() > 0;\n> 135 |     expect(hasFeedback).toBeTruthy();\n      |                         ^\n  136 |   });\n  137 |\n  138 |   test('should handle multiple consecutive generations', async ({ page }) => {"
-                      },
-                      "errors": [
-                        {
-                          "location": {
-                            "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/01-core-prompt-building.spec.js",
-                            "column": 25,
-                            "line": 135
-                          },
-                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeTruthy\u001b[2m()\u001b[22m\n\nReceived: \u001b[31mfalse\u001b[39m\n\n  133 |     // Verify copy feedback (toast, checkmark, etc.)\n  134 |     const hasFeedback = await page.locator('text=/copied|success/i').count() > 0;\n> 135 |     expect(hasFeedback).toBeTruthy();\n      |                         ^\n  136 |   });\n  137 |\n  138 |   test('should handle multiple consecutive generations', async ({ page }) => {\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/01-core-prompt-building.spec.js:135:25"
-                        }
-                      ],
+                      "workerIndex": 5,
+                      "parallelIndex": 5,
+                      "status": "passed",
+                      "duration": 7516,
+                      "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-11-30T01:28:02.173Z",
+                      "startTime": "2025-11-30T01:39:46.590Z",
                       "annotations": [],
-                      "attachments": [
-                        {
-                          "name": "screenshot",
-                          "contentType": "image/png",
-                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/01-core-prompt-building-Co-55642-ld-copy-prompt-to-clipboard-chromium/test-failed-1.png"
-                        },
-                        {
-                          "name": "video",
-                          "contentType": "video/webm",
-                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/01-core-prompt-building-Co-55642-ld-copy-prompt-to-clipboard-chromium/video.webm"
-                        },
-                        {
-                          "name": "error-context",
-                          "contentType": "text/markdown",
-                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/01-core-prompt-building-Co-55642-ld-copy-prompt-to-clipboard-chromium/error-context.md"
-                        }
-                      ],
-                      "errorLocation": {
-                        "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/01-core-prompt-building.spec.js",
-                        "column": 25,
-                        "line": 135
-                      }
+                      "attachments": []
                     }
                   ],
-                  "status": "unexpected"
+                  "status": "expected"
                 }
               ],
               "id": "25b2d92b04ccbdcfd305-0d95cdc19ed905090aa0",
               "file": "01-core-prompt-building.spec.js",
-              "line": 121,
+              "line": 115,
               "column": 3
             },
             {
@@ -406,15 +334,15 @@
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 1,
-                      "parallelIndex": 1,
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 17613,
+                      "duration": 18615,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-11-30T01:28:08.506Z",
+                      "startTime": "2025-11-30T01:39:47.203Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -424,12 +352,12 @@
               ],
               "id": "25b2d92b04ccbdcfd305-fec36d690449dfd94cb8",
               "file": "01-core-prompt-building.spec.js",
-              "line": 138,
+              "line": 135,
               "column": 3
             },
             {
               "title": "should show token count estimation",
-              "ok": false,
+              "ok": true,
               "tags": [],
               "tests": [
                 {
@@ -440,65 +368,25 @@
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 3,
-                      "parallelIndex": 3,
-                      "status": "failed",
-                      "duration": 1336,
-                      "error": {
-                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('text=/\\\\d+ tokens/i')\nExpected: visible\nError: strict mode violation: locator('text=/\\\\d+ tokens/i') resolved to 2 elements:\n    1) <span class=\"text-cyan-600 font-semibold\">8 tokens</span> aka getByText('8 tokens')\n    2) <span class=\"text-slate-400\">8 / 2000 tokens</span> aka getByText('/ 2000 tokens')\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('text=/\\\\d+ tokens/i')\u001b[22m\n",
-                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('text=/\\\\d+ tokens/i')\nExpected: visible\nError: strict mode violation: locator('text=/\\\\d+ tokens/i') resolved to 2 elements:\n    1) <span class=\"text-cyan-600 font-semibold\">8 tokens</span> aka getByText('8 tokens')\n    2) <span class=\"text-slate-400\">8 / 2000 tokens</span> aka getByText('/ 2000 tokens')\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('text=/\\\\d+ tokens/i')\u001b[22m\n\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/01-core-prompt-building.spec.js:162:30",
-                        "location": {
-                          "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/01-core-prompt-building.spec.js",
-                          "column": 30,
-                          "line": 162
-                        },
-                        "snippet": "  160 |     // Check for token count display\n  161 |     const tokenCount = page.locator('text=/\\\\d+ tokens/i');\n> 162 |     await expect(tokenCount).toBeVisible();\n      |                              ^\n  163 |     \n  164 |     // Verify it's a reasonable number\n  165 |     const tokenText = await tokenCount.textContent();"
-                      },
-                      "errors": [
-                        {
-                          "location": {
-                            "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/01-core-prompt-building.spec.js",
-                            "column": 30,
-                            "line": 162
-                          },
-                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('text=/\\\\d+ tokens/i')\nExpected: visible\nError: strict mode violation: locator('text=/\\\\d+ tokens/i') resolved to 2 elements:\n    1) <span class=\"text-cyan-600 font-semibold\">8 tokens</span> aka getByText('8 tokens')\n    2) <span class=\"text-slate-400\">8 / 2000 tokens</span> aka getByText('/ 2000 tokens')\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('text=/\\\\d+ tokens/i')\u001b[22m\n\n\n  160 |     // Check for token count display\n  161 |     const tokenCount = page.locator('text=/\\\\d+ tokens/i');\n> 162 |     await expect(tokenCount).toBeVisible();\n      |                              ^\n  163 |     \n  164 |     // Verify it's a reasonable number\n  165 |     const tokenText = await tokenCount.textContent();\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/01-core-prompt-building.spec.js:162:30"
-                        }
-                      ],
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 1672,
+                      "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-11-30T01:28:08.519Z",
+                      "startTime": "2025-11-30T01:39:52.307Z",
                       "annotations": [],
-                      "attachments": [
-                        {
-                          "name": "screenshot",
-                          "contentType": "image/png",
-                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/01-core-prompt-building-Co-f5c17-show-token-count-estimation-chromium/test-failed-1.png"
-                        },
-                        {
-                          "name": "video",
-                          "contentType": "video/webm",
-                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/01-core-prompt-building-Co-f5c17-show-token-count-estimation-chromium/video.webm"
-                        },
-                        {
-                          "name": "error-context",
-                          "contentType": "text/markdown",
-                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/01-core-prompt-building-Co-f5c17-show-token-count-estimation-chromium/error-context.md"
-                        }
-                      ],
-                      "errorLocation": {
-                        "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/01-core-prompt-building.spec.js",
-                        "column": 30,
-                        "line": 162
-                      }
+                      "attachments": []
                     }
                   ],
-                  "status": "unexpected"
+                  "status": "expected"
                 }
               ],
               "id": "25b2d92b04ccbdcfd305-09b6a6269b55ec87da54",
               "file": "01-core-prompt-building.spec.js",
-              "line": 154,
+              "line": 151,
               "column": 3
             }
           ]
@@ -534,12 +422,12 @@
                       "workerIndex": 4,
                       "parallelIndex": 4,
                       "status": "passed",
-                      "duration": 1288,
+                      "duration": 1516,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-11-30T01:28:08.625Z",
+                      "startTime": "2025-11-30T01:39:52.493Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -565,15 +453,15 @@
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 6,
-                      "parallelIndex": 0,
+                      "workerIndex": 3,
+                      "parallelIndex": 3,
                       "status": "passed",
-                      "duration": 1765,
+                      "duration": 1774,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-11-30T01:28:11.039Z",
+                      "startTime": "2025-11-30T01:39:53.953Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -599,15 +487,15 @@
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 7,
-                      "parallelIndex": 3,
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
                       "status": "passed",
-                      "duration": 1713,
+                      "duration": 1872,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-11-30T01:28:11.078Z",
+                      "startTime": "2025-11-30T01:39:54.074Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -636,12 +524,12 @@
                       "workerIndex": 4,
                       "parallelIndex": 4,
                       "status": "passed",
-                      "duration": 1521,
+                      "duration": 1958,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-11-30T01:28:09.963Z",
+                      "startTime": "2025-11-30T01:39:54.095Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -667,15 +555,15 @@
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 4,
-                      "parallelIndex": 4,
+                      "workerIndex": 5,
+                      "parallelIndex": 5,
                       "status": "passed",
-                      "duration": 1612,
+                      "duration": 2162,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-11-30T01:28:11.513Z",
+                      "startTime": "2025-11-30T01:39:54.232Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -701,15 +589,15 @@
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 6,
-                      "parallelIndex": 0,
+                      "workerIndex": 3,
+                      "parallelIndex": 3,
                       "status": "passed",
-                      "duration": 995,
+                      "duration": 983,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-11-30T01:28:13.098Z",
+                      "startTime": "2025-11-30T01:39:55.776Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -735,15 +623,15 @@
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 7,
-                      "parallelIndex": 3,
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
                       "status": "passed",
-                      "duration": 2318,
+                      "duration": 2281,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-11-30T01:28:13.098Z",
+                      "startTime": "2025-11-30T01:39:55.979Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -772,12 +660,12 @@
                       "workerIndex": 4,
                       "parallelIndex": 4,
                       "status": "passed",
-                      "duration": 1630,
+                      "duration": 2122,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-11-30T01:28:13.154Z",
+                      "startTime": "2025-11-30T01:39:56.090Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -803,15 +691,15 @@
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 2,
-                      "parallelIndex": 2,
+                      "workerIndex": 5,
+                      "parallelIndex": 5,
                       "status": "passed",
-                      "duration": 1442,
+                      "duration": 1820,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-11-30T01:28:13.850Z",
+                      "startTime": "2025-11-30T01:39:56.458Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -826,7 +714,7 @@
             },
             {
               "title": "should show loading state during generation",
-              "ok": false,
+              "ok": true,
               "tags": [],
               "tests": [
                 {
@@ -837,60 +725,20 @@
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 6,
-                      "parallelIndex": 0,
-                      "status": "failed",
-                      "duration": 1217,
-                      "error": {
-                        "message": "Error: locator.count: Unexpected token \"=\" while parsing css selector \"[data-testid=\"loading\"], .loading, .spinner, text=/generating|loading/i\". Did you mean to CSS.escape it?",
-                        "stack": "Error: locator.count: Unexpected token \"=\" while parsing css selector \"[data-testid=\"loading\"], .loading, .spinner, text=/generating|loading/i\". Did you mean to CSS.escape it?\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/02-ui-controls.spec.js:205:32",
-                        "location": {
-                          "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/02-ui-controls.spec.js",
-                          "column": 32,
-                          "line": 205
-                        },
-                        "snippet": "  203 |     \n  204 |     // Loading should appear briefly\n> 205 |     if (await loadingIndicator.count() > 0) {\n      |                                ^\n  206 |       await expect(loadingIndicator).toBeVisible({ timeout: 2000 });\n  207 |     }\n  208 |     "
-                      },
-                      "errors": [
-                        {
-                          "location": {
-                            "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/02-ui-controls.spec.js",
-                            "column": 32,
-                            "line": 205
-                          },
-                          "message": "Error: locator.count: Unexpected token \"=\" while parsing css selector \"[data-testid=\"loading\"], .loading, .spinner, text=/generating|loading/i\". Did you mean to CSS.escape it?\n\n  203 |     \n  204 |     // Loading should appear briefly\n> 205 |     if (await loadingIndicator.count() > 0) {\n      |                                ^\n  206 |       await expect(loadingIndicator).toBeVisible({ timeout: 2000 });\n  207 |     }\n  208 |     \n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/02-ui-controls.spec.js:205:32"
-                        }
-                      ],
+                      "workerIndex": 3,
+                      "parallelIndex": 3,
+                      "status": "passed",
+                      "duration": 7895,
+                      "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-11-30T01:28:14.113Z",
+                      "startTime": "2025-11-30T01:39:56.774Z",
                       "annotations": [],
-                      "attachments": [
-                        {
-                          "name": "screenshot",
-                          "contentType": "image/png",
-                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/02-ui-controls-UI-Controls-53460-ing-state-during-generation-chromium/test-failed-1.png"
-                        },
-                        {
-                          "name": "video",
-                          "contentType": "video/webm",
-                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/02-ui-controls-UI-Controls-53460-ing-state-during-generation-chromium/video.webm"
-                        },
-                        {
-                          "name": "error-context",
-                          "contentType": "text/markdown",
-                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/02-ui-controls-UI-Controls-53460-ing-state-during-generation-chromium/error-context.md"
-                        }
-                      ],
-                      "errorLocation": {
-                        "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/02-ui-controls.spec.js",
-                        "column": 32,
-                        "line": 205
-                      }
+                      "attachments": []
                     }
                   ],
-                  "status": "unexpected"
+                  "status": "expected"
                 }
               ],
               "id": "b6109629cd75689700e2-9f16284aceba550ed22a",
@@ -928,15 +776,15 @@
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 4,
-                      "parallelIndex": 4,
+                      "workerIndex": 2,
+                      "parallelIndex": 2,
                       "status": "passed",
-                      "duration": 6458,
+                      "duration": 5957,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-11-30T01:28:14.824Z",
+                      "startTime": "2025-11-30T01:39:57.871Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -962,15 +810,15 @@
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 2,
-                      "parallelIndex": 2,
+                      "workerIndex": 4,
+                      "parallelIndex": 4,
                       "status": "passed",
-                      "duration": 6925,
+                      "duration": 6915,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-11-30T01:28:15.399Z",
+                      "startTime": "2025-11-30T01:39:58.280Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -996,15 +844,15 @@
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 8,
-                      "parallelIndex": 0,
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
                       "status": "passed",
-                      "duration": 6562,
+                      "duration": 7562,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-11-30T01:28:16.629Z",
+                      "startTime": "2025-11-30T01:39:58.332Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -1019,7 +867,7 @@
             },
             {
               "title": "should clear all history",
-              "ok": false,
+              "ok": true,
               "tags": [],
               "tests": [
                 {
@@ -1030,60 +878,20 @@
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 7,
-                      "parallelIndex": 3,
-                      "status": "failed",
-                      "duration": 16107,
-                      "error": {
-                        "message": "TimeoutError: page.waitForSelector: Timeout 15000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('pre, code, .output-text') to be visible\u001b[22m\n",
-                        "stack": "TimeoutError: page.waitForSelector: Timeout 15000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('pre, code, .output-text') to be visible\u001b[22m\n\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/03-history-management.spec.js:108:16",
-                        "location": {
-                          "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/03-history-management.spec.js",
-                          "column": 16,
-                          "line": 108
-                        },
-                        "snippet": "  106 |     await page.fill(selectors.promptInput, input);\n  107 |     await page.click(selectors.generateButton);\n> 108 |     await page.waitForSelector(selectors.promptOutput, { timeout: 15000 });\n      |                ^\n  109 |     \n  110 |     // Open history\n  111 |     const historyButton = page.locator('button').filter({ hasText: /history/i }).first();"
-                      },
-                      "errors": [
-                        {
-                          "location": {
-                            "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/03-history-management.spec.js",
-                            "column": 16,
-                            "line": 108
-                          },
-                          "message": "TimeoutError: page.waitForSelector: Timeout 15000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('pre, code, .output-text') to be visible\u001b[22m\n\n\n  106 |     await page.fill(selectors.promptInput, input);\n  107 |     await page.click(selectors.generateButton);\n> 108 |     await page.waitForSelector(selectors.promptOutput, { timeout: 15000 });\n      |                ^\n  109 |     \n  110 |     // Open history\n  111 |     const historyButton = page.locator('button').filter({ hasText: /history/i }).first();\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/03-history-management.spec.js:108:16"
-                        }
-                      ],
+                      "workerIndex": 5,
+                      "parallelIndex": 5,
+                      "status": "passed",
+                      "duration": 10239,
+                      "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-11-30T01:28:15.458Z",
+                      "startTime": "2025-11-30T01:39:58.340Z",
                       "annotations": [],
-                      "attachments": [
-                        {
-                          "name": "screenshot",
-                          "contentType": "image/png",
-                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/03-history-management-Hist-aa76f-nt-should-clear-all-history-chromium/test-failed-1.png"
-                        },
-                        {
-                          "name": "video",
-                          "contentType": "video/webm",
-                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/03-history-management-Hist-aa76f-nt-should-clear-all-history-chromium/video.webm"
-                        },
-                        {
-                          "name": "error-context",
-                          "contentType": "text/markdown",
-                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/03-history-management-Hist-aa76f-nt-should-clear-all-history-chromium/error-context.md"
-                        }
-                      ],
-                      "errorLocation": {
-                        "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/03-history-management.spec.js",
-                        "column": 16,
-                        "line": 108
-                      }
+                      "attachments": []
                     }
                   ],
-                  "status": "unexpected"
+                  "status": "expected"
                 }
               ],
               "id": "a4842d7c80357b1f22e2-197ec8e77aec30599444",
@@ -1104,10 +912,10 @@
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 4,
-                      "parallelIndex": 4,
+                      "workerIndex": 2,
+                      "parallelIndex": 2,
                       "status": "timedOut",
-                      "duration": 31003,
+                      "duration": 30439,
                       "error": {
                         "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m",
                         "stack": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
@@ -1128,7 +936,7 @@
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-11-30T01:28:21.299Z",
+                      "startTime": "2025-11-30T01:40:03.874Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -1170,15 +978,15 @@
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 2,
-                      "parallelIndex": 2,
+                      "workerIndex": 3,
+                      "parallelIndex": 3,
                       "status": "passed",
-                      "duration": 1027,
+                      "duration": 1105,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-11-30T01:28:22.350Z",
+                      "startTime": "2025-11-30T01:40:04.807Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -1193,7 +1001,7 @@
             },
             {
               "title": "should show history item metadata",
-              "ok": false,
+              "ok": true,
               "tags": [],
               "tests": [
                 {
@@ -1204,60 +1012,20 @@
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 2,
-                      "parallelIndex": 2,
-                      "status": "failed",
-                      "duration": 16312,
-                      "error": {
-                        "message": "TimeoutError: page.waitForSelector: Timeout 15000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('pre, code, .output-text') to be visible\u001b[22m\n",
-                        "stack": "TimeoutError: page.waitForSelector: Timeout 15000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('pre, code, .output-text') to be visible\u001b[22m\n\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/03-history-management.spec.js:196:16",
-                        "location": {
-                          "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/03-history-management.spec.js",
-                          "column": 16,
-                          "line": 196
-                        },
-                        "snippet": "  194 |     await page.fill(selectors.promptInput, input);\n  195 |     await page.click(selectors.generateButton);\n> 196 |     await page.waitForSelector(selectors.promptOutput, { timeout: 15000 });\n      |                ^\n  197 |     \n  198 |     // Open history\n  199 |     const historyButton = page.locator('button').filter({ hasText: /history/i }).first();"
-                      },
-                      "errors": [
-                        {
-                          "location": {
-                            "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/03-history-management.spec.js",
-                            "column": 16,
-                            "line": 196
-                          },
-                          "message": "TimeoutError: page.waitForSelector: Timeout 15000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('pre, code, .output-text') to be visible\u001b[22m\n\n\n  194 |     await page.fill(selectors.promptInput, input);\n  195 |     await page.click(selectors.generateButton);\n> 196 |     await page.waitForSelector(selectors.promptOutput, { timeout: 15000 });\n      |                ^\n  197 |     \n  198 |     // Open history\n  199 |     const historyButton = page.locator('button').filter({ hasText: /history/i }).first();\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/03-history-management.spec.js:196:16"
-                        }
-                      ],
+                      "workerIndex": 4,
+                      "parallelIndex": 4,
+                      "status": "passed",
+                      "duration": 6548,
+                      "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-11-30T01:28:23.396Z",
+                      "startTime": "2025-11-30T01:40:05.232Z",
                       "annotations": [],
-                      "attachments": [
-                        {
-                          "name": "screenshot",
-                          "contentType": "image/png",
-                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/03-history-management-Hist-a8c22--show-history-item-metadata-chromium/test-failed-1.png"
-                        },
-                        {
-                          "name": "video",
-                          "contentType": "video/webm",
-                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/03-history-management-Hist-a8c22--show-history-item-metadata-chromium/video.webm"
-                        },
-                        {
-                          "name": "error-context",
-                          "contentType": "text/markdown",
-                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/03-history-management-Hist-a8c22--show-history-item-metadata-chromium/error-context.md"
-                        }
-                      ],
-                      "errorLocation": {
-                        "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/03-history-management.spec.js",
-                        "column": 16,
-                        "line": 196
-                      }
+                      "attachments": []
                     }
                   ],
-                  "status": "unexpected"
+                  "status": "expected"
                 }
               ],
               "id": "a4842d7c80357b1f22e2-48b5116c0063a5e63639",
@@ -1295,34 +1063,34 @@
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 8,
+                      "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "failed",
-                      "duration": 16367,
+                      "duration": 7624,
                       "error": {
-                        "message": "TimeoutError: page.waitForSelector: Timeout 15000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('pre, code, .output-text') to be visible\u001b[22m\n",
-                        "stack": "TimeoutError: page.waitForSelector: Timeout 15000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('pre, code, .output-text') to be visible\u001b[22m\n\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/04-regression.spec.js:34:16",
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoContain\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // indexOf\u001b[22m\n\nExpected substring: \u001b[32m\"PROMPT\"\u001b[39m\nReceived string:    \u001b[31m\"**LANDING PAGE COPY BLUEPRINT**·\u001b[39m\n\u001b[31m**HERO SECTION**\u001b[39m\n\u001b[31m- **Headline**: \\\"AI-Powered Marketing That Grows Your Small Business\\\"\u001b[39m\n\u001b[31m- **Subheadline**: \\\"Stop wasting time on tedious marketing tasks. Our AI automates your campaigns, optimizes your content, and drives real results—all on autopilot.\\\"\u001b[39m\n\u001b[31m- **CTA Primary**: \\\"Start Free Trial\\\" (14-day trial, no credit card required)\u001b[39m\n\u001b[31m- **Visual Direction**: A clean, modern dashboard showcasing AI-driven insights and automated workflows.·\u001b[39m\n\u001b[31m**PROBLEM SECTION** (75 words)\u001b[39m\n\u001b[31m- **Hook**: \\\"Running a small business is hard enough. Marketing shouldn't feel like a full-time job.\\\"\u001b[39m\n\u001b[31m- **Pain Points**:\u001b[39m\n\u001b[31m  - Spending hours creating social media posts that get little engagement.\u001b[39m\n\u001b[31m  - Difficulty tracking campaign performance and ROI.\u001b[39m\n\u001b[31m  - Lack of time to personalize marketing messages for each customer.\u001b[39m\n\u001b[31m- **Cost of Inaction**: \\\"Without effective marketing, you're losing customers to competitors who are easier to find and more engaging.\\\"·\u001b[39m\n\u001b[31m**SOLUTION SECTION** (3-5 bullet points)\u001b[39m\n\u001b[31m- **Feature → Benefit Format, Quantifiable Results**:\u001b[39m\n\u001b[31m  - \\\"AI-Powered Content Creation → Generate high-converting blog posts, social media updates, and email newsletters in minutes, saving you 5+ hours per week.\\\"\u001b[39m\n\u001b[31m  - \\\"Automated Campaign Optimization → Our AI continuously analyzes your campaigns and adjusts bidding, targeting, and messaging to maximize ROI by up to 30%.\\\"\u001b[39m\n\u001b[31m  - \\\"Personalized Customer Journeys → Deliver tailored marketing experiences to each customer based on their behavior, leading to a 2x increase in engagement and conversions.\\\"·\u001b[39m\n\u001b[31m**SOCIAL PROOF**\u001b[39m\n\u001b[31m- **Testimonial Template with Attribution**: \\\"[Quote about ease of use and significant ROI improvement]\\\" - John Smith, Owner of Smith's Bakery\u001b[39m\n\u001b[31m- **Stats**: \\\"Trusted by 500+ Small Businesses to Grow Their Revenue\\\"\u001b[39m\n\u001b[31m- **Trust Badges**: \\\"GDPR Compliant\\\", \\\"SOC 2 Certified\\\", \\\"4.8/5 Stars on Capterra\\\"·\u001b[39m\n\u001b[31m**HOW IT WORKS** (3-4 numbered steps)\u001b[39m\n\u001b[31m- **Simple Process, Remove Mental Friction**:\u001b[39m\n\u001b[31m  1. \\\"Connect Your Accounts: Seamlessly integrate your existing marketing platforms with our AI.\\\"\u001b[39m\n\u001b[31m  2. \\\"Set Your Goals: Define your target audience, budget, and desired outcomes.\\\"\u001b[39m\n\u001b[31m  3. \\\"Activate the AI: Let our AI automate your campaigns and optimize your results.\\\"·\u001b[39m\n\u001b[31m**FAQ SECTION** (3-5 questions)\u001b[39m\n\u001b[31m- **Address Top Objections, Reduce Purchase Anxiety**:\u001b[39m\n\u001b[31m  - \\\"Is it easy to set up and use?\\\"\u001b[39m\n\u001b[31m  - \\\"What kind of results can I expect?\\\"\u001b[39m\n\u001b[31m  - \\\"How is my data protected?\\\"·\u001b[39m\n\u001b[31m**FINAL CTA**\u001b[39m\n\u001b[31m- **Restate Value + Urgency + Risk Reversal (Guarantee/Trial)**:\u001b[39m\n\u001b[31m  - **Headline**: \\\"Unlock the Power of AI for Your Small Business Today\\\"\u001b[39m\n\u001b[31m  - **Subtext**: \\\"Start your 14-day free trial and see how our AI can transform your marketing efforts. No credit card required. Cancel anytime.\\\"\u001b[39m\n\u001b[31m  - **Button**: \\\"Get Started Free →\\\"\"\u001b[39m",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoContain\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // indexOf\u001b[22m\n\nExpected substring: \u001b[32m\"PROMPT\"\u001b[39m\nReceived string:    \u001b[31m\"**LANDING PAGE COPY BLUEPRINT**·\u001b[39m\n\u001b[31m**HERO SECTION**\u001b[39m\n\u001b[31m- **Headline**: \\\"AI-Powered Marketing That Grows Your Small Business\\\"\u001b[39m\n\u001b[31m- **Subheadline**: \\\"Stop wasting time on tedious marketing tasks. Our AI automates your campaigns, optimizes your content, and drives real results—all on autopilot.\\\"\u001b[39m\n\u001b[31m- **CTA Primary**: \\\"Start Free Trial\\\" (14-day trial, no credit card required)\u001b[39m\n\u001b[31m- **Visual Direction**: A clean, modern dashboard showcasing AI-driven insights and automated workflows.·\u001b[39m\n\u001b[31m**PROBLEM SECTION** (75 words)\u001b[39m\n\u001b[31m- **Hook**: \\\"Running a small business is hard enough. Marketing shouldn't feel like a full-time job.\\\"\u001b[39m\n\u001b[31m- **Pain Points**:\u001b[39m\n\u001b[31m  - Spending hours creating social media posts that get little engagement.\u001b[39m\n\u001b[31m  - Difficulty tracking campaign performance and ROI.\u001b[39m\n\u001b[31m  - Lack of time to personalize marketing messages for each customer.\u001b[39m\n\u001b[31m- **Cost of Inaction**: \\\"Without effective marketing, you're losing customers to competitors who are easier to find and more engaging.\\\"·\u001b[39m\n\u001b[31m**SOLUTION SECTION** (3-5 bullet points)\u001b[39m\n\u001b[31m- **Feature → Benefit Format, Quantifiable Results**:\u001b[39m\n\u001b[31m  - \\\"AI-Powered Content Creation → Generate high-converting blog posts, social media updates, and email newsletters in minutes, saving you 5+ hours per week.\\\"\u001b[39m\n\u001b[31m  - \\\"Automated Campaign Optimization → Our AI continuously analyzes your campaigns and adjusts bidding, targeting, and messaging to maximize ROI by up to 30%.\\\"\u001b[39m\n\u001b[31m  - \\\"Personalized Customer Journeys → Deliver tailored marketing experiences to each customer based on their behavior, leading to a 2x increase in engagement and conversions.\\\"·\u001b[39m\n\u001b[31m**SOCIAL PROOF**\u001b[39m\n\u001b[31m- **Testimonial Template with Attribution**: \\\"[Quote about ease of use and significant ROI improvement]\\\" - John Smith, Owner of Smith's Bakery\u001b[39m\n\u001b[31m- **Stats**: \\\"Trusted by 500+ Small Businesses to Grow Their Revenue\\\"\u001b[39m\n\u001b[31m- **Trust Badges**: \\\"GDPR Compliant\\\", \\\"SOC 2 Certified\\\", \\\"4.8/5 Stars on Capterra\\\"·\u001b[39m\n\u001b[31m**HOW IT WORKS** (3-4 numbered steps)\u001b[39m\n\u001b[31m- **Simple Process, Remove Mental Friction**:\u001b[39m\n\u001b[31m  1. \\\"Connect Your Accounts: Seamlessly integrate your existing marketing platforms with our AI.\\\"\u001b[39m\n\u001b[31m  2. \\\"Set Your Goals: Define your target audience, budget, and desired outcomes.\\\"\u001b[39m\n\u001b[31m  3. \\\"Activate the AI: Let our AI automate your campaigns and optimize your results.\\\"·\u001b[39m\n\u001b[31m**FAQ SECTION** (3-5 questions)\u001b[39m\n\u001b[31m- **Address Top Objections, Reduce Purchase Anxiety**:\u001b[39m\n\u001b[31m  - \\\"Is it easy to set up and use?\\\"\u001b[39m\n\u001b[31m  - \\\"What kind of results can I expect?\\\"\u001b[39m\n\u001b[31m  - \\\"How is my data protected?\\\"·\u001b[39m\n\u001b[31m**FINAL CTA**\u001b[39m\n\u001b[31m- **Restate Value + Urgency + Risk Reversal (Guarantee/Trial)**:\u001b[39m\n\u001b[31m  - **Headline**: \\\"Unlock the Power of AI for Your Small Business Today\\\"\u001b[39m\n\u001b[31m  - **Subtext**: \\\"Start your 14-day free trial and see how our AI can transform your marketing efforts. No credit card required. Cancel anytime.\\\"\u001b[39m\n\u001b[31m  - **Button**: \\\"Get Started Free →\\\"\"\u001b[39m\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/04-regression.spec.js:41:20",
                         "location": {
                           "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/04-regression.spec.js",
-                          "column": 16,
-                          "line": 34
+                          "column": 20,
+                          "line": 41
                         },
-                        "snippet": "  32 |     // Generate\n  33 |     await page.click(selectors.generateButton);\n> 34 |     await page.waitForSelector(selectors.promptOutput, { timeout: 15000 });\n     |                ^\n  35 |     \n  36 |     // Get output\n  37 |     const output = await page.textContent(selectors.promptOutput);"
+                        "snippet": "  39 |     // Verify output structure (not exact match due to AI variability)\n  40 |     expect(output.length).toBeGreaterThan(100);\n> 41 |     expect(output).toContain('PROMPT'); // Should contain prompt structure\n     |                    ^\n  42 |   });\n  43 |\n  44 |   test('REGRESSION: all output types work', async ({ page }) => {"
                       },
                       "errors": [
                         {
                           "location": {
                             "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/04-regression.spec.js",
-                            "column": 16,
-                            "line": 34
+                            "column": 20,
+                            "line": 41
                           },
-                          "message": "TimeoutError: page.waitForSelector: Timeout 15000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('pre, code, .output-text') to be visible\u001b[22m\n\n\n  32 |     // Generate\n  33 |     await page.click(selectors.generateButton);\n> 34 |     await page.waitForSelector(selectors.promptOutput, { timeout: 15000 });\n     |                ^\n  35 |     \n  36 |     // Get output\n  37 |     const output = await page.textContent(selectors.promptOutput);\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/04-regression.spec.js:34:16"
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoContain\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // indexOf\u001b[22m\n\nExpected substring: \u001b[32m\"PROMPT\"\u001b[39m\nReceived string:    \u001b[31m\"**LANDING PAGE COPY BLUEPRINT**·\u001b[39m\n\u001b[31m**HERO SECTION**\u001b[39m\n\u001b[31m- **Headline**: \\\"AI-Powered Marketing That Grows Your Small Business\\\"\u001b[39m\n\u001b[31m- **Subheadline**: \\\"Stop wasting time on tedious marketing tasks. Our AI automates your campaigns, optimizes your content, and drives real results—all on autopilot.\\\"\u001b[39m\n\u001b[31m- **CTA Primary**: \\\"Start Free Trial\\\" (14-day trial, no credit card required)\u001b[39m\n\u001b[31m- **Visual Direction**: A clean, modern dashboard showcasing AI-driven insights and automated workflows.·\u001b[39m\n\u001b[31m**PROBLEM SECTION** (75 words)\u001b[39m\n\u001b[31m- **Hook**: \\\"Running a small business is hard enough. Marketing shouldn't feel like a full-time job.\\\"\u001b[39m\n\u001b[31m- **Pain Points**:\u001b[39m\n\u001b[31m  - Spending hours creating social media posts that get little engagement.\u001b[39m\n\u001b[31m  - Difficulty tracking campaign performance and ROI.\u001b[39m\n\u001b[31m  - Lack of time to personalize marketing messages for each customer.\u001b[39m\n\u001b[31m- **Cost of Inaction**: \\\"Without effective marketing, you're losing customers to competitors who are easier to find and more engaging.\\\"·\u001b[39m\n\u001b[31m**SOLUTION SECTION** (3-5 bullet points)\u001b[39m\n\u001b[31m- **Feature → Benefit Format, Quantifiable Results**:\u001b[39m\n\u001b[31m  - \\\"AI-Powered Content Creation → Generate high-converting blog posts, social media updates, and email newsletters in minutes, saving you 5+ hours per week.\\\"\u001b[39m\n\u001b[31m  - \\\"Automated Campaign Optimization → Our AI continuously analyzes your campaigns and adjusts bidding, targeting, and messaging to maximize ROI by up to 30%.\\\"\u001b[39m\n\u001b[31m  - \\\"Personalized Customer Journeys → Deliver tailored marketing experiences to each customer based on their behavior, leading to a 2x increase in engagement and conversions.\\\"·\u001b[39m\n\u001b[31m**SOCIAL PROOF**\u001b[39m\n\u001b[31m- **Testimonial Template with Attribution**: \\\"[Quote about ease of use and significant ROI improvement]\\\" - John Smith, Owner of Smith's Bakery\u001b[39m\n\u001b[31m- **Stats**: \\\"Trusted by 500+ Small Businesses to Grow Their Revenue\\\"\u001b[39m\n\u001b[31m- **Trust Badges**: \\\"GDPR Compliant\\\", \\\"SOC 2 Certified\\\", \\\"4.8/5 Stars on Capterra\\\"·\u001b[39m\n\u001b[31m**HOW IT WORKS** (3-4 numbered steps)\u001b[39m\n\u001b[31m- **Simple Process, Remove Mental Friction**:\u001b[39m\n\u001b[31m  1. \\\"Connect Your Accounts: Seamlessly integrate your existing marketing platforms with our AI.\\\"\u001b[39m\n\u001b[31m  2. \\\"Set Your Goals: Define your target audience, budget, and desired outcomes.\\\"\u001b[39m\n\u001b[31m  3. \\\"Activate the AI: Let our AI automate your campaigns and optimize your results.\\\"·\u001b[39m\n\u001b[31m**FAQ SECTION** (3-5 questions)\u001b[39m\n\u001b[31m- **Address Top Objections, Reduce Purchase Anxiety**:\u001b[39m\n\u001b[31m  - \\\"Is it easy to set up and use?\\\"\u001b[39m\n\u001b[31m  - \\\"What kind of results can I expect?\\\"\u001b[39m\n\u001b[31m  - \\\"How is my data protected?\\\"·\u001b[39m\n\u001b[31m**FINAL CTA**\u001b[39m\n\u001b[31m- **Restate Value + Urgency + Risk Reversal (Guarantee/Trial)**:\u001b[39m\n\u001b[31m  - **Headline**: \\\"Unlock the Power of AI for Your Small Business Today\\\"\u001b[39m\n\u001b[31m  - **Subtext**: \\\"Start your 14-day free trial and see how our AI can transform your marketing efforts. No credit card required. Cancel anytime.\\\"\u001b[39m\n\u001b[31m  - **Button**: \\\"Get Started Free →\\\"\"\u001b[39m\n\n  39 |     // Verify output structure (not exact match due to AI variability)\n  40 |     expect(output.length).toBeGreaterThan(100);\n> 41 |     expect(output).toContain('PROMPT'); // Should contain prompt structure\n     |                    ^\n  42 |   });\n  43 |\n  44 |   test('REGRESSION: all output types work', async ({ page }) => {\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/04-regression.spec.js:41:20"
                         }
                       ],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-11-30T01:28:23.650Z",
+                      "startTime": "2025-11-30T01:40:05.963Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -1343,8 +1111,8 @@
                       ],
                       "errorLocation": {
                         "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/04-regression.spec.js",
-                        "column": 16,
-                        "line": 34
+                        "column": 20,
+                        "line": 41
                       }
                     }
                   ],
@@ -1372,7 +1140,7 @@
                       "workerIndex": 1,
                       "parallelIndex": 1,
                       "status": "failed",
-                      "duration": 16886,
+                      "duration": 23255,
                       "error": {
                         "message": "TimeoutError: page.waitForSelector: Timeout 15000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('pre, code, .output-text') to be visible\u001b[22m\n",
                         "stack": "TimeoutError: page.waitForSelector: Timeout 15000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('pre, code, .output-text') to be visible\u001b[22m\n\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/04-regression.spec.js:62:20",
@@ -1396,7 +1164,7 @@
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-11-30T01:28:26.194Z",
+                      "startTime": "2025-11-30T01:40:05.956Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -1432,7 +1200,7 @@
             },
             {
               "title": "REGRESSION: all tones work",
-              "ok": false,
+              "ok": true,
               "tags": [],
               "tests": [
                 {
@@ -1443,60 +1211,20 @@
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 9,
-                      "parallelIndex": 5,
-                      "status": "failed",
-                      "duration": 16410,
-                      "error": {
-                        "message": "TimeoutError: page.waitForSelector: Timeout 15000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('pre, code, .output-text') to be visible\u001b[22m\n",
-                        "stack": "TimeoutError: page.waitForSelector: Timeout 15000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('pre, code, .output-text') to be visible\u001b[22m\n\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/04-regression.spec.js:95:16",
-                        "location": {
-                          "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/04-regression.spec.js",
-                          "column": 16,
-                          "line": 95
-                        },
-                        "snippet": "  93 |     // Final generation to verify no errors\n  94 |     await page.click(selectors.generateButton);\n> 95 |     await page.waitForSelector(selectors.promptOutput, { timeout: 15000 });\n     |                ^\n  96 |     const output = await page.textContent(selectors.promptOutput);\n  97 |     expect(output.length).toBeGreaterThan(50);\n  98 |   });"
-                      },
-                      "errors": [
-                        {
-                          "location": {
-                            "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/04-regression.spec.js",
-                            "column": 16,
-                            "line": 95
-                          },
-                          "message": "TimeoutError: page.waitForSelector: Timeout 15000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('pre, code, .output-text') to be visible\u001b[22m\n\n\n  93 |     // Final generation to verify no errors\n  94 |     await page.click(selectors.generateButton);\n> 95 |     await page.waitForSelector(selectors.promptOutput, { timeout: 15000 });\n     |                ^\n  96 |     const output = await page.textContent(selectors.promptOutput);\n  97 |     expect(output.length).toBeGreaterThan(50);\n  98 |   });\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/04-regression.spec.js:95:16"
-                        }
-                      ],
+                      "workerIndex": 3,
+                      "parallelIndex": 3,
+                      "status": "passed",
+                      "duration": 6870,
+                      "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-11-30T01:28:32.419Z",
+                      "startTime": "2025-11-30T01:40:05.972Z",
                       "annotations": [],
-                      "attachments": [
-                        {
-                          "name": "screenshot",
-                          "contentType": "image/png",
-                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/04-regression-Regression-T-0f3db-r-REGRESSION-all-tones-work-chromium/test-failed-1.png"
-                        },
-                        {
-                          "name": "video",
-                          "contentType": "video/webm",
-                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/04-regression-Regression-T-0f3db-r-REGRESSION-all-tones-work-chromium/video.webm"
-                        },
-                        {
-                          "name": "error-context",
-                          "contentType": "text/markdown",
-                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/04-regression-Regression-T-0f3db-r-REGRESSION-all-tones-work-chromium/error-context.md"
-                        }
-                      ],
-                      "errorLocation": {
-                        "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/04-regression.spec.js",
-                        "column": 16,
-                        "line": 95
-                      }
+                      "attachments": []
                     }
                   ],
-                  "status": "unexpected"
+                  "status": "expected"
                 }
               ],
               "id": "95e47460ed48b1129d9d-45a74dc2c92e139da47c",
@@ -1506,7 +1234,7 @@
             },
             {
               "title": "REGRESSION: all formats work",
-              "ok": false,
+              "ok": true,
               "tags": [],
               "tests": [
                 {
@@ -1517,60 +1245,20 @@
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 10,
-                      "parallelIndex": 3,
-                      "status": "failed",
-                      "duration": 16250,
-                      "error": {
-                        "message": "TimeoutError: page.waitForSelector: Timeout 15000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('pre, code, .output-text') to be visible\u001b[22m\n",
-                        "stack": "TimeoutError: page.waitForSelector: Timeout 15000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('pre, code, .output-text') to be visible\u001b[22m\n\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/04-regression.spec.js:121:16",
-                        "location": {
-                          "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/04-regression.spec.js",
-                          "column": 16,
-                          "line": 121
-                        },
-                        "snippet": "  119 |     // Final generation\n  120 |     await page.click(selectors.generateButton);\n> 121 |     await page.waitForSelector(selectors.promptOutput, { timeout: 15000 });\n      |                ^\n  122 |     const output = await page.textContent(selectors.promptOutput);\n  123 |     expect(output.length).toBeGreaterThan(50);\n  124 |   });"
-                      },
-                      "errors": [
-                        {
-                          "location": {
-                            "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/04-regression.spec.js",
-                            "column": 16,
-                            "line": 121
-                          },
-                          "message": "TimeoutError: page.waitForSelector: Timeout 15000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('pre, code, .output-text') to be visible\u001b[22m\n\n\n  119 |     // Final generation\n  120 |     await page.click(selectors.generateButton);\n> 121 |     await page.waitForSelector(selectors.promptOutput, { timeout: 15000 });\n      |                ^\n  122 |     const output = await page.textContent(selectors.promptOutput);\n  123 |     expect(output.length).toBeGreaterThan(50);\n  124 |   });\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/04-regression.spec.js:121:16"
-                        }
-                      ],
+                      "workerIndex": 5,
+                      "parallelIndex": 5,
+                      "status": "passed",
+                      "duration": 7385,
+                      "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-11-30T01:28:32.904Z",
+                      "startTime": "2025-11-30T01:40:08.618Z",
                       "annotations": [],
-                      "attachments": [
-                        {
-                          "name": "screenshot",
-                          "contentType": "image/png",
-                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/04-regression-Regression-T-e4864-REGRESSION-all-formats-work-chromium/test-failed-1.png"
-                        },
-                        {
-                          "name": "video",
-                          "contentType": "video/webm",
-                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/04-regression-Regression-T-e4864-REGRESSION-all-formats-work-chromium/video.webm"
-                        },
-                        {
-                          "name": "error-context",
-                          "contentType": "text/markdown",
-                          "path": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/test-results/04-regression-Regression-T-e4864-REGRESSION-all-formats-work-chromium/error-context.md"
-                        }
-                      ],
-                      "errorLocation": {
-                        "file": "/Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/04-regression.spec.js",
-                        "column": 16,
-                        "line": 121
-                      }
+                      "attachments": []
                     }
                   ],
-                  "status": "unexpected"
+                  "status": "expected"
                 }
               ],
               "id": "95e47460ed48b1129d9d-3f7a34f8c466ca6e0e29",
@@ -1591,10 +1279,10 @@
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 11,
-                      "parallelIndex": 2,
+                      "workerIndex": 4,
+                      "parallelIndex": 4,
                       "status": "failed",
-                      "duration": 16540,
+                      "duration": 16246,
                       "error": {
                         "message": "TimeoutError: page.waitForSelector: Timeout 15000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('pre, code, .output-text') to be visible\u001b[22m\n",
                         "stack": "TimeoutError: page.waitForSelector: Timeout 15000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('pre, code, .output-text') to be visible\u001b[22m\n\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/04-regression.spec.js:139:16",
@@ -1618,7 +1306,7 @@
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-11-30T01:28:41.901Z",
+                      "startTime": "2025-11-30T01:40:11.817Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -1665,10 +1353,10 @@
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 12,
-                      "parallelIndex": 0,
+                      "workerIndex": 3,
+                      "parallelIndex": 3,
                       "status": "failed",
-                      "duration": 16572,
+                      "duration": 15967,
                       "error": {
                         "message": "TimeoutError: page.waitForSelector: Timeout 15000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('pre, code, .output-text') to be visible\u001b[22m\n",
                         "stack": "TimeoutError: page.waitForSelector: Timeout 15000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('pre, code, .output-text') to be visible\u001b[22m\n\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/04-regression.spec.js:171:16",
@@ -1692,7 +1380,7 @@
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-11-30T01:28:42.356Z",
+                      "startTime": "2025-11-30T01:40:12.880Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -1739,10 +1427,10 @@
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 13,
-                      "parallelIndex": 1,
+                      "workerIndex": 6,
+                      "parallelIndex": 0,
                       "status": "timedOut",
-                      "duration": 30660,
+                      "duration": 30676,
                       "error": {
                         "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m",
                         "stack": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
@@ -1763,7 +1451,7 @@
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-11-30T01:28:45.002Z",
+                      "startTime": "2025-11-30T01:40:14.976Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -1805,10 +1493,10 @@
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 14,
+                      "workerIndex": 5,
                       "parallelIndex": 5,
                       "status": "failed",
-                      "duration": 16264,
+                      "duration": 15989,
                       "error": {
                         "message": "TimeoutError: page.waitForSelector: Timeout 15000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('pre, code, .output-text') to be visible\u001b[22m\n",
                         "stack": "TimeoutError: page.waitForSelector: Timeout 15000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('pre, code, .output-text') to be visible\u001b[22m\n\n    at /Users/thomaswagner/Desktop/Projects.nosync/promptbuilder/intelligent_prompt_builder/tests/04-regression.spec.js:203:16",
@@ -1832,7 +1520,7 @@
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-11-30T01:28:50.556Z",
+                      "startTime": "2025-11-30T01:40:16.045Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -1879,10 +1567,10 @@
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 15,
-                      "parallelIndex": 3,
+                      "workerIndex": 7,
+                      "parallelIndex": 4,
                       "status": "timedOut",
-                      "duration": 30799,
+                      "duration": 30837,
                       "error": {
                         "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m",
                         "stack": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
@@ -1903,7 +1591,7 @@
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-11-30T01:28:50.838Z",
+                      "startTime": "2025-11-30T01:40:29.037Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -1939,11 +1627,11 @@
   ],
   "errors": [],
   "stats": {
-    "startTime": "2025-11-30T01:27:58.710Z",
-    "duration": 83359.869,
-    "expected": 19,
+    "startTime": "2025-11-30T01:39:43.007Z",
+    "duration": 77209.535,
+    "expected": 27,
     "skipped": 0,
-    "unexpected": 16,
+    "unexpected": 8,
     "flaky": 0
   }
 }
