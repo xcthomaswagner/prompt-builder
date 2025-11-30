@@ -1441,7 +1441,7 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                         </svg>
                       </button>
-                      {/* ChatGPT Button - Uses ?q= parameter to prefill prompt */}
+                      {/* LLM Quick-Launch Buttons - Hidden for now
                       <a
                         href={`https://chat.openai.com/?q=${encodeURIComponent(generatedResult)}`}
                         target="_blank"
@@ -1454,7 +1454,6 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
                         </svg>
                         ChatGPT
                       </a>
-                      {/* Claude Button - Uses ?q= parameter to prefill prompt */}
                       <a
                         href={`https://claude.ai/new?q=${encodeURIComponent(generatedResult)}`}
                         target="_blank"
@@ -1467,7 +1466,6 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
                         </svg>
                         Claude
                       </a>
-                      {/* Gemini Button - Uses ?prompt= parameter to prefill prompt */}
                       <a
                         href={`https://gemini.google.com/app?prompt=${encodeURIComponent(generatedResult)}`}
                         target="_blank"
@@ -1480,6 +1478,7 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
                         </svg>
                         Gemini
                       </a>
+                      */}
                     </div>
                   </div>
 
