@@ -930,6 +930,7 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
               <div className="flex items-center justify-between">
                 <button
                   onClick={() => setShowTemplates(!showTemplates)}
+                  aria-expanded={showTemplates}
                   className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${showTemplates
                     ? 'bg-indigo-100 text-indigo-700'
                     : darkMode ? 'bg-slate-700 border border-slate-600 text-slate-300 hover:bg-slate-600' : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50'
@@ -1161,6 +1162,7 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
               <div className={`rounded-xl shadow-sm border overflow-hidden ${darkMode ? 'bg-slate-800 border-slate-700' : 'bg-white border-slate-200'}`}>
                 <button
                   onClick={() => setShowAdvanced(!showAdvanced)}
+                  aria-expanded={showAdvanced}
                   className={`w-full flex items-center justify-between p-4 transition-colors ${darkMode ? 'bg-slate-700 hover:bg-slate-600' : 'bg-slate-50 hover:bg-slate-100'}`}
                 >
                   <div className={`flex items-center gap-2 text-sm font-semibold ${darkMode ? 'text-slate-200' : 'text-slate-700'}`}>
