@@ -907,6 +907,76 @@ Chart 1: [Title]
 - Responsive breakpoints
 - Section organization
 - Print/export format`
+      },
+      {
+        id: 'data-few-shot',
+        channel: 'system',
+        template: `EXAMPLE OUTPUT:
+
+**Input**: "API spec for user authentication endpoints"
+
+**API SPECIFICATION BLUEPRINT**
+
+**OVERVIEW**
+- Service: User Authentication API
+- Base URL: https://api.example.com/v1/auth
+- Protocol: REST over HTTPS
+- Auth: Bearer token (JWT)
+
+**ENDPOINTS**
+
+### POST /auth/register
+**Purpose**: Create new user account
+**Request Body**:
+\`\`\`json
+{
+  "email": "string (required, valid email)",
+  "password": "string (required, min 8 chars, 1 uppercase, 1 number)",
+  "name": "string (required, max 100 chars)"
+}
+\`\`\`
+**Success Response** (201):
+\`\`\`json
+{
+  "user_id": "uuid",
+  "email": "string",
+  "created_at": "ISO8601 timestamp"
+}
+\`\`\`
+**Error Responses**:
+- 400: Invalid email format, weak password
+- 409: Email already registered
+
+### POST /auth/login
+**Purpose**: Authenticate user and return JWT
+**Request Body**:
+\`\`\`json
+{
+  "email": "string (required)",
+  "password": "string (required)"
+}
+\`\`\`
+**Success Response** (200):
+\`\`\`json
+{
+  "access_token": "JWT string",
+  "refresh_token": "JWT string",
+  "expires_in": 3600
+}
+\`\`\`
+**Error Responses**:
+- 401: Invalid credentials
+- 429: Too many login attempts
+
+**AUTHENTICATION**
+- Include header: \`Authorization: Bearer {access_token}\`
+- Token expiry: 1 hour
+- Refresh endpoint: POST /auth/refresh
+
+**RATE LIMITS**
+- Register: 5 requests/hour per IP
+- Login: 10 requests/hour per IP
+- Other endpoints: 100 requests/minute per user`
       }
     ]
   }),
@@ -1288,6 +1358,93 @@ SELECT * FROM source WHERE NOT EXISTS (SELECT 1 FROM target WHERE ...);
 - Success metrics to track
 - Alerts to set up
 - Dashboards to watch`
+      },
+      {
+        id: 'code-few-shot',
+        channel: 'system',
+        template: `EXAMPLE OUTPUT:
+
+**Input**: "React component for user profile card with edit mode"
+
+**COMPONENT SPECIFICATION BLUEPRINT**
+
+**OVERVIEW**
+- Component: UserProfileCard
+- Framework: React 18 with TypeScript
+- Purpose: Display and edit user profile information
+- State management: Local useState for edit mode
+
+**ARCHITECTURE**
+\`\`\`
+src/components/
+  UserProfileCard/
+    UserProfileCard.tsx       # Main component
+    UserProfileCard.test.tsx  # Unit tests
+    UserProfileCard.css       # Styles
+    types.ts                  # TypeScript interfaces
+\`\`\`
+
+**COMPONENT INTERFACE**
+\`\`\`typescript
+interface UserProfileCardProps {
+  user: {
+    id: string;
+    name: string;
+    email: string;
+    avatar?: string;
+    bio?: string;
+  };
+  onSave: (updates: Partial<User>) => Promise<void>;
+  editable?: boolean;
+}
+\`\`\`
+
+**STATE MANAGEMENT**
+\`\`\`typescript
+const [isEditing, setIsEditing] = useState(false);
+const [formData, setFormData] = useState(user);
+const [isSaving, setIsSaving] = useState(false);
+const [error, setError] = useState<string | null>(null);
+\`\`\`
+
+**KEY FUNCTIONS**
+
+1. **handleEdit()**: Enter edit mode
+   - Copy user data to formData
+   - Set isEditing to true
+
+2. **handleSave()**: Save changes
+   - Validate formData (name required, valid email)
+   - Call onSave prop with changes
+   - Handle success/error states
+   - Exit edit mode on success
+
+3. **handleCancel()**: Discard changes
+   - Reset formData to original user data
+   - Clear any errors
+   - Exit edit mode
+
+**UI STATES**
+- **View Mode**: Display user info with "Edit" button
+- **Edit Mode**: Show form fields with "Save" and "Cancel" buttons
+- **Saving**: Disable form, show loading spinner
+- **Error**: Display error message above form
+
+**VALIDATION RULES**
+- Name: Required, 2-100 characters
+- Email: Required, valid email format
+- Bio: Optional, max 500 characters
+
+**ACCESSIBILITY**
+- Semantic HTML (button, form elements)
+- ARIA labels for edit/save/cancel actions
+- Keyboard navigation support
+- Focus management when entering/exiting edit mode
+
+**ERROR HANDLING**
+- Network errors: "Failed to save. Please try again."
+- Validation errors: Inline field-level messages
+- Retry mechanism: Allow user to retry save`
       }
     ]
   }),
@@ -1494,6 +1651,52 @@ REQUIREMENTS:
 - Each tagline: 2-8 words max
 - Include rationale for top 3 recommendations
 - Note which work best for different contexts (ads, packaging, social)`
+      },
+      {
+        id: 'copy-few-shot',
+        channel: 'system',
+        template: `EXAMPLE OUTPUT:
+
+**Input**: "Landing page copy for AI meeting assistant SaaS"
+
+**LANDING PAGE COPY BLUEPRINT**
+
+**HERO SECTION**
+- **Headline**: "Never Take Meeting Notes Again"
+- **Subheadline**: "AI-powered meeting assistant that records, transcribes, and summarizes every conversation—so you can focus on what matters."
+- **CTA Primary**: "Start Free Trial" (14 days, no credit card)
+- **CTA Secondary**: "Watch 2-Min Demo"
+- **Hero Image**: Dashboard showing live transcription + action items
+
+**PROBLEM SECTION** (100 words)
+- **Hook**: "You're in back-to-back meetings all day..."
+- **Pain Points**:
+  - Scrambling to take notes while trying to stay engaged
+  - Missing key action items and decisions
+  - Spending 30+ minutes after each meeting writing summaries
+- **Cost of Inaction**: "Teams waste 15 hours/week on meeting admin"
+
+**SOLUTION** (150 words)
+- **How It Works** (3 steps):
+  1. **Record**: One-click to join and record any meeting
+  2. **Transcribe**: Real-time AI transcription with speaker labels
+  3. **Summarize**: Instant action items, decisions, and key moments
+- **Key Benefits**:
+  - Save 10+ hours per week
+  - Never miss important details
+  - Searchable meeting library
+  - Auto-share summaries with team
+
+**SOCIAL PROOF**
+- **Stat**: "Trusted by 10,000+ teams at Google, Stripe, Notion"
+- **Testimonial**: "[Quote about time saved and better focus]" - Sarah Chen, VP Product at TechCo
+- **Trust Badges**: SOC 2, GDPR compliant, 256-bit encryption
+
+**CTA SECTION**
+- **Headline**: "Start Your Free Trial Today"
+- **Subtext**: "14 days free. No credit card required. Cancel anytime."
+- **Risk Reversal**: "Join 10,000+ teams already saving time"
+- **Button**: "Get Started Free →"`
       },
       {
         id: 'copy-emotional-appeal',
