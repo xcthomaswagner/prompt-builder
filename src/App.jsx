@@ -816,7 +816,7 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
   };
 
   return (
-    <div className={`min-h-screen flex font-sans selection:bg-cyan-100 selection:text-cyan-900 transition-colors duration-300 ${darkMode ? 'bg-slate-900 text-slate-100' : 'bg-slate-50 text-slate-900'}`}>
+    <div className={`min-h-screen flex font-sans transition-colors duration-300 ${darkMode ? 'bg-slate-900 text-slate-100 selection:bg-cyan-800 selection:text-cyan-100' : 'bg-slate-50 text-slate-900 selection:bg-cyan-100 selection:text-cyan-900'}`}>
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col h-full overflow-hidden relative">
@@ -1852,29 +1852,29 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
 
       {/* Sidebar - Experiment History (only shown in Experiment mode) */}
       {appMode === 'experiment' && experimentHistory && (
-        <div className={`${sidebarCollapsed ? 'w-12' : 'w-[335px]'} bg-slate-50/50 border-l border-slate-200 flex flex-col hidden md:flex z-10 shadow-sm transition-all duration-300`}>
-          <div className="p-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+        <div className={`${sidebarCollapsed ? 'w-12' : 'w-[335px]'} ${darkMode ? 'bg-slate-800/50 border-slate-700' : 'bg-slate-50/50 border-slate-200'} border-l flex flex-col hidden md:flex z-10 shadow-sm transition-all duration-300`}>
+          <div className={`p-4 border-b flex items-center justify-between ${darkMode ? 'border-slate-700 bg-slate-800/50' : 'border-slate-100 bg-slate-50/50'}`}>
             {!sidebarCollapsed && (
-              <div className="flex items-center gap-2 text-slate-700">
+              <div className={`flex items-center gap-2 ${darkMode ? 'text-slate-300' : 'text-slate-700'}`}>
                 <History className="w-4 h-4" />
                 <h2 className="font-bold text-sm">Experiment History</h2>
               </div>
             )}
             <div className={`flex items-center gap-2 ${sidebarCollapsed ? 'w-full justify-center' : ''}`}>
               {!sidebarCollapsed && (
-                <span className="text-xs font-medium text-slate-400 bg-slate-100 px-2 py-0.5 rounded-full">
+                <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${darkMode ? 'text-slate-400 bg-slate-700' : 'text-slate-400 bg-slate-100'}`}>
                   {experimentHistory.experiments?.length || 0}
                 </span>
               )}
               <button
                 onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-                className="p-1 hover:bg-slate-200 rounded transition-colors"
+                className={`p-1 rounded transition-colors ${darkMode ? 'hover:bg-slate-700' : 'hover:bg-slate-200'}`}
                 title={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
               >
                 {sidebarCollapsed ? (
-                  <PanelRight className="w-4 h-4 text-slate-500" />
+                  <PanelRight className={`w-4 h-4 ${darkMode ? 'text-slate-400' : 'text-slate-500'}`} />
                 ) : (
-                  <PanelRightClose className="w-4 h-4 text-slate-500" />
+                  <PanelRightClose className={`w-4 h-4 ${darkMode ? 'text-slate-400' : 'text-slate-500'}`} />
                 )}
               </button>
             </div>
@@ -1894,13 +1894,13 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
                   key={exp.id}
                   onClick={() => experimentHistory.handleLoadExperiment(exp.id)}
                   className={`p-3 rounded-lg border cursor-pointer transition-all group ${experimentHistory.currentExperimentId === exp.id
-                    ? 'bg-cyan-50 border-cyan-200'
-                    : 'bg-white border-slate-100 hover:bg-slate-50 hover:border-slate-200'
+                    ? darkMode ? 'bg-cyan-900/30 border-cyan-700' : 'bg-cyan-50 border-cyan-200'
+                    : darkMode ? 'bg-slate-700 border-slate-600 hover:bg-slate-600 hover:border-slate-500' : 'bg-white border-slate-100 hover:bg-slate-50 hover:border-slate-200'
                     }`}
                 >
                   <div className="flex items-start justify-between gap-2">
                     <div className="flex-1 min-w-0">
-                      <div className="text-sm font-medium text-slate-700 truncate">
+                      <div className={`text-sm font-medium truncate ${darkMode ? 'text-slate-300' : 'text-slate-700'}`}>
                         {exp.originalPrompt?.substring(0, 40) || 'Untitled'}
                         {exp.originalPrompt?.length > 40 ? '...' : ''}
                       </div>
