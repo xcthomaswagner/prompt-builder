@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { testPrompts, selectors } from './fixtures/test-data.js';
+import { standardSetup } from './fixtures/auth-helper.js';
 
 /**
  * Regression Tests
@@ -11,8 +12,7 @@ import { testPrompts, selectors } from './fixtures/test-data.js';
 test.describe('Regression Tests - Pre/Post Refactor', () => {
   
   test.beforeEach(async ({ page }) => {
-    await page.goto('/');
-    await page.waitForLoadState('networkidle');
+    await standardSetup(page);
   });
 
   test('REGRESSION: identical output for same inputs', async ({ page }) => {

@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { testPrompts, selectors, expectedOutputPatterns } from './fixtures/test-data.js';
+import { standardSetup } from './fixtures/auth-helper.js';
 
 /**
  * Core Prompt Building Flow Tests
@@ -10,9 +11,7 @@ import { testPrompts, selectors, expectedOutputPatterns } from './fixtures/test-
 test.describe('Core Prompt Building', () => {
   
   test.beforeEach(async ({ page }) => {
-    await page.goto('/');
-    // Wait for app to load (test mode bypasses auth via ?test=true)
-    await page.waitForLoadState('networkidle');
+    await standardSetup(page);
   });
 
   test('should load the application successfully', async ({ page }) => {

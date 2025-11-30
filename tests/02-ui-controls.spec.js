@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { selectors } from './fixtures/test-data.js';
+import { standardSetup } from './fixtures/auth-helper.js';
 
 /**
  * UI Controls Tests
@@ -10,8 +11,7 @@ import { selectors } from './fixtures/test-data.js';
 test.describe('UI Controls', () => {
   
   test.beforeEach(async ({ page }) => {
-    await page.goto('/');
-    await page.waitForLoadState('networkidle');
+    await standardSetup(page);
   });
 
   test('should toggle dark mode', async ({ page }) => {

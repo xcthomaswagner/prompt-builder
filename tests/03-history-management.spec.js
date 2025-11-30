@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { testPrompts, selectors } from './fixtures/test-data.js';
+import { standardSetup } from './fixtures/auth-helper.js';
 
 /**
  * History Management Tests
@@ -10,8 +11,7 @@ import { testPrompts, selectors } from './fixtures/test-data.js';
 test.describe('History Management', () => {
   
   test.beforeEach(async ({ page }) => {
-    await page.goto('/');
-    await page.waitForLoadState('networkidle');
+    await standardSetup(page);
   });
 
   test('should save prompt to history after generation', async ({ page }) => {

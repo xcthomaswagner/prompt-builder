@@ -488,9 +488,20 @@ const STYLES = [
 ];
 
 export default function App() {
-  // Test mode: bypass authentication for E2E tests
-  const isTestMode = import.meta.env.VITE_TEST_MODE === 'true' || window.location.search.includes('test=true');
-  const [user, setUser] = useState(isTestMode ? { uid: 'test-user', email: 'test@test.com', displayName: 'Test User' } : null);
+  // Test mode: check localStorage for test user (set by E2E tests)
+  const getInitialUser = () => {
+    try {
+      const testUser = localStorage.getItem('playwright_test_user');
+      if (testUser) {
+        return JSON.parse(testUser);
+      }
+    } catch (e) {
+      // Ignore parse errors
+    }
+    return null;
+  };
+  
+  const [user, setUser] = useState(getInitialUser);
   const [promptHistory, setPromptHistory] = useState([]);
 
   // Form State
