@@ -43,6 +43,7 @@ import { getAuth } from "firebase/auth";
 import buildPromptPlan from './lib/promptAssembler';
 import PROMPT_SPECS from './lib/promptSpecs';
 import ExperimentMode from './components/ExperimentMode';
+import SettingsModal from './components/SettingsModal';
 import {
   OPENAI_MODELS,
   CLAUDE_MODELS,
@@ -1919,154 +1920,25 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
       )}
 
       {/* Settings Modal */}
-      {
-        showSettings && (
-          <div className="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4">
-            <div className={`w-full max-w-md rounded-2xl shadow-2xl flex flex-col overflow-hidden ${darkMode ? 'bg-slate-800' : 'bg-white'}`}>
-              {/* Header */}
-              <div className={`p-6 border-b flex items-center justify-between ${darkMode ? 'border-slate-700' : 'border-slate-100'}`}>
-                <div className="flex items-center gap-3">
-                  <div className={`w-10 h-10 rounded-full flex items-center justify-center ${darkMode ? 'bg-indigo-900/50' : 'bg-indigo-100'}`}>
-                    <Settings2 className={`w-5 h-5 ${darkMode ? 'text-indigo-400' : 'text-indigo-600'}`} />
-                  </div>
-                  <h2 className={`text-xl font-bold ${darkMode ? 'text-slate-100' : 'text-slate-800'}`}>Settings</h2>
-                </div>
-                <button
-                  onClick={() => setShowSettings(false)}
-                  className={`transition-colors ${darkMode ? 'text-slate-500 hover:text-slate-300' : 'text-slate-400 hover:text-slate-600'}`}
-                >
-                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </button>
-              </div>
-
-              {/* Body */}
-              <div className="p-6 space-y-5">
-                {/* AI Provider Selection */}
-                <div className="space-y-2">
-                  <label className={`text-sm font-medium ${darkMode ? 'text-slate-300' : 'text-slate-700'}`}>Provider</label>
-                  <div className="grid grid-cols-3 gap-2">
-                    <button
-                      onClick={() => setSelectedProvider('chatgpt')}
-                      className={`py-2.5 px-3 rounded-lg border-2 transition-all text-sm font-medium ${selectedProvider === 'chatgpt'
-                        ? 'border-indigo-500 bg-indigo-50 text-indigo-700'
-                        : darkMode ? 'border-slate-600 bg-slate-700 text-slate-300 hover:border-slate-500' : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300'
-                        }`}
-                    >
-                      OpenAI
-                    </button>
-                    <button
-                      onClick={() => setSelectedProvider('claude')}
-                      className={`py-2.5 px-3 rounded-lg border-2 transition-all text-sm font-medium ${selectedProvider === 'claude'
-                        ? 'border-indigo-500 bg-indigo-50 text-indigo-700'
-                        : darkMode ? 'border-slate-600 bg-slate-700 text-slate-300 hover:border-slate-500' : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300'
-                        }`}
-                    >
-                      Claude
-                    </button>
-                    <button
-                      onClick={() => setSelectedProvider('gemini')}
-                      className={`py-2.5 px-3 rounded-lg border-2 transition-all text-sm font-medium ${selectedProvider === 'gemini'
-                        ? 'border-indigo-500 bg-indigo-50 text-indigo-700'
-                        : darkMode ? 'border-slate-600 bg-slate-700 text-slate-300 hover:border-slate-500' : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300'
-                        }`}
-                    >
-                      Gemini
-                    </button>
-                  </div>
-                </div>
-
-                {/* Dynamic settings for selected provider */}
-                <div className="space-y-3">
-                  <div className="space-y-1.5">
-                    <label className={`text-sm font-medium ${darkMode ? 'text-slate-300' : 'text-slate-700'}`}>API Key</label>
-                    {selectedProvider === 'chatgpt' && (
-                      <input
-                        type="password"
-                        value={chatgptApiKey}
-                        onChange={(e) => setChatgptApiKey(e.target.value)}
-                        placeholder="sk-..."
-                        className={`w-full px-3 py-2.5 text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent ${darkMode ? 'bg-slate-700 border-slate-600 text-slate-200 placeholder:text-slate-500' : 'border-slate-200 bg-white'}`}
-                      />
-                    )}
-                    {selectedProvider === 'claude' && (
-                      <input
-                        type="password"
-                        value={claudeApiKey}
-                        onChange={(e) => setClaudeApiKey(e.target.value)}
-                        placeholder="sk-ant-..."
-                        className={`w-full px-3 py-2.5 text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent ${darkMode ? 'bg-slate-700 border-slate-600 text-slate-200 placeholder:text-slate-500' : 'border-slate-200 bg-white'}`}
-                      />
-                    )}
-                    {selectedProvider === 'gemini' && (
-                      <input
-                        type="password"
-                        value={geminiApiKey}
-                        onChange={(e) => setGeminiApiKey(e.target.value)}
-                        placeholder="AIza..."
-                        className={`w-full px-3 py-2.5 text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent ${darkMode ? 'bg-slate-700 border-slate-600 text-slate-200 placeholder:text-slate-500' : 'border-slate-200 bg-white'}`}
-                      />
-                    )}
-                  </div>
-
-                  <div className="space-y-1.5">
-                    <label className={`text-sm font-medium ${darkMode ? 'text-slate-300' : 'text-slate-700'}`}>Model</label>
-                    {selectedProvider === 'chatgpt' && (
-                      <select
-                        value={selectedOpenAIModel}
-                        onChange={(e) => setSelectedOpenAIModel(e.target.value)}
-                        className={`w-full px-3 py-2.5 text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent ${darkMode ? 'bg-slate-700 border-slate-600 text-slate-200' : 'border-slate-200 bg-white'}`}
-                      >
-                        {OPENAI_MODELS.map(m => (
-                          <option key={m.id} value={m.id}>{m.label}</option>
-                        ))}
-                      </select>
-                    )}
-                    {selectedProvider === 'claude' && (
-                      <select
-                        value={selectedClaudeModel}
-                        onChange={(e) => setSelectedClaudeModel(e.target.value)}
-                        className={`w-full px-3 py-2.5 text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent ${darkMode ? 'bg-slate-700 border-slate-600 text-slate-200' : 'border-slate-200 bg-white'}`}
-                      >
-                        {CLAUDE_MODELS.map(m => (
-                          <option key={m.id} value={m.id}>{m.label}</option>
-                        ))}
-                      </select>
-                    )}
-                    {selectedProvider === 'gemini' && (
-                      <select
-                        value={selectedGeminiModel}
-                        onChange={(e) => setSelectedGeminiModel(e.target.value)}
-                        className={`w-full px-3 py-2.5 text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent ${darkMode ? 'bg-slate-700 border-slate-600 text-slate-200' : 'border-slate-200 bg-white'}`}
-                      >
-                        {GEMINI_MODELS.map(m => (
-                          <option key={m.id} value={m.id}>{m.label}</option>
-                        ))}
-                      </select>
-                    )}
-                  </div>
-                </div>
-
-                {/* Info */}
-                <p className={`text-xs ${darkMode ? 'text-slate-500' : 'text-slate-400'}`}>
-                  API keys are stored locally and never sent to our servers.
-                </p>
-              </div>
-
-              {/* Footer */}
-              <div className={`p-4 border-t flex justify-end ${darkMode ? 'border-slate-700' : 'border-slate-100'}`}>
-                <button
-                  onClick={() => setShowSettings(false)}
-                  className="px-6 py-2 bg-indigo-600 text-white font-bold rounded-lg hover:bg-indigo-700 shadow-md hover:shadow-lg transition-all"
-                >
-                  Done
-                </button>
-              </div>
-            </div>
-          </div>
-        )
-      }
+      <SettingsModal
+        isOpen={showSettings}
+        onClose={() => setShowSettings(false)}
+        darkMode={darkMode}
+        selectedProvider={selectedProvider}
+        setSelectedProvider={setSelectedProvider}
+        chatgptApiKey={chatgptApiKey}
+        setChatgptApiKey={setChatgptApiKey}
+        claudeApiKey={claudeApiKey}
+        setClaudeApiKey={setClaudeApiKey}
+        geminiApiKey={geminiApiKey}
+        setGeminiApiKey={setGeminiApiKey}
+        selectedOpenAIModel={selectedOpenAIModel}
+        setSelectedOpenAIModel={setSelectedOpenAIModel}
+        selectedClaudeModel={selectedClaudeModel}
+        setSelectedClaudeModel={setSelectedClaudeModel}
+        selectedGeminiModel={selectedGeminiModel}
+        setSelectedGeminiModel={setSelectedGeminiModel}
+      />
 
       {/* Outcome Feedback Modal */}
       {showOutcomeFeedback && generatedResult && (
