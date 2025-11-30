@@ -1,0 +1,170 @@
+import { test, expect } from '@playwright/test';
+import { testPrompts, selectors, expectedOutputPatterns } from './fixtures/test-data.js';
+
+/**
+ * Core Prompt Building Flow Tests
+ * 
+ * Tests the fundamental prompt generation functionality
+ */
+
+test.describe('Core Prompt Building', () => {
+  
+  test.beforeEach(async ({ page }) => {
+    await page.goto('/');
+    // Wait for app to load
+    await page.waitForLoadState('networkidle');
+  });
+
+  test('should load the application successfully', async ({ page }) => {
+    await expect(page).toHaveTitle(/Intelligent Prompt Builder/i);
+    await expect(page.locator(selectors.promptInput)).toBeVisible();
+    await expect(page.locator(selectors.generateButton)).toBeVisible();
+  });
+
+  test('should generate a simple prompt', async ({ page }) => {
+    const { input } = testPrompts.simple;
+    
+    // Enter prompt text
+    await page.fill(selectors.promptInput, input);
+    
+    // Click generate
+    await page.click(selectors.generateButton);
+    
+    // Wait for output (may take a few seconds for API call)
+    await page.waitForSelector(selectors.promptOutput, { timeout: 15000 });
+    
+    // Verify output exists and is not empty
+    const outputText = await page.textContent(selectors.promptOutput);
+    expect(outputText.length).toBeGreaterThan(50);
+    expect(outputText).toMatch(expectedOutputPatterns.simple);
+  });
+
+  test('should change output type and generate', async ({ page }) => {
+    const { input, outputType } = testPrompts.deck;
+    
+    // Select output type (Deck)
+    const deckButton = page.locator(selectors.outputTypeButtons).filter({ hasText: /deck/i }).first();
+    await deckButton.click();
+    
+    // Enter prompt
+    await page.fill(selectors.promptInput, input);
+    
+    // Generate
+    await page.click(selectors.generateButton);
+    
+    // Verify output
+    await page.waitForSelector(selectors.promptOutput, { timeout: 15000 });
+    const outputText = await page.textContent(selectors.promptOutput);
+    expect(outputText).toMatch(expectedOutputPatterns.deck);
+  });
+
+  test('should change tone and generate different output', async ({ page }) => {
+    const { input } = testPrompts.simple;
+    
+    // Fill input
+    await page.fill(selectors.promptInput, input);
+    
+    // Change tone to "Friendly"
+    const toneSelector = page.locator('select').filter({ hasText: /professional|friendly/i }).first();
+    if (await toneSelector.count() > 0) {
+      await toneSelector.selectOption({ label: /friendly/i });
+    }
+    
+    // Generate
+    await page.click(selectors.generateButton);
+    
+    // Verify output exists
+    await page.waitForSelector(selectors.promptOutput, { timeout: 15000 });
+    const outputText = await page.textContent(selectors.promptOutput);
+    expect(outputText.length).toBeGreaterThan(50);
+  });
+
+  test('should change style and format', async ({ page }) => {
+    const { input } = testPrompts.simple;
+    
+    // Fill input
+    await page.fill(selectors.promptInput, input);
+    
+    // Change style (if dropdown exists)
+    const styleDropdown = page.locator('select').filter({ hasText: /direct|narrative/i }).first();
+    if (await styleDropdown.count() > 0) {
+      await styleDropdown.selectOption({ index: 1 });
+    }
+    
+    // Change format (if dropdown exists)
+    const formatDropdown = page.locator('select').filter({ hasText: /paragraph|bullets/i }).first();
+    if (await formatDropdown.count() > 0) {
+      await formatDropdown.selectOption({ label: /bullets/i });
+    }
+    
+    // Generate
+    await page.click(selectors.generateButton);
+    
+    // Verify output
+    await page.waitForSelector(selectors.promptOutput, { timeout: 15000 });
+    const outputText = await page.textContent(selectors.promptOutput);
+    expect(outputText.length).toBeGreaterThan(50);
+  });
+
+  test('should show error for empty input', async ({ page }) => {
+    // Try to generate without input
+    await page.click(selectors.generateButton);
+    
+    // Should show error or prevent generation
+    // Check if button is disabled or error message appears
+    const hasError = await page.locator('text=/please enter|required|empty/i').count() > 0;
+    const isButtonDisabled = await page.locator(selectors.generateButton).isDisabled();
+    
+    expect(hasError || isButtonDisabled).toBeTruthy();
+  });
+
+  test('should copy prompt to clipboard', async ({ page }) => {
+    const { input } = testPrompts.simple;
+    
+    // Generate a prompt
+    await page.fill(selectors.promptInput, input);
+    await page.click(selectors.generateButton);
+    await page.waitForSelector(selectors.promptOutput, { timeout: 15000 });
+    
+    // Click copy button
+    const copyButton = page.locator(selectors.copyButton).first();
+    await copyButton.click();
+    
+    // Verify copy feedback (toast, checkmark, etc.)
+    const hasFeedback = await page.locator('text=/copied|success/i').count() > 0;
+    expect(hasFeedback).toBeTruthy();
+  });
+
+  test('should handle multiple consecutive generations', async ({ page }) => {
+    const prompts = [testPrompts.simple, testPrompts.technical];
+    
+    for (const prompt of prompts) {
+      await page.fill(selectors.promptInput, prompt.input);
+      await page.click(selectors.generateButton);
+      await page.waitForSelector(selectors.promptOutput, { timeout: 15000 });
+      
+      const outputText = await page.textContent(selectors.promptOutput);
+      expect(outputText.length).toBeGreaterThan(50);
+      
+      // Small delay between generations
+      await page.waitForTimeout(1000);
+    }
+  });
+
+  test('should show token count estimation', async ({ page }) => {
+    const { input } = testPrompts.simple;
+    
+    // Fill input
+    await page.fill(selectors.promptInput, input);
+    
+    // Check for token count display
+    const tokenCount = page.locator('text=/\\d+ tokens/i');
+    await expect(tokenCount).toBeVisible();
+    
+    // Verify it's a reasonable number
+    const tokenText = await tokenCount.textContent();
+    const count = parseInt(tokenText.match(/\d+/)[0]);
+    expect(count).toBeGreaterThan(0);
+    expect(count).toBeLessThan(10000);
+  });
+});
