@@ -210,4 +210,34 @@ test.describe('History Management', () => {
       }
     }
   });
+
+  test('should show empty state with clock icon when search has no results', async ({ page }) => {
+    const { input } = testPrompts.simple;
+    
+    // Generate a prompt to create history
+    await page.fill(selectors.promptInput, input);
+    await page.click(selectors.generateButton);
+    await page.waitForSelector(selectors.promptOutput, { timeout: 15000 });
+    
+    // Wait for history to update
+    await page.waitForTimeout(1000);
+    
+    // Find the search input in history sidebar
+    const searchInput = page.locator('input[placeholder*="Search prompts"]');
+    await expect(searchInput).toBeVisible();
+    
+    // Enter nonsensical search query that won't match anything
+    await searchInput.fill('xyzqwertyzxcvbnmasdfghjkl123456789');
+    
+    // Wait for search to filter
+    await page.waitForTimeout(500);
+    
+    // Verify empty state is displayed
+    const emptyStateText = page.locator('text=/No history items found/i');
+    await expect(emptyStateText).toBeVisible();
+    
+    // Verify clock icon is present (lucide-react Clock component renders as svg)
+    const clockIcon = page.locator('svg').filter({ has: page.locator('circle') }).first();
+    await expect(clockIcon).toBeVisible();
+  });
 });
