@@ -271,6 +271,7 @@ const callOpenAI = async (prompt, systemInstruction, apiKey, modelId = 'gpt-5.1'
       { role: "system", content: systemInstruction + "\n\nIMPORTANT: You must return valid JSON only." },
       { role: "user", content: prompt }
     ],
+    max_tokens: MAX_OUTPUT_TOKENS,
     response_format: { type: "json_object" }
   };
 
@@ -329,7 +330,7 @@ const callAnthropic = async (prompt, systemInstruction, apiKey, modelId = 'claud
   const url = "https://api.anthropic.com/v1/messages";
   const payload = {
     model: modelId,
-    max_tokens: 4096,
+    max_tokens: MAX_OUTPUT_TOKENS,
     system: systemInstruction + "\n\nIMPORTANT: You must return valid JSON only.",
     messages: [{ role: "user", content: prompt }]
   };
