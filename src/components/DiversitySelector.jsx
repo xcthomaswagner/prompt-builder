@@ -74,7 +74,10 @@ function getTrackWidth(levelId) {
 
 /**
  * Novelty slider component - 5 levels based on paper's probability thresholds
- * Uses a draggable range input for natural slider interaction
+ * 
+ * Navigation: Uses continuous 0-100 range with early snap detection
+ * Data: Always outputs discrete level IDs (safe, balanced, diverse, creative, wild)
+ *       which map to their log probability thresholds (1.0, 0.50, 0.10, 0.05, 0.01)
  */
 function NoveltySlider({ value, onChange, darkMode }) {
   const levels = DIVERSITY_LEVELS_ORDERED;
@@ -82,10 +85,30 @@ function NoveltySlider({ value, onChange, darkMode }) {
   const colors = getLevelColors(value);
   const currentIndex = levels.findIndex(l => l.id === value);
 
-  // Handle slider change - map 0-4 index to level id
+  // Map continuous slider position (0-100) to discrete level index
+  // Thresholds at 10, 30, 50, 70 give early snap when moving toward next level
+  const getIndexFromPosition = (position) => {
+    if (position < 10) return 0;       // Safe
+    if (position < 30) return 1;       // Balanced  
+    if (position < 50) return 2;       // Diverse
+    if (position < 70) return 3;       // Creative
+    return 4;                          // Wild
+  };
+
+  // Map discrete level index to slider position (center of each zone)
+  const getPositionFromIndex = (index) => {
+    const positions = [0, 20, 40, 60, 85]; // Visual positions for each level
+    return positions[index] || 40;
+  };
+
+  // Handle slider change - convert position to level ID
   const handleSliderChange = (e) => {
-    const index = parseInt(e.target.value, 10);
-    onChange(levels[index].id);
+    const position = parseInt(e.target.value, 10);
+    const newIndex = getIndexFromPosition(position);
+    if (newIndex !== currentIndex) {
+      // onChange receives the level ID, which carries the correct probabilityThreshold
+      onChange(levels[newIndex].id);
+    }
   };
 
   return (
@@ -111,7 +134,7 @@ function NoveltySlider({ value, onChange, darkMode }) {
         <div className={`absolute inset-x-0 top-1/2 -translate-y-1/2 h-2 rounded-full ${darkMode ? 'bg-slate-600' : 'bg-slate-200'}`}>
           <div 
             className="h-full rounded-full transition-all duration-150 bg-gradient-to-r from-green-400 via-yellow-400 to-purple-500"
-            style={{ width: `${(currentIndex / 4) * 100}%` }}
+            style={{ width: `${getPositionFromIndex(currentIndex)}%` }}
           />
         </div>
         
@@ -129,13 +152,13 @@ function NoveltySlider({ value, onChange, darkMode }) {
           ))}
         </div>
 
-        {/* Actual range input */}
+        {/* Actual range input - continuous for smooth drag, maps to discrete levels */}
         <input
           type="range"
           min="0"
-          max="4"
+          max="100"
           step="1"
-          value={currentIndex}
+          value={getPositionFromIndex(currentIndex)}
           onChange={handleSliderChange}
           className="relative w-full h-6 appearance-none bg-transparent cursor-pointer z-10
             [&::-webkit-slider-thumb]:appearance-none
