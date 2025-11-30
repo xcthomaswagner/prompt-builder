@@ -1,44 +1,7 @@
 import { buildMatrixCombos } from './cartesian';
 import buildPromptPlan from './promptAssembler';
 import { callModel, parseJsonResponse } from './llmService';
-
-/**
- * Lookup tables for tones, lengths, formats.
- * These mirror the definitions in App.jsx.
- */
-const TONES = [
-  { id: 'professional', label: 'Professional', prompt: 'formal, objective, and expert' },
-  { id: 'creative', label: 'Creative', prompt: 'imaginative, evocative, and storytelling' },
-  { id: 'academic', label: 'Academic', prompt: 'rigorous, citation-focused, and analytical' },
-  { id: 'casual', label: 'Casual', prompt: 'friendly, conversational, and accessible' },
-  { id: 'instructive', label: 'Instructive', prompt: 'didactic, step-by-step teacher' }
-];
-
-const LENGTHS = [
-  { id: 'short', label: 'Short', prompt: 'Concise and high-level' },
-  { id: 'medium', label: 'Medium', prompt: 'Balanced detail' },
-  { id: 'long', label: 'Long', prompt: 'Exhaustive and detailed' }
-];
-
-const FORMATS = [
-  { id: 'paragraph', label: 'Paragraph', prompt: 'Flowing, cohesive narrative' },
-  { id: 'bullets', label: 'Bullet Points', prompt: 'Concise bulleted list' },
-  { id: 'numbered', label: 'Numbered List', prompt: 'Sequential numbered list' },
-  { id: 'steps', label: 'Step-by-Step', prompt: 'Clear, actionable steps' },
-  { id: 'sections', label: 'Structured Sections', prompt: 'Clear, hierarchical sections with headings' },
-  { id: 'email', label: 'Email', prompt: 'Professional email format' },
-  { id: 'table', label: 'Table', prompt: 'Structured table with headers' },
-  { id: 'qa', label: 'Q&A', prompt: 'Question and Answer session' }
-];
-
-const OUTPUT_TYPES = [
-  { id: 'deck', label: 'Deck', context: 'Slide Deck Outline (Titles, Visuals, Notes)' },
-  { id: 'doc', label: 'Doc', context: 'Comprehensive Written Document' },
-  { id: 'data', label: 'Data', context: 'Structured Data / Tables' },
-  { id: 'code', label: 'Code', context: 'Production-Ready Code' },
-  { id: 'copy', label: 'Copy', context: 'Marketing Copy / Creative Writing' },
-  { id: 'comms', label: 'Comms', context: 'Email / Communication' }
-];
+import { TONES, LENGTHS, FORMATS, OUTPUT_TYPES } from './constants';
 
 /**
  * Judge v2 system prompt with multi-dimensional rubrics and calibrated scoring.

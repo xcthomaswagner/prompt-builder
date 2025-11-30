@@ -144,7 +144,8 @@ test.describe('History Management', () => {
     
     // Reload page
     await page.reload();
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
+    await page.waitForTimeout(500);
     
     // Open history
     const historyButton = page.locator('button').filter({ hasText: /history/i }).first();

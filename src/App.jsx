@@ -1,15 +1,12 @@
 import { useState, useEffect, useRef } from 'react';
 import { estimateTokens } from './lib/tokenEstimator';
+import usePromptForm from './hooks/usePromptForm';
+import useApiSettings from './hooks/useApiSettings';
 import {
   Sparkles,
   History,
   Settings2,
-  FileText,
-  Layout,
-  Code,
-  MessageSquare,
-  Database,
-  Copy,
+  Copy as CopyIcon,
   Trash2,
   ChevronDown,
   ChevronUp,
@@ -27,16 +24,7 @@ import {
   PanelRightClose,
   PanelRight,
   Sun,
-  Moon,
-  Briefcase,
-  Smile,
-  Coffee,
-  Building,
-  GraduationCap,
-  List,
-  ListOrdered,
-  Mail,
-  Table
+  Moon
 } from 'lucide-react';
 import { initializeApp } from "firebase/app";
 import {
@@ -56,6 +44,23 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, OAuthProvider, onAuthStat
 import buildPromptPlan from './lib/promptAssembler';
 import PROMPT_SPECS from './lib/promptSpecs';
 import ExperimentMode from './components/ExperimentMode';
+import {
+  OPENAI_MODELS,
+  CLAUDE_MODELS,
+  GEMINI_MODELS,
+  callGemini,
+  callGeminiText,
+  callOpenAI,
+  callAnthropic,
+  extractExpandedPrompt
+} from './lib/llmService';
+import {
+  TONES,
+  OUTPUT_TYPES,
+  FORMATS,
+  LENGTHS,
+  STYLES
+} from './lib/constants';
 
 // New Evolution Components
 import TypeSpecificForm from './components/TypeSpecificForms/index.jsx';
@@ -94,398 +99,10 @@ try {
 
 const appId = firebaseConfig.appId || 'default-app-id';
 
-// --- Token Estimation Function ---
-// Simple token estimation: ~4 characters per token on average for English text
-// This is a rough approximation similar to GPT tokenization
-
-// --- Model Lists per Provider ---
-const OPENAI_MODELS = [
-  { id: 'gpt-5.1', label: 'GPT-5.1', description: 'Latest flagship' },
-  { id: 'gpt-4.5-preview', label: 'GPT-4.5', description: 'Large-scale agentic model' },
-  { id: 'o3', label: 'o3', description: 'Reasoning model' },
-];
-
-const CLAUDE_MODELS = [
-  { id: 'claude-sonnet-4-20250514', label: 'Claude Sonnet 4', description: 'Latest balanced model' },
-  { id: 'claude-3-5-sonnet-20241022', label: 'Claude 3.5 Sonnet', description: 'Balanced performance' },
-  { id: 'claude-3-5-haiku-20241022', label: 'Claude 3.5 Haiku', description: 'Fastest Claude' },
-];
-
-const GEMINI_MODELS = [
-  { id: 'gemini-2.0-flash', label: 'Gemini 2.0 Flash', description: 'Latest fast model' },
-  { id: 'gemini-1.5-pro', label: 'Gemini 1.5 Pro', description: 'Advanced reasoning' },
-  { id: 'gemini-1.5-flash', label: 'Gemini 1.5 Flash', description: 'Quick responses' },
-  { id: 'gemini-1.5-flash-8b', label: 'Gemini 1.5 Flash 8B', description: 'Lightweight' },
-];
-
-// --- Gemini API Configuration ---
-const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
-const openAiEnvKey = import.meta.env.VITE_OPENAI_API_KEY;
-const MAX_OUTPUT_TOKENS = 4096;
-
-const callGemini = async (prompt, systemInstruction, apiKey, modelId = import.meta.env.VITE_GEMINI_MODEL || 'gemini-2.0-flash-exp') => {
-  if (!apiKey) throw new Error("Gemini API Key is missing");
-
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelId}:generateContent?key=${apiKey}`;
-
-  const payload = {
-    contents: [{ parts: [{ text: prompt }] }],
-    systemInstruction: { parts: [{ text: systemInstruction }] },
-    generationConfig: {
-      maxOutputTokens: MAX_OUTPUT_TOKENS,
-      responseMimeType: "application/json",
-      responseSchema: {
-        type: "OBJECT",
-        required: ["analysis", "reverse_prompting", "final_output"],
-        properties: {
-          analysis: {
-            type: "OBJECT",
-            required: ["detected_domain", "input_quality_score", "is_vague_or_short"],
-            properties: {
-              detected_domain: { type: "STRING" },
-              input_quality_score: { type: "INTEGER" }, // 1-10
-              is_vague_or_short: { type: "BOOLEAN" }
-            }
-          },
-          reverse_prompting: {
-            type: "OBJECT",
-            required: ["was_triggered", "refined_task_text", "reasoning"],
-            properties: {
-              was_triggered: { type: "BOOLEAN" },
-              refined_task_text: { type: "STRING" },
-              reasoning: { type: "STRING" }
-            }
-          },
-          final_output: {
-            type: "OBJECT",
-            required: ["expanded_prompt_text", "enrichment_attributes_used"],
-            properties: {
-              expanded_prompt_text: { type: "STRING" }, // The big cohesive text
-              enrichment_attributes_used: { type: "ARRAY", items: { type: "STRING" } }
-            }
-          }
-        }
-      }
-    }
-  };
-
-  let attempts = 0;
-  const delays = [1000, 2000, 4000, 8000, 16000];
-
-  while (attempts <= 5) {
-    try {
-      // Add timeout to prevent hanging
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
-
-      const response = await fetch(url, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-        signal: controller.signal
-      });
-
-      clearTimeout(timeoutId);
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error("API Error Response:", errorText);
-
-        // Handle specific error codes
-        if (response.status === 503) {
-          throw new Error("Gemini API is temporarily unavailable (503). Please try again in a few moments.");
-        } else if (response.status === 429) {
-          throw new Error("Rate limit exceeded. Please wait a moment and try again.");
-        } else if (response.status === 400) {
-          throw new Error("Invalid request to Gemini API. Please check your input.");
-        }
-
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const data = await response.json();
-
-      const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
-      if (!text) {
-        throw new Error("No response text from API");
-      }
-
-      return JSON.parse(text);
-    } catch (error) {
-      if (error.name === 'AbortError') {
-        throw new Error("Request timed out after 30 seconds. Please try again.");
-      }
-
-      // For 503 errors, don't retry as much
-      if (error.message?.includes("503") || error.message?.includes("unavailable")) {
-        attempts++;
-        if (attempts > 2) throw error; // Only retry twice for 503
-        await new Promise(resolve => setTimeout(resolve, delays[attempts - 1]));
-        continue;
-      }
-
-      attempts++;
-      if (attempts > 5) throw error;
-      await new Promise(resolve => setTimeout(resolve, delays[attempts - 1]));
-    }
-  }
-};
-
-// Simple text-only Gemini call for improvement requests
-const callGeminiText = async (prompt, systemInstruction, apiKeyParam, modelId = 'gemini-2.0-flash') => {
-  if (!apiKeyParam) throw new Error("Gemini API Key is missing");
-
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelId}:generateContent?key=${apiKeyParam}`;
-
-  const payload = {
-    contents: [{ parts: [{ text: prompt }] }],
-    systemInstruction: { parts: [{ text: systemInstruction }] },
-    generationConfig: {
-      maxOutputTokens: MAX_OUTPUT_TOKENS,
-    }
-  };
-
-  const response = await fetch(url, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload)
-  });
-
-  if (!response.ok) {
-    throw new Error(`HTTP error! status: ${response.status}`);
-  }
-
-  const data = await response.json();
-  return data.candidates?.[0]?.content?.parts?.[0]?.text || '';
-};
-
-const callOpenAI = async (prompt, systemInstruction, apiKey, modelId = 'gpt-5.1') => {
-  if (!apiKey) throw new Error("OpenAI API Key is missing");
-
-  const url = "https://api.openai.com/v1/chat/completions";
-
-  const payload = {
-    model: modelId,
-    messages: [
-      { role: "system", content: systemInstruction + "\n\nIMPORTANT: You must return valid JSON only." },
-      { role: "user", content: prompt }
-    ],
-    max_tokens: MAX_OUTPUT_TOKENS,
-    response_format: { type: "json_object" }
-  };
-
-  try {
-    const response = await fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${apiKey}`
-      },
-      body: JSON.stringify(payload)
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(`OpenAI API Error: ${errorData.error?.message || response.statusText}`);
-    }
-
-    const data = await response.json();
-    const text = data.choices[0].message.content;
-    return JSON.parse(text);
-  } catch (error) {
-    console.error("[OpenAI API Error]", error.message || error);
-    throw new Error(`OpenAI call failed: ${error.message || 'Unknown error'}`);
-  }
-};
-
-// Firebase Function URL for Claude proxy (set in .env)
+// --- API Configuration ---
 const claudeFunctionUrl = import.meta.env.VITE_CLAUDE_FUNCTION_URL;
 
-const callAnthropic = async (prompt, systemInstruction, apiKey, modelId = 'claude-3-5-sonnet-20241022') => {
-  // Use Firebase Function proxy if available (avoids Cloudflare)
-  if (claudeFunctionUrl) {
-    try {
-      const response = await fetch(claudeFunctionUrl, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ prompt, systemInstruction, modelId })
-      });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(`Claude Function Error: ${errorData.error || response.statusText}`);
-      }
-
-      return await response.json();
-    } catch (error) {
-      console.error("[Claude Function Error]", error.message || error);
-      throw new Error(`Claude function call failed: ${error.message || 'Unknown error'}`);
-    }
-  }
-
-  // Fallback: Direct API call (may trigger Cloudflare in browser)
-  if (!apiKey) throw new Error("Claude API Key is missing");
-
-  const url = "https://api.anthropic.com/v1/messages";
-  const payload = {
-    model: modelId,
-    max_tokens: MAX_OUTPUT_TOKENS,
-    system: systemInstruction + "\n\nIMPORTANT: You must return valid JSON only.",
-    messages: [{ role: "user", content: prompt }]
-  };
-
-  try {
-    const response = await fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-api-key": apiKey,
-        "anthropic-version": "2023-06-01",
-        "anthropic-dangerous-direct-browser-access": "true"
-      },
-      body: JSON.stringify(payload)
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(`Anthropic API Error: ${errorData.error?.message || response.statusText}`);
-    }
-
-    const data = await response.json();
-    const text = data.content[0].text;
-    return JSON.parse(text);
-  } catch (error) {
-    console.error("[Anthropic API Error]", error.message || error);
-    throw new Error(`Anthropic call failed: ${error.message || 'Unknown error'}`);
-  }
-};
-
-const extractExpandedPrompt = (response) => {
-  if (!response) return '';
-  if (typeof response === 'string') {
-    return response.trim();
-  }
-
-  const readPath = (obj, path) => {
-    let current = obj;
-    for (const segment of path) {
-      if (current == null) return '';
-      current = current[segment];
-    }
-    if (typeof current === 'string') {
-      return current.trim();
-    }
-    if (current && typeof current === 'object') {
-      try {
-        return JSON.stringify(current);
-      } catch (err) {
-        return '';
-      }
-    }
-    return '';
-  };
-
-  const candidatePaths = [
-    ['final_output', 'expanded_prompt_text'],
-    ['final_output', 'expandedPromptText'],
-    ['final_output', 'expanded_prompt', 'text'],
-    ['final_output', 'expandedPrompt', 'text'],
-    ['final_output', 'expanded_prompt'],
-    ['final_output', 'expandedPrompt'],
-    ['final_output', 'text'],
-    ['final_output', 'prompt'],
-    ['expanded_prompt_text'],
-    ['expandedPromptText'],
-    ['expanded_prompt'],
-    ['expandedPrompt'],
-    ['finalPrompt'],
-    ['final_prompt_text'],
-    ['final_prompt']
-  ];
-
-  for (const path of candidatePaths) {
-    const value = readPath(response, path);
-    if (value) return value;
-  }
-
-  const finalOutput = response.final_output;
-  if (typeof finalOutput === 'string') {
-    return finalOutput.trim();
-  }
-
-  if (finalOutput && typeof finalOutput === 'object') {
-    try {
-      const serialized = JSON.stringify(finalOutput);
-      if (serialized) return serialized;
-    } catch (err) {
-      console.warn('Failed to stringify final_output', err);
-    }
-  }
-
-  try {
-    const serialized = JSON.stringify(response);
-    return serialized || '';
-  } catch (err) {
-    console.warn('Failed to stringify AI response', err);
-    return '';
-  }
-};
-
-// --- Lookup Data ---
-
-const TONES = [
-  { id: 'professional', label: 'Professional', prompt: 'formal, objective, and expert', icon: Briefcase },
-  { id: 'friendly', label: 'Friendly', prompt: 'warm, approachable, and conversational', icon: Smile },
-  { id: 'casual', label: 'Casual', prompt: 'relaxed, informal, and easy-going', icon: Coffee },
-  { id: 'executive', label: 'Executive', prompt: 'concise, strategic, and high-level', icon: Building },
-  { id: 'academic', label: 'Academic', prompt: 'rigorous, citation-focused, and analytical', icon: GraduationCap },
-  { id: 'creative', label: 'Creative', prompt: 'imaginative, evocative, and storytelling', icon: Lightbulb },
-  { id: 'helpful', label: 'Helpful', prompt: 'supportive, instructive, and solution-oriented', icon: Smile },
-  { id: 'technical', label: 'Technical', prompt: 'precise, detailed, and specification-focused', icon: Building },
-];
-
-const OUTPUT_TYPES = [
-  { id: 'deck', label: 'Deck', icon: Layout, context: 'Slide Deck Outline (Titles, Visuals, Notes)', 
-    tooltip: { title: 'Slides, narratives, exec briefings', desc: 'Perfect for investor updates, executive briefings, and internal pitches. Creates structured slide content with clear narratives and key points.' }},
-  { id: 'doc', label: 'Doc', icon: FileText, context: 'Comprehensive Written Document',
-    tooltip: { title: 'PRDs, memos, structured writing', desc: 'Ideal for product requirements, legal memos, and strategic documents. Produces well-structured, comprehensive written content.' }},
-  { id: 'data', label: 'Data', icon: Database, context: 'Structured Data / Tables',
-    tooltip: { title: 'Excel-style analysis, tables, charts', desc: 'Great for forecasts, survey summaries, and analytical reports. Generates structured data presentations with tables and insights.' }},
-  { id: 'code', label: 'Code', icon: Code, context: 'Production-Ready Code',
-    tooltip: { title: 'Functions, scripts, technical solutions', desc: 'Build production-ready code with proper error handling, documentation, and best practices baked in.' }},
-  { id: 'copy', label: 'Copy', icon: Copy, context: 'Marketing Copy / Creative Writing',
-    tooltip: { title: 'Marketing copy, headlines, CTAs', desc: 'Craft compelling marketing content, ad copy, landing pages, and creative writing that converts.' }},
-  { id: 'comms', label: 'Comms', icon: MessageSquare, context: 'Email / Communication',
-    tooltip: { title: 'Emails, stakeholder updates, internal comms', desc: 'Ideal for status updates, customer outreach, and internal communications. Creates clear, professional messaging for all stakeholders.' }},
-  { id: 'json', label: 'JSON', icon: Code, context: 'Canonical Prompt Blueprint (JSON object)',
-    tooltip: { title: 'Structured JSON output', desc: 'Generate valid, parseable JSON objects for API responses and data structures.' }}
-];
-
-const FORMATS = [
-  { id: 'paragraph', label: 'Paragraph', prompt: 'Flowing, cohesive narrative', icon: FileText },
-  { id: 'bullets', label: 'Bullet Points', prompt: 'Concise bulleted list', icon: List },
-  { id: 'numbered', label: 'Numbered List', prompt: 'Sequential numbered list', icon: ListOrdered },
-  { id: 'steps', label: 'Step-by-Step', prompt: 'Clear, actionable steps', icon: FileText },
-  { id: 'sections', label: 'Structured Sections', prompt: 'Clear, hierarchical sections with headings', icon: FileText },
-  { id: 'json', label: 'JSON', prompt: 'Valid, parseable JSON object', isSafeJson: true, icon: Code },
-  { id: 'email', label: 'Email', prompt: 'Professional email format', icon: Mail },
-  { id: 'table', label: 'Table', prompt: 'Structured table with headers', icon: Table },
-  { id: 'qa', label: 'Q&A', prompt: 'Question and Answer session', icon: MessageSquare }
-];
-
-const LENGTHS = [
-  { id: 'short', label: 'Short', prompt: 'Concise and high-level' },
-  { id: 'medium', label: 'Medium', prompt: 'Balanced detail' },
-  { id: 'long', label: 'Long', prompt: 'Exhaustive and detailed' }
-];
-
-const STYLES = [
-  { id: 'direct', label: 'Direct', prompt: 'straightforward, no fluff' },
-  { id: 'narrative', label: 'Narrative', prompt: 'story-driven, engaging flow' },
-  { id: 'analytical', label: 'Analytical', prompt: 'data-backed, logical structure' },
-  { id: 'persuasive', label: 'Persuasive', prompt: 'compelling, action-oriented' },
-  { id: 'instructional', label: 'Instructional', prompt: 'step-by-step, clear guidance' },
-];
 
 export default function App() {
   const [user, setUser] = useState(null);
@@ -507,23 +124,24 @@ export default function App() {
     }
   }, []);
 
-  // Form State
-  const [inputText, setInputText] = useState('');
-  const [selectedOutputType, setSelectedOutputType] = useState('doc');
-  const [hoveredOutputType, setHoveredOutputType] = useState(null);
-  const [selectedTone, setSelectedTone] = useState('professional');
-  const [toneDropdownOpen, setToneDropdownOpen] = useState(false);
-  const [selectedStyle, setSelectedStyle] = useState('direct');
-  const [contextConstraints, setContextConstraints] = useState('');
-  const [selectedLength, setSelectedLength] = useState('medium');
-  const [selectedFormat, setSelectedFormat] = useState('paragraph');
-  const [formatDropdownOpen, setFormatDropdownOpen] = useState(false);
-  const [notes, setNotes] = useState('');
-
-  // Toggles
-  const [allowPlaceholders, setAllowPlaceholders] = useState(false);
-  const [stripMeta, setStripMeta] = useState(true);
-  const [aestheticMode, setAestheticMode] = useState(false);
+  // Form State (from custom hook)
+  const {
+    inputText, setInputText,
+    selectedOutputType, setSelectedOutputType,
+    selectedTone, setSelectedTone,
+    selectedStyle, setSelectedStyle,
+    selectedLength, setSelectedLength,
+    selectedFormat, setSelectedFormat,
+    contextConstraints, setContextConstraints,
+    notes, setNotes,
+    allowPlaceholders, setAllowPlaceholders,
+    stripMeta, setStripMeta,
+    aestheticMode, setAestheticMode,
+    toneDropdownOpen, setToneDropdownOpen,
+    formatDropdownOpen, setFormatDropdownOpen,
+    hoveredOutputType, setHoveredOutputType,
+    loadFromHistory: loadFormFromHistory
+  } = usePromptForm();
 
   // UI State
   const [showAdvanced, setShowAdvanced] = useState(false);
@@ -778,39 +396,16 @@ Apply the refinement instructions above to modify the prompt. Return only the up
     return hash.toString();
   };
 
-  // Settings State
-  const [selectedProvider, setSelectedProvider] = useState(localStorage.getItem('selectedProvider') || 'gemini');
-  const [chatgptApiKey, setChatgptApiKey] = useState(() => {
-    const stored = localStorage.getItem('chatgptApiKey');
-    if (stored && !stored.startsWith('VITE_')) {
-      return stored;
-    }
-    return openAiEnvKey || stored || '';
-  });
-  const [claudeApiKey, setClaudeApiKey] = useState(localStorage.getItem('claudeApiKey') || '');
-  const [geminiApiKey, setGeminiApiKey] = useState(localStorage.getItem('geminiApiKey') || apiKey || '');
-
-  // Selected models per provider
-  const [selectedOpenAIModel, setSelectedOpenAIModel] = useState(
-    localStorage.getItem('selectedOpenAIModel') || OPENAI_MODELS[0].id
-  );
-  const [selectedClaudeModel, setSelectedClaudeModel] = useState(
-    localStorage.getItem('selectedClaudeModel') || CLAUDE_MODELS[0].id
-  );
-  const [selectedGeminiModel, setSelectedGeminiModel] = useState(
-    localStorage.getItem('selectedGeminiModel') || GEMINI_MODELS[0].id
-  );
-
-  // Save settings to localStorage
-  useEffect(() => {
-    localStorage.setItem('selectedProvider', selectedProvider);
-    localStorage.setItem('chatgptApiKey', chatgptApiKey);
-    localStorage.setItem('claudeApiKey', claudeApiKey);
-    localStorage.setItem('geminiApiKey', geminiApiKey);
-    localStorage.setItem('selectedOpenAIModel', selectedOpenAIModel);
-    localStorage.setItem('selectedClaudeModel', selectedClaudeModel);
-    localStorage.setItem('selectedGeminiModel', selectedGeminiModel);
-  }, [selectedProvider, chatgptApiKey, claudeApiKey, geminiApiKey, selectedOpenAIModel, selectedClaudeModel, selectedGeminiModel]);
+  // API Settings (from custom hook)
+  const {
+    selectedProvider, setSelectedProvider,
+    chatgptApiKey, setChatgptApiKey,
+    claudeApiKey, setClaudeApiKey,
+    geminiApiKey, setGeminiApiKey,
+    selectedOpenAIModel, setSelectedOpenAIModel,
+    selectedClaudeModel, setSelectedClaudeModel,
+    selectedGeminiModel, setSelectedGeminiModel
+  } = useApiSettings();
 
   // --- History Functions ---
   const handleDeleteHistory = async (e, itemId) => {
@@ -1024,12 +619,31 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
       const userPromptForModel = plan.userPrompt || inputText;
 
       let aiData;
-      if (selectedProvider === 'chatgpt') {
+      // Test mode bypass - return mock response for E2E tests
+      if (isTestMode) {
+        await new Promise(resolve => setTimeout(resolve, 100)); // Simulate brief delay
+        aiData = {
+          analysis: {
+            detected_domain: 'test',
+            input_quality_score: 8,
+            is_vague_or_short: false
+          },
+          reverse_prompting: {
+            was_triggered: false,
+            refined_task_text: '',
+            reasoning: ''
+          },
+          final_output: {
+            expanded_prompt_text: `# Generated Prompt for Testing\n\nThis is a mock expanded prompt generated for Playwright E2E testing.\n\n## Context\nOriginal input: "${inputText}"\nOutput type: ${selectedOutputType}\nTone: ${selectedTone}\nFormat: ${selectedFormat}\n\n## Instructions\nThis mock response validates that the prompt generation flow works correctly without requiring actual API calls.\n\n## Expected Behavior\nThe UI should display this content in the output area, allowing tests to verify copy functionality, history saving, and other features.`,
+            enrichment_attributes_used: ['test_mode', 'mock_response']
+          }
+        };
+      } else if (selectedProvider === 'chatgpt') {
         if (!chatgptApiKey) throw new Error("OpenAI API Key is missing. Please add it in Settings.");
         aiData = await callOpenAI(userPromptForModel, systemPrompt, chatgptApiKey, selectedOpenAIModel);
       } else if (selectedProvider === 'claude') {
         if (!claudeApiKey) throw new Error("Claude API Key is missing. Please add it in Settings.");
-        aiData = await callAnthropic(userPromptForModel, systemPrompt, claudeApiKey, selectedClaudeModel);
+        aiData = await callAnthropic(userPromptForModel, systemPrompt, claudeApiKey, selectedClaudeModel, claudeFunctionUrl);
       } else {
         if (!geminiApiKey) throw new Error("Gemini API Key is missing. Please add it in Settings.");
         aiData = await callGemini(userPromptForModel, systemPrompt, geminiApiKey, selectedGeminiModel);
@@ -1401,7 +1015,7 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
                     return callOpenAI(userPrompt, systemPrompt, chatgptApiKey, selectedOpenAIModel);
                   } else if (selectedProvider === 'claude') {
                     if (!claudeApiKey) throw new Error("Claude API Key is missing");
-                    return callAnthropic(userPrompt, systemPrompt, claudeApiKey, selectedClaudeModel);
+                    return callAnthropic(userPrompt, systemPrompt, claudeApiKey, selectedClaudeModel, claudeFunctionUrl);
                   } else {
                     if (!geminiApiKey) throw new Error("Gemini API Key is missing");
                     return callGemini(userPrompt, systemPrompt, geminiApiKey, selectedGeminiModel);
@@ -1887,7 +1501,7 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
                         className="p-2 text-slate-500 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors"
                         title="Copy to clipboard"
                       >
-                        <Copy className="w-4 h-4" />
+                        <CopyIcon className="w-4 h-4" />
                       </button>
                       {/* Download Button */}
                       <button

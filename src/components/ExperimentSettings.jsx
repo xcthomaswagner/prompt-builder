@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { X, Plus, Trash2, Save, FileText, Layout, Database, Code, Copy, MessageSquare, Upload, File, Image, AlertCircle, Loader2, Settings, Users, Shield } from 'lucide-react';
+import { X, Plus, Trash2, Save, Upload, File, Image, AlertCircle, Loader2, Settings, Users, Shield } from 'lucide-react';
 import { 
   CONTENT_TYPES, 
   OUTPUT_TYPE_CONTENT_TYPES, 
@@ -8,6 +8,7 @@ import {
   readFileAsText,
   requiresVision 
 } from '../lib/storageService';
+import { OUTPUT_TYPES } from '../lib/constants';
 
 /**
  * Default judge options
@@ -16,18 +17,6 @@ const DEFAULT_JUDGE_OPTIONS = {
   dualJudge: false,        // Use two judges (Strict + Style) and average
   rubricEnforcement: 'standard' // 'standard', 'strict', 'lenient'
 };
-
-/**
- * Output type configuration with icons
- */
-const OUTPUT_TYPES = [
-  { id: 'deck', label: 'Deck', icon: Layout },
-  { id: 'doc', label: 'Doc', icon: FileText },
-  { id: 'data', label: 'Data', icon: Database },
-  { id: 'code', label: 'Code', icon: Code },
-  { id: 'copy', label: 'Copy', icon: Copy },
-  { id: 'comms', label: 'Comms', icon: MessageSquare }
-];
 
 /**
  * ExperimentSettings – Modal for managing baseline examples and judge options.

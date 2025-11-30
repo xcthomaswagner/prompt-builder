@@ -5,62 +5,49 @@
  * (Gemini, OpenAI, Anthropic) with automatic model routing.
  */
 
+// Default max output tokens
+export const MAX_OUTPUT_TOKENS = 4096;
+
+// Request timeout in milliseconds (30 seconds)
+const REQUEST_TIMEOUT_MS = 30000;
+
+// Retry delays for transient errors (exponential backoff)
+const RETRY_DELAYS = [1000, 2000, 4000, 8000, 16000];
+
 /**
- * Supported models configuration.
- * Each model has an id, label, provider, and optional description.
+ * Model lists per provider - for UI dropdowns
  */
-export const SUPPORTED_MODELS = [
-  // Google Gemini
-  {
-    id: 'gemini-2.0-flash',
-    label: 'Gemini 2.0 Flash',
-    provider: 'google',
-    description: 'Fast, efficient model for quick tasks'
-  },
-  {
-    id: 'gemini-1.5-pro',
-    label: 'Gemini 1.5 Pro',
-    provider: 'google',
-    description: 'Advanced reasoning and long context'
-  },
-  // OpenAI
-  {
-    id: 'gpt-5.1',
-    label: 'GPT-5.1',
-    provider: 'openai',
-    description: 'Latest flagship model with enhanced reasoning'
-  },
-  {
-    id: 'gpt-4.5-preview',
-    label: 'GPT-4.5',
-    provider: 'openai',
-    description: 'Large-scale model optimized for chat and agentic tasks'
-  },
-  {
-    id: 'o3',
-    label: 'o3',
-    provider: 'openai',
-    description: 'Advanced reasoning model'
-  },
-  // Anthropic
-  {
-    id: 'claude-3-5-sonnet-20241022',
-    label: 'Claude 3.5 Sonnet',
-    provider: 'anthropic',
-    description: 'Balanced performance and speed'
-  },
-  {
-    id: 'claude-3-5-haiku-20241022',
-    label: 'Claude 3.5 Haiku',
-    provider: 'anthropic',
-    description: 'Fastest Claude model'
-  }
+export const OPENAI_MODELS = [
+  { id: 'gpt-5.1', label: 'GPT-5.1', description: 'Latest flagship' },
+  { id: 'gpt-4.5-preview', label: 'GPT-4.5', description: 'Large-scale agentic model' },
+  { id: 'o3', label: 'o3', description: 'Reasoning model' },
+];
+
+export const CLAUDE_MODELS = [
+  { id: 'claude-sonnet-4-20250514', label: 'Claude Sonnet 4', description: 'Latest balanced model' },
+  { id: 'claude-3-5-sonnet-20241022', label: 'Claude 3.5 Sonnet', description: 'Balanced performance' },
+  { id: 'claude-3-5-haiku-20241022', label: 'Claude 3.5 Haiku', description: 'Fastest Claude' },
+];
+
+export const GEMINI_MODELS = [
+  { id: 'gemini-2.0-flash', label: 'Gemini 2.0 Flash', description: 'Latest fast model' },
+  { id: 'gemini-1.5-pro', label: 'Gemini 1.5 Pro', description: 'Advanced reasoning' },
+  { id: 'gemini-1.5-flash', label: 'Gemini 1.5 Flash', description: 'Quick responses' },
+  { id: 'gemini-1.5-flash-8b', label: 'Gemini 1.5 Flash 8B', description: 'Lightweight' },
 ];
 
 /**
- * Request timeout in milliseconds (2 minutes)
+ * Unified model list with provider info
  */
-const REQUEST_TIMEOUT_MS = 120000;
+export const SUPPORTED_MODELS = [
+  // Google Gemini
+  ...GEMINI_MODELS.map(m => ({ ...m, provider: 'google' })),
+  // OpenAI
+  ...OPENAI_MODELS.map(m => ({ ...m, provider: 'openai' })),
+  // Anthropic
+  ...CLAUDE_MODELS.map(m => ({ ...m, provider: 'anthropic' })),
+];
+
 
 /**
  * Get models grouped by provider for UI display.
@@ -84,67 +71,162 @@ export function getModelById(modelId) {
 }
 
 /**
- * Call Gemini API.
- * Note: Gemini API requires the key as a URL parameter (not header-based auth).
+ * JSON response schema for structured prompt generation responses.
+ * Used by Gemini's structured output feature.
  */
-async function callGemini(userPrompt, systemPrompt, apiKey, modelId = 'gemini-2.0-flash') {
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelId}:generateContent?key=${apiKey}`;
+const PROMPT_RESPONSE_SCHEMA = {
+  type: "OBJECT",
+  required: ["analysis", "reverse_prompting", "final_output"],
+  properties: {
+    analysis: {
+      type: "OBJECT",
+      required: ["detected_domain", "input_quality_score", "is_vague_or_short"],
+      properties: {
+        detected_domain: { type: "STRING" },
+        input_quality_score: { type: "INTEGER" },
+        is_vague_or_short: { type: "BOOLEAN" }
+      }
+    },
+    reverse_prompting: {
+      type: "OBJECT",
+      required: ["was_triggered", "refined_task_text", "reasoning"],
+      properties: {
+        was_triggered: { type: "BOOLEAN" },
+        refined_task_text: { type: "STRING" },
+        reasoning: { type: "STRING" }
+      }
+    },
+    final_output: {
+      type: "OBJECT",
+      required: ["expanded_prompt_text", "enrichment_attributes_used"],
+      properties: {
+        expanded_prompt_text: { type: "STRING" },
+        enrichment_attributes_used: { type: "ARRAY", items: { type: "STRING" } }
+      }
+    }
+  }
+};
+
+/**
+ * Call Gemini API with structured JSON output.
+ * Includes retry logic for transient errors.
+ * 
+ * @param {string} userPrompt - The user's prompt
+ * @param {string} systemPrompt - System instruction
+ * @param {string} apiKey - Gemini API key
+ * @param {string} modelId - Model ID (default: gemini-2.0-flash)
+ * @param {Object} options - Additional options
+ * @param {boolean} options.jsonMode - Whether to use structured JSON output (default: true)
+ * @returns {Promise<Object|string>} - Parsed JSON response or text
+ */
+export async function callGemini(userPrompt, systemPrompt, apiKey, modelId = 'gemini-2.0-flash', options = {}) {
+  const { jsonMode = true } = options;
   
+  if (!apiKey) throw new Error("Gemini API Key is missing");
+
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelId}:generateContent?key=${apiKey}`;
+
+  const generationConfig = {
+    maxOutputTokens: MAX_OUTPUT_TOKENS,
+  };
+
+  // Add JSON schema for structured output
+  if (jsonMode) {
+    generationConfig.responseMimeType = "application/json";
+    generationConfig.responseSchema = PROMPT_RESPONSE_SCHEMA;
+  }
+
   const payload = {
     contents: [{ parts: [{ text: userPrompt }] }],
     systemInstruction: systemPrompt ? { parts: [{ text: systemPrompt }] } : undefined,
-    generationConfig: {
-      temperature: 0.7,
-      maxOutputTokens: 8192
-    }
+    generationConfig
   };
 
-  const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+  let attempts = 0;
 
-  try {
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-      signal: controller.signal
-    });
+  while (attempts <= 5) {
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
 
-    clearTimeout(timeoutId);
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+        signal: controller.signal
+      });
 
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.error?.message || `Gemini API error: ${response.status}`);
+      clearTimeout(timeoutId);
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error("Gemini API Error Response:", errorText);
+
+        if (response.status === 503) {
+          throw new Error("Gemini API is temporarily unavailable (503). Please try again in a few moments.");
+        } else if (response.status === 429) {
+          throw new Error("Rate limit exceeded. Please wait a moment and try again.");
+        } else if (response.status === 400) {
+          throw new Error("Invalid request to Gemini API. Please check your input.");
+        }
+
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+      
+      if (!text) {
+        throw new Error('No response text from Gemini');
+      }
+
+      return jsonMode ? JSON.parse(text) : text;
+    } catch (error) {
+      if (error.name === 'AbortError') {
+        throw new Error("Request timed out after 30 seconds. Please try again.");
+      }
+
+      // For 503 errors, only retry twice
+      if (error.message?.includes("503") || error.message?.includes("unavailable")) {
+        attempts++;
+        if (attempts > 2) throw error;
+        await new Promise(resolve => setTimeout(resolve, RETRY_DELAYS[attempts - 1]));
+        continue;
+      }
+
+      attempts++;
+      if (attempts > 5) throw error;
+      await new Promise(resolve => setTimeout(resolve, RETRY_DELAYS[attempts - 1]));
     }
-
-    const data = await response.json();
-    const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
-    
-    if (!text) {
-      throw new Error('No response text from Gemini');
-    }
-
-    return text;
-  } catch (err) {
-    clearTimeout(timeoutId);
-    if (err.name === 'AbortError') {
-      throw new Error('Gemini request timed out');
-    }
-    throw err;
   }
 }
 
 /**
- * Call OpenAI API.
+ * Simple text-only Gemini call (no JSON schema).
+ * Useful for improvement/refinement requests.
  */
-async function callOpenAI(userPrompt, systemPrompt, apiKey, modelId = 'gpt-4.5-preview') {
+export async function callGeminiText(userPrompt, systemPrompt, apiKey, modelId = 'gemini-2.0-flash') {
+  return callGemini(userPrompt, systemPrompt, apiKey, modelId, { jsonMode: false });
+}
+
+/**
+ * Call OpenAI API with JSON response format.
+ * 
+ * @param {string} userPrompt - The user's prompt
+ * @param {string} systemPrompt - System instruction
+ * @param {string} apiKey - OpenAI API key
+ * @param {string} modelId - Model ID (default: gpt-5.1)
+ * @returns {Promise<Object>} - Parsed JSON response
+ */
+export async function callOpenAI(userPrompt, systemPrompt, apiKey, modelId = 'gpt-5.1') {
+  if (!apiKey) throw new Error("OpenAI API Key is missing");
+
   const url = 'https://api.openai.com/v1/chat/completions';
 
-  const messages = [];
-  if (systemPrompt) {
-    messages.push({ role: 'system', content: systemPrompt });
-  }
-  messages.push({ role: 'user', content: userPrompt });
+  const messages = [
+    { role: 'system', content: (systemPrompt || '') + "\n\nIMPORTANT: You must return valid JSON only." },
+    { role: 'user', content: userPrompt }
+  ];
 
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
@@ -159,11 +241,8 @@ async function callOpenAI(userPrompt, systemPrompt, apiKey, modelId = 'gpt-4.5-p
       body: JSON.stringify({
         model: modelId,
         messages,
-        temperature: 0.7,
-        // GPT-5.x models require max_completion_tokens instead of max_tokens
-        ...(modelId.startsWith('gpt-5') 
-          ? { max_completion_tokens: 8192 } 
-          : { max_tokens: 8192 })
+        max_tokens: MAX_OUTPUT_TOKENS,
+        response_format: { type: "json_object" }
       }),
       signal: controller.signal
     });
@@ -182,20 +261,53 @@ async function callOpenAI(userPrompt, systemPrompt, apiKey, modelId = 'gpt-4.5-p
       throw new Error('No response text from OpenAI');
     }
 
-    return text;
+    return JSON.parse(text);
   } catch (err) {
     clearTimeout(timeoutId);
     if (err.name === 'AbortError') {
       throw new Error('OpenAI request timed out');
     }
-    throw err;
+    console.error("[OpenAI API Error]", err.message || err);
+    throw new Error(`OpenAI call failed: ${err.message || 'Unknown error'}`);
   }
 }
 
 /**
- * Call Anthropic API.
+ * Call Anthropic API with JSON response.
+ * Supports optional Firebase Function proxy to avoid Cloudflare issues.
+ * 
+ * @param {string} userPrompt - The user's prompt
+ * @param {string} systemPrompt - System instruction
+ * @param {string} apiKey - Anthropic API key
+ * @param {string} modelId - Model ID (default: claude-3-5-sonnet-20241022)
+ * @param {string} [proxyUrl] - Optional Firebase Function proxy URL
+ * @returns {Promise<Object>} - Parsed JSON response
  */
-async function callAnthropic(userPrompt, systemPrompt, apiKey, modelId = 'claude-3-5-sonnet-20241022') {
+export async function callAnthropic(userPrompt, systemPrompt, apiKey, modelId = 'claude-3-5-sonnet-20241022', proxyUrl = null) {
+  // Use Firebase Function proxy if available (avoids Cloudflare)
+  if (proxyUrl) {
+    try {
+      const response = await fetch(proxyUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ prompt: userPrompt, systemInstruction: systemPrompt, modelId })
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(`Claude Function Error: ${errorData.error || response.statusText}`);
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error("[Claude Function Error]", error.message || error);
+      throw new Error(`Claude function call failed: ${error.message || 'Unknown error'}`);
+    }
+  }
+
+  // Direct API call
+  if (!apiKey) throw new Error("Claude API Key is missing");
+
   const url = 'https://api.anthropic.com/v1/messages';
 
   const controller = new AbortController();
@@ -212,8 +324,8 @@ async function callAnthropic(userPrompt, systemPrompt, apiKey, modelId = 'claude
       },
       body: JSON.stringify({
         model: modelId,
-        max_tokens: 8192,
-        system: systemPrompt || undefined,
+        max_tokens: MAX_OUTPUT_TOKENS,
+        system: (systemPrompt || '') + "\n\nIMPORTANT: You must return valid JSON only.",
         messages: [{ role: 'user', content: userPrompt }]
       }),
       signal: controller.signal
@@ -233,13 +345,14 @@ async function callAnthropic(userPrompt, systemPrompt, apiKey, modelId = 'claude
       throw new Error('No response text from Anthropic');
     }
 
-    return text;
+    return JSON.parse(text);
   } catch (err) {
     clearTimeout(timeoutId);
     if (err.name === 'AbortError') {
       throw new Error('Anthropic request timed out');
     }
-    throw err;
+    console.error("[Anthropic API Error]", err.message || err);
+    throw new Error(`Anthropic call failed: ${err.message || 'Unknown error'}`);
   }
 }
 
@@ -296,5 +409,83 @@ export function parseJsonResponse(text) {
     return JSON.parse(jsonStr);
   } catch (err) {
     throw new Error(`Failed to parse JSON response: ${err.message}`);
+  }
+}
+
+/**
+ * Extract the expanded prompt text from an LLM response.
+ * Handles various response formats and nested structures.
+ * 
+ * @param {Object|string} response - The LLM response object or string
+ * @returns {string} - The extracted prompt text
+ */
+export function extractExpandedPrompt(response) {
+  if (!response) return '';
+  if (typeof response === 'string') {
+    return response.trim();
+  }
+
+  const readPath = (obj, path) => {
+    let current = obj;
+    for (const segment of path) {
+      if (current == null) return '';
+      current = current[segment];
+    }
+    if (typeof current === 'string') {
+      return current.trim();
+    }
+    if (current && typeof current === 'object') {
+      try {
+        return JSON.stringify(current);
+      } catch (err) {
+        return '';
+      }
+    }
+    return '';
+  };
+
+  const candidatePaths = [
+    ['final_output', 'expanded_prompt_text'],
+    ['final_output', 'expandedPromptText'],
+    ['final_output', 'expanded_prompt', 'text'],
+    ['final_output', 'expandedPrompt', 'text'],
+    ['final_output', 'expanded_prompt'],
+    ['final_output', 'expandedPrompt'],
+    ['final_output', 'text'],
+    ['final_output', 'prompt'],
+    ['expanded_prompt_text'],
+    ['expandedPromptText'],
+    ['expanded_prompt'],
+    ['expandedPrompt'],
+    ['finalPrompt'],
+    ['final_prompt_text'],
+    ['final_prompt']
+  ];
+
+  for (const path of candidatePaths) {
+    const value = readPath(response, path);
+    if (value) return value;
+  }
+
+  const finalOutput = response.final_output;
+  if (typeof finalOutput === 'string') {
+    return finalOutput.trim();
+  }
+
+  if (finalOutput && typeof finalOutput === 'object') {
+    try {
+      const serialized = JSON.stringify(finalOutput);
+      if (serialized) return serialized;
+    } catch (err) {
+      console.warn('Failed to stringify final_output', err);
+    }
+  }
+
+  try {
+    const serialized = JSON.stringify(response);
+    return serialized || '';
+  } catch (err) {
+    console.warn('Failed to stringify AI response', err);
+    return '';
   }
 }
