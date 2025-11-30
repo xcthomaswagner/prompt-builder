@@ -742,8 +742,8 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
               <div className="w-16 h-16 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-2xl flex items-center justify-center text-white font-bold shadow-lg shadow-cyan-200 mx-auto mb-4">
                 <Sparkles className="w-8 h-8" />
               </div>
-              <h1 className="font-bold text-3xl text-slate-800 mb-2">Intelligent Prompt Builder</h1>
-              <p className="text-slate-600">Transform your ideas into powerful prompts</p>
+              <h1 className={`font-bold text-3xl mb-2 ${darkMode ? 'text-slate-100' : 'text-slate-800'}`}>Intelligent Prompt Builder</h1>
+              <p className={darkMode ? 'text-slate-400' : 'text-slate-600'}>Transform your ideas into powerful prompts</p>
             </div>
 
             {/* Sign-in Card */}
@@ -1115,7 +1115,7 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
                   isGenerating
                     ? 'bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 cursor-pointer'
                     : !inputText.trim()
-                      ? 'bg-slate-300 cursor-not-allowed shadow-none'
+                      ? darkMode ? 'bg-slate-700 cursor-not-allowed shadow-none' : 'bg-slate-300 cursor-not-allowed shadow-none'
                       : 'bg-gradient-to-r from-cyan-500 to-blue-600 hover:shadow-cyan-200 hover:shadow-xl'
                 }`}
               >
