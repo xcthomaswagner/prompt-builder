@@ -1134,8 +1134,8 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
               </button>
 
               {isSavingHistory && (
-                <div className="mt-3 flex items-center gap-2 text-xs text-slate-500">
-                  <div className="w-4 h-4 border-2 border-slate-200 border-t-cyan-500 rounded-full animate-spin" />
+                <div className={`mt-3 flex items-center gap-2 text-xs ${darkMode ? 'text-slate-400' : 'text-slate-500'}`}>
+                  <div className={`w-4 h-4 border-2 border-t-cyan-500 rounded-full animate-spin ${darkMode ? 'border-slate-600' : 'border-slate-200'}`} />
                   Saving to history...
                 </div>
               )}
@@ -1345,7 +1345,7 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
                         <span className={`text-sm ${darkMode ? 'text-slate-300' : 'text-slate-700'}`}>Allow [Illustrative] placeholders</span>
                         <button
                           onClick={() => setAllowPlaceholders(!allowPlaceholders)}
-                          className={`w-11 h-6 rounded-full relative transition-colors ${allowPlaceholders ? 'bg-cyan-500' : 'bg-slate-300'}`}
+                          className={`w-11 h-6 rounded-full relative transition-colors ${allowPlaceholders ? 'bg-cyan-500' : darkMode ? 'bg-slate-600' : 'bg-slate-300'}`}
                         >
                           <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-transform shadow-sm ${allowPlaceholders ? 'left-6' : 'left-1'}`} />
                         </button>
@@ -1355,7 +1355,7 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
                         <button
                           onClick={() => !FORMATS.find(f => f.id === selectedFormat)?.isSafeJson && setStripMeta(!stripMeta)}
                           disabled={FORMATS.find(f => f.id === selectedFormat)?.isSafeJson}
-                          className={`w-11 h-6 rounded-full relative transition-colors ${stripMeta ? 'bg-cyan-500' : 'bg-slate-300'} ${FORMATS.find(f => f.id === selectedFormat)?.isSafeJson ? 'opacity-50 cursor-not-allowed' : ''}`}
+                          className={`w-11 h-6 rounded-full relative transition-colors ${stripMeta ? 'bg-cyan-500' : darkMode ? 'bg-slate-600' : 'bg-slate-300'} ${FORMATS.find(f => f.id === selectedFormat)?.isSafeJson ? 'opacity-50 cursor-not-allowed' : ''}`}
                         >
                           <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-transform shadow-sm ${stripMeta ? 'left-6' : 'left-1'}`} />
                         </button>
@@ -1364,7 +1364,7 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
                         <span className={`text-sm ${darkMode ? 'text-slate-300' : 'text-slate-700'}`}>Emphasize aesthetics</span>
                         <button
                           onClick={() => setAestheticMode(!aestheticMode)}
-                          className={`w-11 h-6 rounded-full relative transition-colors ${aestheticMode ? 'bg-cyan-500' : 'bg-slate-300'}`}
+                          className={`w-11 h-6 rounded-full relative transition-colors ${aestheticMode ? 'bg-cyan-500' : darkMode ? 'bg-slate-600' : 'bg-slate-300'}`}
                         >
                           <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-transform shadow-sm ${aestheticMode ? 'left-6' : 'left-1'}`} />
                         </button>
@@ -1376,7 +1376,7 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
                         </div>
                         <button
                           onClick={() => setEnableQualityAssessment(!enableQualityAssessment)}
-                          className={`w-11 h-6 rounded-full relative transition-colors ${enableQualityAssessment ? 'bg-cyan-500' : 'bg-slate-300'}`}
+                          className={`w-11 h-6 rounded-full relative transition-colors ${enableQualityAssessment ? 'bg-cyan-500' : darkMode ? 'bg-slate-600' : 'bg-slate-300'}`}
                         >
                           <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-transform shadow-sm ${enableQualityAssessment ? 'left-6' : 'left-1'}`} />
                         </button>
