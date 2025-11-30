@@ -77,9 +77,9 @@ export const FORMATS = [
  * Length options for output verbosity
  */
 export const LENGTHS = [
-  { id: 'short', label: 'Short', prompt: 'Concise and high-level' },
-  { id: 'medium', label: 'Medium', prompt: 'Balanced detail' },
-  { id: 'long', label: 'Long', prompt: 'Exhaustive and detailed' }
+  { id: 'short', label: 'Concise', prompt: 'Concise and high-level' },
+  { id: 'medium', label: 'Balanced', prompt: 'Balanced detail' },
+  { id: 'long', label: 'Exhaustive', prompt: 'Exhaustive and detailed' }
 ];
 
 /**

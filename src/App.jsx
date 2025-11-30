@@ -1280,38 +1280,6 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
                       </div>
                     </div>
 
-                    {/* Length - Horizontal Radio Buttons */}
-                    <div className="space-y-2">
-                      <label className={`text-xs font-bold uppercase tracking-wide ${darkMode ? 'text-slate-400' : 'text-slate-500'}`}>Length</label>
-                      <div className="flex flex-wrap gap-2">
-                        {LENGTHS.map(length => {
-                          const isSelected = length.id === selectedLength;
-                          return (
-                            <label
-                              key={length.id}
-                              className={`flex-1 min-w-[100px] cursor-pointer rounded-lg border px-3 py-2 text-sm font-medium transition-all text-center ${
-                                isSelected
-                                  ? 'border-cyan-500 bg-cyan-50 text-cyan-700'
-                                  : darkMode
-                                    ? 'border-slate-600 bg-slate-700 text-slate-200 hover:border-slate-500'
-                                    : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300'
-                              }`}
-                            >
-                              <input
-                                type="radio"
-                                name="length"
-                                value={length.id}
-                                checked={isSelected}
-                                onChange={() => setSelectedLength(length.id)}
-                                className="sr-only"
-                              />
-                              {length.label}
-                            </label>
-                          );
-                        })}
-                      </div>
-                    </div>
-
                     {/* Context & Constraints */}
                     <div className="space-y-2">
                       <label className={`text-xs font-bold uppercase tracking-wide ${darkMode ? 'text-slate-400' : 'text-slate-500'}`}>Context & Constraints</label>
@@ -1332,6 +1300,38 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
                         placeholder="Audience details, links, references..."
                         className={`w-full h-16 border rounded-lg p-3 text-sm focus:ring-2 focus:ring-cyan-500 outline-none resize-none ${darkMode ? 'bg-slate-700 border-slate-600 text-slate-200 placeholder:text-slate-400' : 'bg-slate-50 border-slate-200 text-slate-700'}`}
                       />
+                    </div>
+
+                    {/* Detail - Horizontal Radio Buttons */}
+                    <div className="space-y-2">
+                      <label className={`text-xs font-bold uppercase tracking-wide ${darkMode ? 'text-slate-400' : 'text-slate-500'}`}>Detail</label>
+                      <div className="flex flex-wrap gap-2">
+                        {LENGTHS.map(length => {
+                          const isSelected = length.id === selectedLength;
+                          return (
+                            <label
+                              key={length.id}
+                              className={`flex-1 min-w-[100px] cursor-pointer rounded-lg border px-3 py-2 text-sm font-medium transition-all text-center ${
+                                isSelected
+                                  ? 'border-cyan-500 bg-cyan-50 text-cyan-700'
+                                  : darkMode
+                                    ? 'border-slate-600 bg-slate-700 text-slate-200 hover:border-slate-500'
+                                    : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300'
+                              }`}
+                            >
+                              <input
+                                type="radio"
+                                name="detail"
+                                value={length.id}
+                                checked={isSelected}
+                                onChange={() => setSelectedLength(length.id)}
+                                className="sr-only"
+                              />
+                              {length.label}
+                            </label>
+                          );
+                        })}
+                      </div>
                     </div>
 
                     {/* Toggles */}
