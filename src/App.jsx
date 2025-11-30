@@ -1026,7 +1026,7 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
                         setLastGeneratedPromptId(null);
                         resetVersionHistory();
                       }}
-                      className="text-slate-500 hover:text-slate-700 font-sans text-xs px-2 py-0.5 rounded hover:bg-slate-100 transition-colors"
+                      className={`font-sans text-xs px-2 py-0.5 rounded transition-colors ${darkMode ? 'text-slate-400 hover:text-slate-200 hover:bg-slate-700' : 'text-slate-500 hover:text-slate-700 hover:bg-slate-100'}`}
                     >
                       Reset
                     </button>
@@ -1839,7 +1839,7 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
                 </div>
                 <button
                   onClick={() => setShowSettings(true)}
-                  className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
+                  className={`p-1.5 rounded-lg transition-colors ${darkMode ? 'text-slate-400 hover:text-slate-200 hover:bg-slate-700' : 'text-slate-400 hover:text-slate-600 hover:bg-slate-100'}`}
                   title="Settings"
                 >
                   <Settings2 className="w-4 h-4" />
