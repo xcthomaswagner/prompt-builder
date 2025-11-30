@@ -1037,6 +1037,7 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
                   value={inputText}
                   onChange={(e) => setInputText(e.target.value)}
                   placeholder="e.g., Make me a deck about Andrej Karpathy software 3.0"
+                  autoFocus
                   className={`w-full h-32 resize-none outline-none text-sm bg-transparent ${darkMode ? 'text-slate-200 placeholder:text-slate-500' : 'text-slate-700 placeholder:text-slate-300'}`}
                 />
 
@@ -1647,6 +1648,7 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
                     placeholder="Search prompts..."
                     value={historySearchQuery}
                     onChange={(e) => setHistorySearchQuery(e.target.value)}
+                    aria-label="Search prompt history"
                     className={`w-full pl-9 pr-3 py-1.5 text-xs border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all ${darkMode ? 'bg-slate-700 border-slate-600 text-slate-200 placeholder:text-slate-500' : 'bg-slate-50 border-slate-200'}`}
                   />
                 </div>
