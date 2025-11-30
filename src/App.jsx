@@ -121,10 +121,9 @@ const GEMINI_MODELS = [
 // --- Gemini API Configuration ---
 const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
 const openAiEnvKey = import.meta.env.VITE_OPENAI_API_KEY;
-const defaultModelId = import.meta.env.VITE_GEMINI_MODEL || 'gemini-2.0-flash-exp';
 const MAX_OUTPUT_TOKENS = 4096;
 
-const callGemini = async (prompt, systemInstruction, apiKey, modelId = defaultModelId) => {
+const callGemini = async (prompt, systemInstruction, apiKey, modelId = import.meta.env.VITE_GEMINI_MODEL || 'gemini-2.0-flash-exp') => {
   if (!apiKey) throw new Error("Gemini API Key is missing");
 
   const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelId}:generateContent?key=${apiKey}`;
@@ -294,8 +293,8 @@ const callOpenAI = async (prompt, systemInstruction, apiKey, modelId = 'gpt-5.1'
     const text = data.choices[0].message.content;
     return JSON.parse(text);
   } catch (error) {
-    console.error("OpenAI Call Failed:", error);
-    throw error;
+    console.error("[OpenAI API Error]", error.message || error);
+    throw new Error(`OpenAI call failed: ${error.message || 'Unknown error'}`);
   }
 };
 
@@ -319,8 +318,8 @@ const callAnthropic = async (prompt, systemInstruction, apiKey, modelId = 'claud
 
       return await response.json();
     } catch (error) {
-      console.error("Claude Function Failed:", error);
-      throw error;
+      console.error("[Claude Function Error]", error.message || error);
+      throw new Error(`Claude function call failed: ${error.message || 'Unknown error'}`);
     }
   }
 
@@ -356,8 +355,8 @@ const callAnthropic = async (prompt, systemInstruction, apiKey, modelId = 'claud
     const text = data.content[0].text;
     return JSON.parse(text);
   } catch (error) {
-    console.error("Anthropic Call Failed:", error);
-    throw error;
+    console.error("[Anthropic API Error]", error.message || error);
+    throw new Error(`Anthropic call failed: ${error.message || 'Unknown error'}`);
   }
 };
 
