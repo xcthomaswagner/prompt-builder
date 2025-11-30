@@ -159,6 +159,7 @@ export default function App() {
   const [activeVersionHistoryId, setActiveVersionHistoryId] = useState(null);
   const generationRunRef = useRef(0);
   const generationAbortRef = useRef(null);
+  const expandedPromptRef = useRef(null);
 
   // Mode toggle: 'builder' or 'experiment'
   const [appMode, setAppMode] = useState('builder');
@@ -394,6 +395,14 @@ Apply the refinement instructions above to modify the prompt. Return only the up
       setStripMeta(true);
     }
   }, [selectedFormat]);
+
+  // --- Focus expanded prompt when generation completes ---
+  useEffect(() => {
+    if (generatedResult && expandedPromptRef.current) {
+      expandedPromptRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      expandedPromptRef.current.focus();
+    }
+  }, [generatedResult]);
 
   // --- Cancel Generation ---
   const handleCancelGeneration = () => {
@@ -1389,7 +1398,11 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
 
               {/* Expanded Prompt Result - Inline Display */}
               {generatedResult && (
-                <div className={`rounded-xl shadow-sm border overflow-hidden ${darkMode ? 'bg-slate-800 border-slate-700' : 'bg-white border-slate-200'}`}>
+                <div 
+                  ref={expandedPromptRef}
+                  tabIndex={-1}
+                  className={`rounded-xl shadow-sm border overflow-hidden outline-none ${darkMode ? 'bg-slate-800 border-slate-700' : 'bg-white border-slate-200'}`}
+                >
                   {/* Header */}
                   <div className={`px-6 py-4 border-b flex items-center justify-between ${darkMode ? 'border-slate-700' : 'border-slate-100'}`}>
                     <div className="flex items-center gap-2">
