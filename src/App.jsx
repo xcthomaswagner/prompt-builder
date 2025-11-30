@@ -492,18 +492,19 @@ export default function App() {
   const [promptHistory, setPromptHistory] = useState([]);
   
   // Check for test user in localStorage on mount (for E2E tests)
+  const [isTestMode, setIsTestMode] = useState(false);
+  
   useEffect(() => {
     try {
       const testUser = localStorage.getItem('playwright_test_user');
       if (testUser) {
         setUser(JSON.parse(testUser));
+        setIsTestMode(true);
         return; // Skip Firebase auth if test user exists
       }
     } catch (e) {
       // Ignore parse errors
     }
-    
-    // Normal Firebase auth check will happen below
   }, []);
 
   // Form State
@@ -838,10 +839,10 @@ Apply the refinement instructions above to modify the prompt. Return only the up
 
   // --- Auth & Data Loading ---
   useEffect(() => {
-    if (!auth) return;
+    if (!auth || isTestMode) return; // Skip Firebase auth in test mode
     const unsubscribe = onAuthStateChanged(auth, setUser);
     return () => unsubscribe();
-  }, []);
+  }, [isTestMode]);
 
   // --- Auth Functions ---
   const handleGoogleSignIn = async () => {
