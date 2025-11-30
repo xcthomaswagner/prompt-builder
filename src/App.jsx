@@ -739,7 +739,7 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
           <div className="w-full max-w-md">
             {/* Logo and Title */}
             <div className="text-center mb-8">
-              <div className="w-16 h-16 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-2xl flex items-center justify-center text-white font-bold shadow-lg shadow-cyan-200 mx-auto mb-4">
+              <div className={`w-16 h-16 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-2xl flex items-center justify-center text-white font-bold shadow-lg mx-auto mb-4 ${darkMode ? 'shadow-cyan-900/50' : 'shadow-cyan-200'}`}>
                 <Sparkles className="w-8 h-8" />
               </div>
               <h1 className={`font-bold text-3xl mb-2 ${darkMode ? 'text-slate-100' : 'text-slate-800'}`}>Intelligent Prompt Builder</h1>
@@ -824,7 +824,7 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
         <header className={`h-16 border-b flex items-center justify-between px-6 shadow-sm z-10 transition-colors ${darkMode ? 'bg-slate-800 border-slate-700' : 'bg-white border-slate-200'}`}>
           <div className="flex items-center gap-6">
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 bg-cyan-500 rounded-lg flex items-center justify-center text-white font-bold shadow-cyan-200 shadow-md">
+              <div className={`w-8 h-8 bg-cyan-500 rounded-lg flex items-center justify-center text-white font-bold shadow-md ${darkMode ? 'shadow-cyan-900/50' : 'shadow-cyan-200'}`}>
                 <Sparkles className="w-5 h-5" />
               </div>
               <h1 className={`font-bold text-xl tracking-tight ${darkMode ? 'text-white' : 'text-slate-800'}`}>Intelligent Prompt Builder</h1>
@@ -1834,7 +1834,7 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
             )}
               </div>
               <div className={`p-4 border-t flex items-center justify-between ${darkMode ? 'border-slate-700' : 'border-slate-100'}`}>
-                <div className="text-xs text-slate-400">
+                <div className={`text-xs ${darkMode ? 'text-slate-500' : 'text-slate-400'}`}>
                   Signed in as: {user?.displayName || user?.email || 'User'}
                 </div>
                 <button
