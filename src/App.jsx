@@ -122,6 +122,7 @@ const GEMINI_MODELS = [
 const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
 const openAiEnvKey = import.meta.env.VITE_OPENAI_API_KEY;
 const defaultModelId = import.meta.env.VITE_GEMINI_MODEL || 'gemini-2.0-flash-exp';
+const MAX_OUTPUT_TOKENS = 4096;
 
 const callGemini = async (prompt, systemInstruction, apiKey, modelId = defaultModelId) => {
   if (!apiKey) throw new Error("Gemini API Key is missing");
@@ -132,7 +133,7 @@ const callGemini = async (prompt, systemInstruction, apiKey, modelId = defaultMo
     contents: [{ parts: [{ text: prompt }] }],
     systemInstruction: { parts: [{ text: systemInstruction }] },
     generationConfig: {
-      maxOutputTokens: 4096,
+      maxOutputTokens: MAX_OUTPUT_TOKENS,
       responseMimeType: "application/json",
       responseSchema: {
         type: "OBJECT",
@@ -241,7 +242,7 @@ const callGeminiText = async (prompt, systemInstruction, apiKeyParam, modelId = 
     contents: [{ parts: [{ text: prompt }] }],
     systemInstruction: { parts: [{ text: systemInstruction }] },
     generationConfig: {
-      maxOutputTokens: 4096,
+      maxOutputTokens: MAX_OUTPUT_TOKENS,
     }
   };
 
