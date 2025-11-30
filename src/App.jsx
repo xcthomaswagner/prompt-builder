@@ -488,21 +488,23 @@ const STYLES = [
 ];
 
 export default function App() {
-  // Test mode: check localStorage for test user (set by E2E tests)
-  const getInitialUser = () => {
+  const [user, setUser] = useState(null);
+  const [promptHistory, setPromptHistory] = useState([]);
+  
+  // Check for test user in localStorage on mount (for E2E tests)
+  useEffect(() => {
     try {
       const testUser = localStorage.getItem('playwright_test_user');
       if (testUser) {
-        return JSON.parse(testUser);
+        setUser(JSON.parse(testUser));
+        return; // Skip Firebase auth if test user exists
       }
     } catch (e) {
       // Ignore parse errors
     }
-    return null;
-  };
-  
-  const [user, setUser] = useState(getInitialUser);
-  const [promptHistory, setPromptHistory] = useState([]);
+    
+    // Normal Firebase auth check will happen below
+  }, []);
 
   // Form State
   const [inputText, setInputText] = useState('');
