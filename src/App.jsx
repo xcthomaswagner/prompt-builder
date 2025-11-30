@@ -1558,7 +1558,7 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
                       />
                       {/* Distinctiveness warning after improvements */}
                       {promptVersions.length > 0 && promptVersions.length < MAX_IMPROVE_ITERATIONS && (
-                        <p className="mt-2 text-xs text-slate-500 flex items-center gap-1">
+                        <p className={`mt-2 text-xs flex items-center gap-1 ${darkMode ? 'text-slate-400' : 'text-slate-500'}`}>
                           <AlertCircle className="w-3 h-3" />
                           Note: Further improvements may reduce the prompt's distinctiveness.
                         </p>
@@ -1658,7 +1658,7 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
                 <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-indigo-500"></div>
               </div>
             ) : promptHistory.length === 0 ? (
-              <div className="text-center text-slate-400 mt-10 text-sm">No history yet.</div>
+              <div className={`text-center mt-10 text-sm ${darkMode ? 'text-slate-500' : 'text-slate-400'}`}>No history yet.</div>
             ) : (
               promptHistory
                 .filter(item => {
