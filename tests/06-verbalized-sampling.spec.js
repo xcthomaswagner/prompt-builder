@@ -81,42 +81,48 @@ test.describe('Verbalized Sampling', () => {
   });
 
   test('should show different button in Exploratory mode', async ({ page }) => {
-    // Navigate to Experiment Mode
+    // Navigate to Experiment Mode (defaults to Exploratory now)
     const experimentButton = page.locator('button').filter({ hasText: /experiment/i }).first();
     await experimentButton.click();
     await page.waitForTimeout(500);
     
-    // In Focused mode, should see "Run Experiment"
-    let runButton = page.locator('button').filter({ hasText: /Run Experiment/i });
-    await expect(runButton).toBeVisible();
+    // In default Exploratory mode, should see "Generate X Diverse Options" button
+    const vsButton = page.locator('button').filter({ hasText: /Generate.*Diverse Options/i });
+    await expect(vsButton).toBeVisible();
     
-    // Switch to Exploratory mode
-    const exploratoryButton = page.locator('button').filter({ hasText: /^Exploratory/ }).first();
-    await exploratoryButton.click();
+    // Switch to Focused mode
+    const focusedButton = page.locator('button').filter({ hasText: /^Focused/ }).first();
+    await focusedButton.click();
     await page.waitForTimeout(300);
     
-    // Should now see "Generate X Diverse Options" button (the main action button)
-    const vsButton = page.locator('button').filter({ hasText: /^Generate.*Diverse Options/i });
-    await expect(vsButton).toBeVisible();
+    // Should now see "Run Experiment" button
+    const runButton = page.locator('button').filter({ hasText: /Run Experiment/i });
+    await expect(runButton).toBeVisible();
   });
 
   test('should hide Matrix Selector in Exploratory mode', async ({ page }) => {
-    // Navigate to Experiment Mode
+    // Navigate to Experiment Mode (defaults to Exploratory now)
     const experimentButton = page.locator('button').filter({ hasText: /experiment/i }).first();
     await experimentButton.click();
     await page.waitForTimeout(500);
     
-    // In Focused mode, Matrix Selector (Tones, Lengths, Formats) should be visible
-    const tonesLabel = page.locator('text=/Tones/i');
-    await expect(tonesLabel).toBeVisible();
+    // In default Exploratory mode, Matrix Selector should be hidden
+    // So we first switch to Focused to see it
+    const focusedButton = page.locator('button').filter({ hasText: /^Focused/ }).first();
+    await focusedButton.click();
+    await page.waitForTimeout(300);
     
-    // Switch to Exploratory mode
+    // In Focused mode, Matrix Selector (Tones, Lengths, Formats) should be visible
+    const matrixLabel = page.locator('text=/Matrix Configuration/i');
+    await expect(matrixLabel).toBeVisible();
+    
+    // Switch back to Exploratory mode
     const exploratoryButton = page.locator('button').filter({ hasText: /^Exploratory/ }).first();
     await exploratoryButton.click();
     await page.waitForTimeout(300);
     
     // Matrix Selector should be hidden
-    await expect(tonesLabel).not.toBeVisible();
+    await expect(matrixLabel).not.toBeVisible();
   });
 
   test('should show info panel when clicking info button', async ({ page }) => {
@@ -203,7 +209,7 @@ test.describe('Verbalized Sampling', () => {
   });
 
   test('should change button color based on mode', async ({ page }) => {
-    // Navigate to Experiment Mode
+    // Navigate to Experiment Mode (defaults to Exploratory)
     const experimentButton = page.locator('button').filter({ hasText: /experiment/i }).first();
     await experimentButton.click();
     await page.waitForTimeout(500);
@@ -213,19 +219,19 @@ test.describe('Verbalized Sampling', () => {
     await promptInput.fill('Test prompt for button color');
     await page.waitForTimeout(300);
     
-    // In Focused mode, button should have cyan/blue gradient
-    let runButton = page.locator('button').filter({ hasText: /Run Experiment/i });
-    const focusedClasses = await runButton.getAttribute('class');
-    expect(focusedClasses).toContain('cyan');
-    
-    // Switch to Exploratory mode
-    const exploratoryButton = page.locator('button').filter({ hasText: /^Exploratory/ }).first();
-    await exploratoryButton.click();
-    await page.waitForTimeout(300);
-    
-    // VS button should have purple gradient
-    const vsButton = page.locator('button').filter({ hasText: /^Generate.*Diverse Options/i });
+    // In default Exploratory mode, button should have purple/pink gradient
+    const vsButton = page.locator('button').filter({ hasText: /Generate.*Diverse Options/i });
     const exploratoryClasses = await vsButton.getAttribute('class');
     expect(exploratoryClasses).toContain('purple');
+    
+    // Switch to Focused mode
+    const focusedButton = page.locator('button').filter({ hasText: /^Focused/ }).first();
+    await focusedButton.click();
+    await page.waitForTimeout(300);
+    
+    // Run Experiment button should have cyan gradient
+    const runButton = page.locator('button').filter({ hasText: /Run Experiment/i });
+    const focusedClasses = await runButton.getAttribute('class');
+    expect(focusedClasses).toContain('cyan');
   });
 });

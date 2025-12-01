@@ -69,15 +69,22 @@ test.describe('Regression Tests - Pre/Post Refactor', () => {
   test('REGRESSION: tone selection works', async ({ page }) => {
     await page.fill(selectors.promptInput, 'Test prompt');
     
-    // Find tone selector (it's a custom component, not a native select)
-    // Look for Tone label and associated buttons/chips
-    const toneSection = page.locator('div').filter({ has: page.locator('text=/Tone/i') }).first();
-    await expect(toneSection).toBeVisible({ timeout: 5000 });
+    // Expand Advanced Configuration section
+    const advancedButton = page.locator('button').filter({ hasText: /Advanced Configuration/i });
+    await expect(advancedButton).toBeVisible({ timeout: 5000 });
+    await advancedButton.click();
+    await page.waitForTimeout(300);
     
-    // Click on a tone chip (e.g., "Professional")
-    const toneChip = page.locator('button, span').filter({ hasText: /Professional/i }).first();
-    await expect(toneChip).toBeVisible({ timeout: 5000 });
-    await toneChip.click();
+    // Click the tone dropdown (shows current tone)
+    const toneDropdown = page.locator('button').filter({ hasText: /Professional|Friendly|Casual/i }).first();
+    await expect(toneDropdown).toBeVisible({ timeout: 5000 });
+    await toneDropdown.click();
+    await page.waitForTimeout(200);
+    
+    // Select a tone from dropdown
+    const toneOption = page.locator('button, div').filter({ hasText: /^Friendly$/ }).first();
+    await expect(toneOption).toBeVisible({ timeout: 5000 });
+    await toneOption.click();
     await page.waitForTimeout(200);
     
     // Generate and verify no errors
@@ -90,14 +97,22 @@ test.describe('Regression Tests - Pre/Post Refactor', () => {
   test('REGRESSION: format selection works', async ({ page }) => {
     await page.fill(selectors.promptInput, 'Test prompt');
     
-    // Find format selector
-    const formatSection = page.locator('div').filter({ has: page.locator('text=/Format/i') }).first();
-    await expect(formatSection).toBeVisible({ timeout: 5000 });
+    // Expand Advanced Configuration section
+    const advancedButton = page.locator('button').filter({ hasText: /Advanced Configuration/i });
+    await expect(advancedButton).toBeVisible({ timeout: 5000 });
+    await advancedButton.click();
+    await page.waitForTimeout(300);
     
-    // Click on a format chip (e.g., "Bullets")
-    const formatChip = page.locator('button, span').filter({ hasText: /Bullets/i }).first();
-    await expect(formatChip).toBeVisible({ timeout: 5000 });
-    await formatChip.click();
+    // Click the format dropdown (shows current format)
+    const formatDropdown = page.locator('button').filter({ hasText: /Paragraph|Bullet|Numbered/i }).first();
+    await expect(formatDropdown).toBeVisible({ timeout: 5000 });
+    await formatDropdown.click();
+    await page.waitForTimeout(200);
+    
+    // Select Bullet Points from dropdown
+    const formatOption = page.locator('button, div').filter({ hasText: /Bullet Points/i }).first();
+    await expect(formatOption).toBeVisible({ timeout: 5000 });
+    await formatOption.click();
     await page.waitForTimeout(200);
     
     // Generate

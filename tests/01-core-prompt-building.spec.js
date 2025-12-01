@@ -64,14 +64,22 @@ test.describe('Core Prompt Building', () => {
     // Fill input
     await page.fill(selectors.promptInput, input);
     
-    // Find tone section and click a tone chip (UI uses chips, not select)
-    const toneSection = page.locator('div').filter({ has: page.locator('text=/Tone/i') }).first();
-    await expect(toneSection).toBeVisible({ timeout: 5000 });
+    // Expand Advanced Configuration section
+    const advancedButton = page.locator('button').filter({ hasText: /Advanced Configuration/i });
+    await expect(advancedButton).toBeVisible({ timeout: 5000 });
+    await advancedButton.click();
+    await page.waitForTimeout(300);
     
-    // Click "Friendly" tone chip
-    const friendlyChip = page.locator('button, span').filter({ hasText: /Friendly/i }).first();
-    await expect(friendlyChip).toBeVisible({ timeout: 5000 });
-    await friendlyChip.click();
+    // Click the tone dropdown (it's a dropdown button with the tone name)
+    const toneDropdown = page.locator('button').filter({ hasText: /Professional|Friendly|Casual/i }).first();
+    await expect(toneDropdown).toBeVisible({ timeout: 5000 });
+    await toneDropdown.click();
+    await page.waitForTimeout(200);
+    
+    // Select Friendly from dropdown
+    const friendlyOption = page.locator('button, div').filter({ hasText: /^Friendly$/ }).first();
+    await expect(friendlyOption).toBeVisible({ timeout: 5000 });
+    await friendlyOption.click();
     await page.waitForTimeout(200);
     
     // Generate
@@ -89,14 +97,22 @@ test.describe('Core Prompt Building', () => {
     // Fill input
     await page.fill(selectors.promptInput, input);
     
-    // Find format section and click a format chip
-    const formatSection = page.locator('div').filter({ has: page.locator('text=/Format/i') }).first();
-    await expect(formatSection).toBeVisible({ timeout: 5000 });
+    // Expand Advanced Configuration section
+    const advancedButton = page.locator('button').filter({ hasText: /Advanced Configuration/i });
+    await expect(advancedButton).toBeVisible({ timeout: 5000 });
+    await advancedButton.click();
+    await page.waitForTimeout(300);
     
-    // Click "Bullets" format chip
-    const bulletsChip = page.locator('button, span').filter({ hasText: /Bullets/i }).first();
-    await expect(bulletsChip).toBeVisible({ timeout: 5000 });
-    await bulletsChip.click();
+    // Click format dropdown (it's a button showing current format)
+    const formatDropdown = page.locator('button').filter({ hasText: /Paragraph|Bullet|Numbered/i }).first();
+    await expect(formatDropdown).toBeVisible({ timeout: 5000 });
+    await formatDropdown.click();
+    await page.waitForTimeout(200);
+    
+    // Select Bullet Points from dropdown
+    const bulletOption = page.locator('button, div').filter({ hasText: /Bullet Points/i }).first();
+    await expect(bulletOption).toBeVisible({ timeout: 5000 });
+    await bulletOption.click();
     await page.waitForTimeout(200);
     
     // Generate
