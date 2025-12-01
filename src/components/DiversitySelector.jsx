@@ -75,35 +75,33 @@ function getTrackWidth(levelId) {
 /**
  * Novelty slider component - 5 levels based on paper's probability thresholds
  * 
- * Navigation: Uses continuous 0-100 range with early snap detection
+ * Navigation: Smooth continuous slider, level changes at 50% midpoint between levels
  * Data: Always outputs discrete level IDs (safe, balanced, diverse, creative, wild)
  *       which map to their log probability thresholds (1.0, 0.50, 0.10, 0.05, 0.01)
  */
 function NoveltySlider({ value, onChange, darkMode }) {
   const levels = DIVERSITY_LEVELS_ORDERED;
   const currentLevel = DIVERSITY_LEVELS[value];
-  const colors = getLevelColors(value);
   const currentIndex = levels.findIndex(l => l.id === value);
 
-  // Map continuous slider position (0-100) to discrete level index
-  // Thresholds at 10, 30, 50, 70 give early snap when moving toward next level
+  // Track live slider position for smooth visual movement
+  const [sliderPosition, setSliderPosition] = useState(currentIndex * 25);
+
+  // Map continuous position (0-100) to nearest level index (at 50% midpoint)
   const getIndexFromPosition = (position) => {
-    if (position < 10) return 0;       // Safe
-    if (position < 30) return 1;       // Balanced  
-    if (position < 50) return 2;       // Diverse
-    if (position < 70) return 3;       // Creative
-    return 4;                          // Wild
+    // Each level occupies 25% of the track, midpoints at 12.5, 37.5, 62.5, 87.5
+    if (position < 12.5) return 0;      // Safe
+    if (position < 37.5) return 1;      // Balanced  
+    if (position < 62.5) return 2;      // Diverse
+    if (position < 87.5) return 3;      // Creative
+    return 4;                           // Wild
   };
 
-  // Map discrete level index to slider position (center of each zone)
-  const getPositionFromIndex = (index) => {
-    const positions = [0, 20, 40, 60, 85]; // Visual positions for each level
-    return positions[index] || 40;
-  };
-
-  // Handle slider change - convert position to level ID
+  // Handle slider change - smooth movement, level changes at midpoint
   const handleSliderChange = (e) => {
     const position = parseInt(e.target.value, 10);
+    setSliderPosition(position); // Smooth visual update
+    
     const newIndex = getIndexFromPosition(position);
     if (newIndex !== currentIndex) {
       // onChange receives the level ID, which carries the correct probabilityThreshold
@@ -111,55 +109,49 @@ function NoveltySlider({ value, onChange, darkMode }) {
     }
   };
 
+  // Snap to center position when mouse released
+  const handleSliderRelease = () => {
+    setSliderPosition(currentIndex * 25);
+  };
+
+  // Click on a label to select that level
+  const handleLabelClick = (levelId, index) => {
+    onChange(levelId);
+    setSliderPosition(index * 25);
+  };
+
   return (
     <div className="space-y-3">
-      {/* Header with current level */}
+      {/* Header */}
       <div className="flex items-center justify-between">
         <label className={`text-sm font-medium ${darkMode ? 'text-slate-300' : 'text-slate-700'}`}>
           Novelty Level
         </label>
-        <div className="flex items-center gap-2">
-          <span className={`text-xs px-2 py-1 rounded-full font-medium ${darkMode ? colors.darkBg + ' ' + colors.darkText : colors.bg + ' ' + colors.text}`}>
-            {currentLevel.label}
-          </span>
-          <span className={`text-xs ${darkMode ? 'text-slate-500' : 'text-slate-400'}`}>
-            p&lt;{currentLevel.probabilityThreshold}
-          </span>
-        </div>
+        <span className={`text-xs ${darkMode ? 'text-slate-500' : 'text-slate-400'}`}>
+          p&lt;{currentLevel.probabilityThreshold}
+        </span>
       </div>
 
-      {/* Draggable range slider */}
+      {/* Smooth draggable slider */}
       <div className="relative">
-        {/* Custom track background with gradient */}
+        {/* Track background */}
         <div className={`absolute inset-x-0 top-1/2 -translate-y-1/2 h-2 rounded-full ${darkMode ? 'bg-slate-600' : 'bg-slate-200'}`}>
           <div 
-            className="h-full rounded-full transition-all duration-150 bg-gradient-to-r from-green-400 via-yellow-400 to-purple-500"
-            style={{ width: `${getPositionFromIndex(currentIndex)}%` }}
+            className="h-full rounded-full transition-all duration-100 bg-gradient-to-r from-green-400 via-yellow-400 to-purple-500"
+            style={{ width: `${sliderPosition}%` }}
           />
         </div>
-        
-        {/* Tick marks for snap points */}
-        <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 flex justify-between pointer-events-none">
-          {levels.map((level, index) => (
-            <div 
-              key={level.id}
-              className={`w-2 h-2 rounded-full ${
-                index <= currentIndex 
-                  ? 'bg-white border border-slate-300' 
-                  : darkMode ? 'bg-slate-500' : 'bg-slate-300'
-              }`}
-            />
-          ))}
-        </div>
 
-        {/* Actual range input - continuous for smooth drag, maps to discrete levels */}
+        {/* Range input - smooth continuous movement */}
         <input
           type="range"
           min="0"
           max="100"
           step="1"
-          value={getPositionFromIndex(currentIndex)}
+          value={sliderPosition}
           onChange={handleSliderChange}
+          onMouseUp={handleSliderRelease}
+          onTouchEnd={handleSliderRelease}
           className="relative w-full h-6 appearance-none bg-transparent cursor-pointer z-10
             [&::-webkit-slider-thumb]:appearance-none
             [&::-webkit-slider-thumb]:w-5
@@ -189,21 +181,30 @@ function NoveltySlider({ value, onChange, darkMode }) {
         />
       </div>
 
-      {/* Level labels - show all 5 */}
-      <div className="flex justify-between text-xs -mt-1">
-        {levels.map((level) => (
-          <span 
-            key={level.id}
-            className={`text-center ${
-              value === level.id 
-                ? darkMode ? 'text-cyan-400 font-medium' : 'text-cyan-600 font-medium'
-                : darkMode ? 'text-slate-500' : 'text-slate-400'
-            }`}
-            style={{ width: '20%' }}
-          >
-            {level.label}
-          </span>
-        ))}
+      {/* Level labels - positioned below slider, active one gets focus styling */}
+      <div className="flex justify-between -mt-1">
+        {levels.map((level, index) => {
+          const isSelected = value === level.id;
+          return (
+            <button
+              key={level.id}
+              type="button"
+              onClick={() => handleLabelClick(level.id, index)}
+              className={`
+                px-2 py-1 rounded-md text-xs font-medium transition-all duration-200 border
+                ${isSelected
+                  ? 'bg-cyan-50 border-cyan-500 text-cyan-700 shadow-sm ring-1 ring-cyan-200'
+                  : darkMode 
+                    ? 'bg-transparent border-transparent text-slate-500 hover:text-slate-400' 
+                    : 'bg-transparent border-transparent text-slate-400 hover:text-slate-600'
+                }
+              `}
+              style={{ minWidth: '60px', textAlign: 'center' }}
+            >
+              {level.label}
+            </button>
+          );
+        })}
       </div>
 
       {/* Description */}
