@@ -79,19 +79,26 @@ export default function usePromptHistory(db, user) {
 
   // Delete a history item
   const handleDeleteHistory = async (e, itemId) => {
+    e.preventDefault();
     e.stopPropagation();
-    if (!db || !user) return;
+    if (!db || !user) {
+      console.warn('Cannot delete: db or user not available', { db: !!db, user: !!user });
+      alert('Please sign in to delete history items.');
+      return;
+    }
     if (window.confirm('Are you sure you want to delete this prompt?')) {
       try {
         await deleteDoc(doc(db, 'users', user.uid, 'prompt_history', itemId));
       } catch (error) {
         console.error("Error deleting document:", error);
+        alert(`Failed to delete: ${error.message}`);
       }
     }
   };
 
   // Toggle private status
   const handleTogglePrivate = async (e, item) => {
+    e.preventDefault();
     e.stopPropagation();
     if (!db || !user) return;
     try {

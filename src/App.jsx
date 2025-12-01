@@ -1894,6 +1894,7 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
                       {/* Action Buttons */}
                       <div className={`absolute top-2 right-2 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity backdrop-blur-sm rounded-lg p-0.5 ${darkMode ? 'bg-slate-700/80' : 'bg-white/80'}`}>
                         <button
+                          type="button"
                           onClick={(e) => handleTogglePrivate(e, item)}
                           className={`p-1 rounded ${item.isPrivate ? 'text-indigo-500' : darkMode ? 'text-slate-400 hover:text-slate-200 hover:bg-slate-600' : 'text-slate-400 hover:text-slate-600 hover:bg-slate-100'}`}
                           title="Private"
@@ -1901,6 +1902,7 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
                           {item.isPrivate ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
                         </button>
                         <button
+                          type="button"
                           onClick={(e) => handleDeleteHistory(e, item.id)}
                           className={`p-1 rounded transition-colors ${darkMode ? 'text-slate-400 hover:text-red-400 hover:bg-red-900/30' : 'text-slate-400 hover:text-red-500 hover:bg-red-50'}`}
                           title="Delete"
