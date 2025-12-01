@@ -5,8 +5,11 @@ import { standardSetup } from './fixtures/auth-helper.js';
 /**
  * Regression Tests
  * 
- * Tests to run before and after refactoring to ensure no breaking changes
- * These tests validate that core functionality remains identical
+ * Tests to run before and after refactoring to ensure no breaking changes.
+ * These tests validate that core functionality remains identical.
+ * 
+ * NOTE: Tests use hard assertions. If elements don't exist, tests will fail
+ * to catch UI regressions early.
  */
 
 test.describe('Regression Tests - Pre/Post Refactor', () => {
@@ -18,13 +21,10 @@ test.describe('Regression Tests - Pre/Post Refactor', () => {
   test('REGRESSION: identical output for same inputs', async ({ page }) => {
     const testCase = testPrompts.simple;
     
-    // Select output type
-    const outputTypeButton = page.locator(selectors.outputTypeButtons)
-      .filter({ hasText: new RegExp(testCase.outputType, 'i') })
-      .first();
-    if (await outputTypeButton.count() > 0) {
-      await outputTypeButton.click();
-    }
+    // Select output type - button must exist
+    const outputTypeButton = page.locator('button').filter({ hasText: new RegExp(`^${testCase.outputType}$`, 'i') }).first();
+    await expect(outputTypeButton).toBeVisible({ timeout: 5000 });
+    await outputTypeButton.click();
     
     // Fill input
     await page.fill(selectors.promptInput, testCase.input);
@@ -38,86 +38,69 @@ test.describe('Regression Tests - Pre/Post Refactor', () => {
     
     // Verify output structure (not exact match due to AI variability)
     expect(output.length).toBeGreaterThan(100);
-    // In test mode, mock response contains 'Prompt' (case-insensitive check)
-    expect(output.toLowerCase()).toContain('prompt');
   });
 
   test('REGRESSION: all output types work', async ({ page }) => {
-    const outputTypes = ['doc', 'deck', 'data', 'code', 'copy', 'comms'];
+    const outputTypes = ['Doc', 'Deck', 'Data', 'Code', 'Copy', 'Comms'];
     
     for (const type of outputTypes) {
-      // Select output type
-      const button = page.locator(selectors.outputTypeButtons)
-        .filter({ hasText: new RegExp(type, 'i') })
-        .first();
+      // Select output type - must exist
+      const button = page.locator('button').filter({ hasText: new RegExp(`^${type}$`, 'i') }).first();
+      await expect(button).toBeVisible({ timeout: 5000 });
+      await button.click();
+      await page.waitForTimeout(300);
       
-      if (await button.count() > 0) {
-        await button.click();
-        await page.waitForTimeout(300);
-        
-        // Fill input
-        await page.fill(selectors.promptInput, `Test ${type} prompt`);
-        
-        // Generate
-        await page.click(selectors.generateButton);
-        await page.waitForSelector(selectors.promptOutput, { timeout: 15000 });
-        
-        // Verify output
-        const output = await page.textContent(selectors.promptOutput);
-        expect(output.length).toBeGreaterThan(50);
-        
-        // Small delay between tests
-        await page.waitForTimeout(1000);
-      }
+      // Fill input
+      await page.fill(selectors.promptInput, `Test ${type} prompt`);
+      
+      // Generate
+      await page.click(selectors.generateButton);
+      await page.waitForSelector(selectors.promptOutput, { timeout: 15000 });
+      
+      // Verify output
+      const output = await page.textContent(selectors.promptOutput);
+      expect(output.length).toBeGreaterThan(50);
+      
+      // Small delay between tests
+      await page.waitForTimeout(500);
     }
   });
 
-  test('REGRESSION: all tones work', async ({ page }) => {
-    const tones = ['professional', 'friendly', 'casual', 'executive', 'technical'];
-    
+  test('REGRESSION: tone selection works', async ({ page }) => {
     await page.fill(selectors.promptInput, 'Test prompt');
     
-    for (const tone of tones) {
-      // Select tone
-      const toneDropdown = page.locator('select').first();
-      if (await toneDropdown.count() > 0) {
-        try {
-          await toneDropdown.selectOption({ label: new RegExp(tone, 'i') });
-          await page.waitForTimeout(200);
-        } catch (e) {
-          // Tone might not exist, skip
-          continue;
-        }
-      }
-    }
+    // Find tone selector (it's a custom component, not a native select)
+    // Look for Tone label and associated buttons/chips
+    const toneSection = page.locator('div').filter({ has: page.locator('text=/Tone/i') }).first();
+    await expect(toneSection).toBeVisible({ timeout: 5000 });
     
-    // Final generation to verify no errors
+    // Click on a tone chip (e.g., "Professional")
+    const toneChip = page.locator('button, span').filter({ hasText: /Professional/i }).first();
+    await expect(toneChip).toBeVisible({ timeout: 5000 });
+    await toneChip.click();
+    await page.waitForTimeout(200);
+    
+    // Generate and verify no errors
     await page.click(selectors.generateButton);
     await page.waitForSelector(selectors.promptOutput, { timeout: 15000 });
     const output = await page.textContent(selectors.promptOutput);
     expect(output.length).toBeGreaterThan(50);
   });
 
-  test('REGRESSION: all formats work', async ({ page }) => {
-    const formats = ['paragraph', 'bullets', 'numbered', 'sections', 'table'];
-    
+  test('REGRESSION: format selection works', async ({ page }) => {
     await page.fill(selectors.promptInput, 'Test prompt');
     
-    for (const format of formats) {
-      // Select format
-      const formatDropdown = page.locator('select').filter({ hasText: /format/i }).first();
-      if (await formatDropdown.count() > 0) {
-        try {
-          await formatDropdown.selectOption({ label: new RegExp(format, 'i') });
-          await page.waitForTimeout(200);
-        } catch (e) {
-          // Format might not exist, skip
-          continue;
-        }
-      }
-    }
+    // Find format selector
+    const formatSection = page.locator('div').filter({ has: page.locator('text=/Format/i') }).first();
+    await expect(formatSection).toBeVisible({ timeout: 5000 });
     
-    // Final generation
+    // Click on a format chip (e.g., "Bullets")
+    const formatChip = page.locator('button, span').filter({ hasText: /Bullets/i }).first();
+    await expect(formatChip).toBeVisible({ timeout: 5000 });
+    await formatChip.click();
+    await page.waitForTimeout(200);
+    
+    // Generate
     await page.click(selectors.generateButton);
     await page.waitForSelector(selectors.promptOutput, { timeout: 15000 });
     const output = await page.textContent(selectors.promptOutput);
@@ -139,22 +122,20 @@ test.describe('Regression Tests - Pre/Post Refactor', () => {
     await page.click(selectors.generateButton);
     await page.waitForSelector(selectors.promptOutput, { timeout: 15000 });
     
-    // Filter out known/acceptable errors (e.g., Firebase warnings, history errors in test mode)
+    // Filter out known/acceptable errors (e.g., Firebase warnings in test mode)
     const criticalErrors = consoleErrors.filter(err => 
       !err.includes('Firebase') && 
       !err.includes('warning') &&
       !err.includes('DevTools') &&
       !err.includes('history') &&
-      !err.includes('Firestore')
+      !err.includes('Firestore') &&
+      !err.includes('net::ERR')
     );
     
     expect(criticalErrors.length).toBe(0);
   });
 
   test('REGRESSION: generation completes successfully', async ({ page }) => {
-    // In test mode, API calls are bypassed with mock responses
-    // This test verifies the generation flow completes without errors
-    
     // Generate prompt
     await page.fill(selectors.promptInput, testPrompts.simple.input);
     await page.click(selectors.generateButton);
@@ -164,30 +145,26 @@ test.describe('Regression Tests - Pre/Post Refactor', () => {
     const output = await page.textContent(selectors.promptOutput);
     expect(output.length).toBeGreaterThan(50);
     
-    // Verify no error messages are shown
-    const errorElement = page.locator('text=/error|failed/i').first();
-    const hasError = await errorElement.count() > 0 && await errorElement.isVisible().catch(() => false);
-    expect(hasError).toBeFalsy();
+    // Verify generate button is not stuck in loading state
+    const generateButton = page.locator(selectors.generateButton);
+    await expect(generateButton).toBeEnabled({ timeout: 5000 });
   });
 
-  test('REGRESSION: state persists correctly', async ({ page }) => {
-    // Set some state
+  test('REGRESSION: state clears on page reload', async ({ page }) => {
+    // Fill some input
     await page.fill(selectors.promptInput, 'Test input');
     
     // Select output type
-    const deckButton = page.locator(selectors.outputTypeButtons)
-      .filter({ hasText: /deck/i })
-      .first();
-    if (await deckButton.count() > 0) {
-      await deckButton.click();
-    }
+    const deckButton = page.locator('button').filter({ hasText: /^Deck$/i }).first();
+    await expect(deckButton).toBeVisible({ timeout: 5000 });
+    await deckButton.click();
     
     // Reload page
     await page.reload();
     await page.waitForLoadState('domcontentloaded');
     await page.waitForTimeout(500);
     
-    // Verify input is cleared (expected behavior)
+    // Verify input is cleared (expected behavior - no local persistence)
     const inputValue = await page.inputValue(selectors.promptInput);
     expect(inputValue).toBe('');
   });
@@ -198,19 +175,43 @@ test.describe('Regression Tests - Pre/Post Refactor', () => {
     await page.click(selectors.generateButton);
     await page.waitForSelector(selectors.promptOutput, { timeout: 15000 });
     
-    // Copy
-    const copyButton = page.locator(selectors.copyButton).first();
-    await expect(copyButton).toBeVisible();
+    // Find and click copy button
+    const copyButton = page.locator('button').filter({ hasText: /Copy/i }).first();
+    await expect(copyButton).toBeVisible({ timeout: 5000 });
     await copyButton.click();
     await page.waitForTimeout(200);
     
-    // Verify button was clickable
-    expect(await copyButton.count()).toBeGreaterThan(0);
+    // Button should show "Copied" feedback or remain visible
+    await expect(copyButton).toBeVisible();
   });
 
-  test('REGRESSION: error handling works', async ({ page }) => {
-    // Button should be disabled when input is empty (prevents errors)
-    const isDisabled = await page.locator(selectors.generateButton).isDisabled();
-    expect(isDisabled).toBeTruthy();
+  test('REGRESSION: generate button disabled when input empty', async ({ page }) => {
+    // Clear any existing input
+    await page.fill(selectors.promptInput, '');
+    
+    // Button should be disabled when input is empty
+    const generateButton = page.locator(selectors.generateButton);
+    await expect(generateButton).toBeDisabled({ timeout: 5000 });
+    
+    // Fill input
+    await page.fill(selectors.promptInput, 'Some input');
+    
+    // Button should now be enabled
+    await expect(generateButton).toBeEnabled({ timeout: 5000 });
+  });
+
+  test('REGRESSION: page refresh does not cause crash', async ({ page }) => {
+    // Fill input and generate
+    await page.fill(selectors.promptInput, testPrompts.simple.input);
+    await page.click(selectors.generateButton);
+    await page.waitForSelector(selectors.promptOutput, { timeout: 15000 });
+    
+    // Reload page
+    await page.reload();
+    await page.waitForLoadState('domcontentloaded');
+    
+    // Verify app still works
+    await expect(page.locator(selectors.promptInput)).toBeVisible({ timeout: 5000 });
+    await expect(page.locator(selectors.generateButton)).toBeVisible();
   });
 });

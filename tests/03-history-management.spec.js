@@ -6,6 +6,9 @@ import { standardSetup } from './fixtures/auth-helper.js';
  * History Management Tests
  * 
  * Tests prompt history features (save, load, delete, clear)
+ * 
+ * NOTE: History sidebar is always visible in builder mode (no button to open it).
+ * History items are identified by delete buttons with title="Delete".
  */
 
 test.describe('History Management', () => {
@@ -14,56 +17,69 @@ test.describe('History Management', () => {
     await standardSetup(page);
   });
 
+  // Helper: Wait for history sidebar to be ready
+  async function waitForHistorySidebar(page) {
+    // The sidebar contains "Prompt History" heading
+    const sidebar = page.locator('text="Prompt History"');
+    await expect(sidebar).toBeVisible({ timeout: 10000 });
+  }
+
+  // Helper: Get history item count (by counting delete buttons)
+  async function getHistoryCount(page) {
+    const deleteButtons = page.locator('button[title="Delete"]');
+    return await deleteButtons.count();
+  }
+
   test('should save prompt to history after generation', async ({ page }) => {
     const { input } = testPrompts.simple;
+    
+    // Wait for sidebar to load
+    await waitForHistorySidebar(page);
+    
+    // Get initial history count
+    const initialCount = await getHistoryCount(page);
     
     // Generate a prompt
     await page.fill(selectors.promptInput, input);
     await page.click(selectors.generateButton);
     await page.waitForSelector(selectors.promptOutput, { timeout: 15000 });
     
-    // Open history panel
-    const historyButton = page.locator(selectors.historyButton).first();
-    if (await historyButton.count() > 0) {
-      await historyButton.click();
-      await page.waitForTimeout(500);
-      
-      // Check for history items
-      const historyItems = page.locator('[data-testid="history-item"], .history-item');
-      if (await historyItems.count() > 0) {
-        expect(await historyItems.count()).toBeGreaterThan(0);
-      }
-    }
+    // Wait for Firebase to save the history item
+    await page.waitForTimeout(2000);
+    
+    // Verify history count increased
+    const newCount = await getHistoryCount(page);
+    expect(newCount).toBeGreaterThan(initialCount);
   });
 
   test('should load prompt from history', async ({ page }) => {
     const { input } = testPrompts.simple;
     
-    // Generate a prompt first
+    // Generate a prompt first to create history
     await page.fill(selectors.promptInput, input);
     await page.click(selectors.generateButton);
     await page.waitForSelector(selectors.promptOutput, { timeout: 15000 });
     
-    // Clear input
-    await page.fill(selectors.promptInput, '');
+    // Wait for history to save
+    await page.waitForTimeout(2000);
     
-    // Open history
-    const historyButton = page.locator('button').filter({ hasText: /history/i }).first();
-    if (await historyButton.count() > 0) {
-      await historyButton.click();
-      await page.waitForTimeout(500);
-      
-      // Click first history item
-      const firstHistoryItem = page.locator('[data-testid="history-item"], .history-item').first();
-      if (await firstHistoryItem.count() > 0) {
-        await firstHistoryItem.click();
-        await page.waitForTimeout(500);
-        
-        // Verify input is populated
-        const inputValue = await page.inputValue(selectors.promptInput);
-        expect(inputValue.length).toBeGreaterThan(0);
-      }
-    }
+    // Clear the input
+    await page.fill(selectors.promptInput, '');
+    const clearedValue = await page.inputValue(selectors.promptInput);
+    expect(clearedValue).toBe('');
+    
+    // Click on a history item card (the clickable area, not the delete button)
+    // History cards are divs with group class that contain delete buttons
+    const historyCard = page.locator('div.group').filter({ has: page.locator('button[title="Delete"]') }).first();
+    await expect(historyCard).toBeVisible({ timeout: 5000 });
+    await historyCard.click();
+    
+    // Wait for the prompt to load
+    await page.waitForTimeout(500);
+    
+    // Verify input is now populated
+    const inputValue = await page.inputValue(selectors.promptInput);
+    expect(inputValue.length).toBeGreaterThan(0);
   });
 
   test('should delete individual history item', async ({ page }) => {
@@ -74,15 +90,14 @@ test.describe('History Management', () => {
     await page.click(selectors.generateButton);
     await page.waitForSelector(selectors.promptOutput, { timeout: 15000 });
     
-    // History sidebar is always visible in builder mode - find delete buttons
-    // Wait for history items to load (they come from Firebase)
+    // Wait for history items to load from Firebase
     const deleteButtons = page.locator('button[title="Delete"]');
     await expect(deleteButtons.first()).toBeVisible({ timeout: 10000 });
     
     const initialCount = await deleteButtons.count();
     expect(initialCount).toBeGreaterThan(0);
     
-    // Store URL to detect page refresh
+    // Store URL to detect page refresh (regression test for bug)
     const urlBefore = page.url();
     
     // Handle the confirmation dialog
@@ -93,8 +108,10 @@ test.describe('History Management', () => {
     // Click the first delete button
     await deleteButtons.first().click();
     
-    // Wait and verify NO page refresh occurred
-    await page.waitForTimeout(1000);
+    // Wait for Firebase delete to complete
+    await page.waitForTimeout(1500);
+    
+    // CRITICAL: Verify NO page refresh occurred (this was a bug)
     expect(page.url()).toBe(urlBefore);
     
     // Verify count decreased by exactly 1
@@ -102,39 +119,33 @@ test.describe('History Management', () => {
     expect(newCount).toBe(initialCount - 1);
   });
 
-  test('should clear all history', async ({ page }) => {
+  test('should toggle private status on history item', async ({ page }) => {
     const { input } = testPrompts.simple;
     
-    // Generate a prompt
+    // Generate a prompt first
     await page.fill(selectors.promptInput, input);
     await page.click(selectors.generateButton);
     await page.waitForSelector(selectors.promptOutput, { timeout: 15000 });
     
-    // Open history
-    const historyButton = page.locator('button').filter({ hasText: /history/i }).first();
-    if (await historyButton.count() > 0) {
-      await historyButton.click();
-      await page.waitForTimeout(500);
-      
-      // Find clear all button
-      const clearButton = page.locator('button').filter({ hasText: /clear all|clear history/i }).first();
-      if (await clearButton.count() > 0) {
-        await clearButton.click();
-        await page.waitForTimeout(500);
-        
-        // Confirm if dialog appears
-        const confirmButton = page.locator('button').filter({ hasText: /confirm|yes|ok/i }).first();
-        if (await confirmButton.count() > 0) {
-          await confirmButton.click();
-          await page.waitForTimeout(500);
-        }
-        
-        // Verify history is empty
-        const historyItems = page.locator('[data-testid="history-item"], .history-item');
-        const count = await historyItems.count();
-        expect(count).toBe(0);
-      }
-    }
+    // Wait for history to load
+    await page.waitForTimeout(2000);
+    
+    // Find the private toggle button (has title="Private")
+    const privateButton = page.locator('button[title="Private"]').first();
+    await expect(privateButton).toBeVisible({ timeout: 5000 });
+    
+    // Store URL to detect page refresh
+    const urlBefore = page.url();
+    
+    // Click the private button
+    await privateButton.click();
+    
+    // Wait and verify no page refresh
+    await page.waitForTimeout(1000);
+    expect(page.url()).toBe(urlBefore);
+    
+    // The button should still be visible (not crashed)
+    await expect(privateButton).toBeVisible();
   });
 
   test('should persist history across page reloads', async ({ page }) => {
@@ -145,76 +156,27 @@ test.describe('History Management', () => {
     await page.click(selectors.generateButton);
     await page.waitForSelector(selectors.promptOutput, { timeout: 15000 });
     
+    // Wait for Firebase to save
+    await page.waitForTimeout(2000);
+    
+    // Get count before reload
+    const countBefore = await getHistoryCount(page);
+    expect(countBefore).toBeGreaterThan(0);
+    
     // Reload page
     await page.reload();
     await page.waitForLoadState('domcontentloaded');
-    await page.waitForTimeout(500);
     
-    // Open history
-    const historyButton = page.locator('button').filter({ hasText: /history/i }).first();
-    if (await historyButton.count() > 0) {
-      await historyButton.click();
-      await page.waitForTimeout(500);
-      
-      // Verify history still exists
-      const historyItems = page.locator('[data-testid="history-item"], .history-item');
-      if (await historyItems.count() > 0) {
-        expect(await historyItems.count()).toBeGreaterThan(0);
-      }
-    }
+    // Wait for history sidebar to load
+    await waitForHistorySidebar(page);
+    await page.waitForTimeout(2000);
+    
+    // Verify history still exists
+    const countAfter = await getHistoryCount(page);
+    expect(countAfter).toBe(countBefore);
   });
 
-  test('should show empty state when no history', async ({ page }) => {
-    // Clear history first if it exists
-    const historyButton = page.locator('button').filter({ hasText: /history/i }).first();
-    if (await historyButton.count() > 0) {
-      await historyButton.click();
-      await page.waitForTimeout(500);
-      
-      const clearButton = page.locator('button').filter({ hasText: /clear all/i }).first();
-      if (await clearButton.count() > 0) {
-        await clearButton.click();
-        await page.waitForTimeout(300);
-        
-        const confirmButton = page.locator('button').filter({ hasText: /confirm|yes/i }).first();
-        if (await confirmButton.count() > 0) {
-          await confirmButton.click();
-          await page.waitForTimeout(300);
-        }
-      }
-      
-      // Check for empty state message
-      const emptyState = page.locator('text=/no history|empty|no prompts/i');
-      if (await emptyState.count() > 0) {
-        await expect(emptyState).toBeVisible();
-      }
-    }
-  });
-
-  test('should show history item metadata', async ({ page }) => {
-    const { input } = testPrompts.simple;
-    
-    // Generate a prompt
-    await page.fill(selectors.promptInput, input);
-    await page.click(selectors.generateButton);
-    await page.waitForSelector(selectors.promptOutput, { timeout: 15000 });
-    
-    // Open history
-    const historyButton = page.locator('button').filter({ hasText: /history/i }).first();
-    if (await historyButton.count() > 0) {
-      await historyButton.click();
-      await page.waitForTimeout(500);
-      
-      const firstItem = page.locator('[data-testid="history-item"], .history-item').first();
-      if (await firstItem.count() > 0) {
-        // Check for timestamp or date
-        const hasTimestamp = await page.locator('text=/ago|today|yesterday|\\d+:\\d+/i').count() > 0;
-        expect(hasTimestamp).toBeTruthy();
-      }
-    }
-  });
-
-  test('should show empty state with clock icon when search has no results', async ({ page }) => {
+  test('should filter history with search', async ({ page }) => {
     const { input } = testPrompts.simple;
     
     // Generate a prompt to create history
@@ -223,11 +185,15 @@ test.describe('History Management', () => {
     await page.waitForSelector(selectors.promptOutput, { timeout: 15000 });
     
     // Wait for history to update
-    await page.waitForTimeout(1000);
+    await page.waitForTimeout(2000);
     
     // Find the search input in history sidebar
-    const searchInput = page.locator('input[placeholder*="Search prompts"]');
-    await expect(searchInput).toBeVisible();
+    const searchInput = page.locator('input[placeholder*="Search"]');
+    await expect(searchInput).toBeVisible({ timeout: 5000 });
+    
+    // Get count before search
+    const countBefore = await getHistoryCount(page);
+    expect(countBefore).toBeGreaterThan(0);
     
     // Enter nonsensical search query that won't match anything
     await searchInput.fill('xyzqwertyzxcvbnmasdfghjkl123456789');
@@ -235,12 +201,32 @@ test.describe('History Management', () => {
     // Wait for search to filter
     await page.waitForTimeout(500);
     
+    // Verify history items are filtered out
+    const countAfter = await getHistoryCount(page);
+    expect(countAfter).toBe(0);
+    
     // Verify empty state is displayed
     const emptyStateText = page.locator('text=/No history items found/i');
     await expect(emptyStateText).toBeVisible();
+  });
+
+  test('should show history item metadata (timestamp)', async ({ page }) => {
+    const { input } = testPrompts.simple;
     
-    // Verify clock icon is present (lucide-react Clock component renders as svg)
-    const clockIcon = page.locator('svg').filter({ has: page.locator('circle') }).first();
-    await expect(clockIcon).toBeVisible();
+    // Generate a prompt
+    await page.fill(selectors.promptInput, input);
+    await page.click(selectors.generateButton);
+    await page.waitForSelector(selectors.promptOutput, { timeout: 15000 });
+    
+    // Wait for history to load
+    await page.waitForTimeout(2000);
+    
+    // Verify there's at least one history item
+    const deleteButtons = page.locator('button[title="Delete"]');
+    await expect(deleteButtons.first()).toBeVisible({ timeout: 5000 });
+    
+    // Check for timestamp text (e.g., "Just now", "X minutes ago", "today")
+    const timestampPattern = page.locator('text=/just now|ago|today|yesterday|\\d+\\/\\d+/i');
+    await expect(timestampPattern.first()).toBeVisible({ timeout: 5000 });
   });
 });

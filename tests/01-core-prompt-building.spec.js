@@ -64,11 +64,15 @@ test.describe('Core Prompt Building', () => {
     // Fill input
     await page.fill(selectors.promptInput, input);
     
-    // Change tone to "Friendly"
-    const toneSelector = page.locator('select').filter({ hasText: /professional|friendly/i }).first();
-    if (await toneSelector.count() > 0) {
-      await toneSelector.selectOption({ label: /friendly/i });
-    }
+    // Find tone section and click a tone chip (UI uses chips, not select)
+    const toneSection = page.locator('div').filter({ has: page.locator('text=/Tone/i') }).first();
+    await expect(toneSection).toBeVisible({ timeout: 5000 });
+    
+    // Click "Friendly" tone chip
+    const friendlyChip = page.locator('button, span').filter({ hasText: /Friendly/i }).first();
+    await expect(friendlyChip).toBeVisible({ timeout: 5000 });
+    await friendlyChip.click();
+    await page.waitForTimeout(200);
     
     // Generate
     await page.click(selectors.generateButton);
@@ -79,23 +83,21 @@ test.describe('Core Prompt Building', () => {
     expect(outputText.length).toBeGreaterThan(50);
   });
 
-  test('should change style and format', async ({ page }) => {
+  test('should change format and generate', async ({ page }) => {
     const { input } = testPrompts.simple;
     
     // Fill input
     await page.fill(selectors.promptInput, input);
     
-    // Change style (if dropdown exists)
-    const styleDropdown = page.locator('select').filter({ hasText: /direct|narrative/i }).first();
-    if (await styleDropdown.count() > 0) {
-      await styleDropdown.selectOption({ index: 1 });
-    }
+    // Find format section and click a format chip
+    const formatSection = page.locator('div').filter({ has: page.locator('text=/Format/i') }).first();
+    await expect(formatSection).toBeVisible({ timeout: 5000 });
     
-    // Change format (if dropdown exists)
-    const formatDropdown = page.locator('select').filter({ hasText: /paragraph|bullets/i }).first();
-    if (await formatDropdown.count() > 0) {
-      await formatDropdown.selectOption({ label: /bullets/i });
-    }
+    // Click "Bullets" format chip
+    const bulletsChip = page.locator('button, span').filter({ hasText: /Bullets/i }).first();
+    await expect(bulletsChip).toBeVisible({ timeout: 5000 });
+    await bulletsChip.click();
+    await page.waitForTimeout(200);
     
     // Generate
     await page.click(selectors.generateButton);
