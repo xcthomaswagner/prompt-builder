@@ -69,34 +69,37 @@ test.describe('History Management', () => {
   test('should delete individual history item', async ({ page }) => {
     const { input } = testPrompts.simple;
     
-    // Generate a prompt
+    // Generate a prompt first to ensure there's history
     await page.fill(selectors.promptInput, input);
     await page.click(selectors.generateButton);
     await page.waitForSelector(selectors.promptOutput, { timeout: 15000 });
     
-    // Open history
-    const historyButton = page.locator('button').filter({ hasText: /history/i }).first();
-    if (await historyButton.count() > 0) {
-      await historyButton.click();
-      await page.waitForTimeout(500);
-      
-      // Get initial count
-      const historyItems = page.locator('[data-testid="history-item"], .history-item');
-      const initialCount = await historyItems.count();
-      
-      if (initialCount > 0) {
-        // Find delete button on first item
-        const deleteButton = page.locator('button').filter({ hasText: /delete|remove|×/i }).first();
-        if (await deleteButton.count() > 0) {
-          await deleteButton.click();
-          await page.waitForTimeout(500);
-          
-          // Verify count decreased
-          const newCount = await historyItems.count();
-          expect(newCount).toBeLessThan(initialCount);
-        }
-      }
-    }
+    // History sidebar is always visible in builder mode - find delete buttons
+    // Wait for history items to load (they come from Firebase)
+    const deleteButtons = page.locator('button[title="Delete"]');
+    await expect(deleteButtons.first()).toBeVisible({ timeout: 10000 });
+    
+    const initialCount = await deleteButtons.count();
+    expect(initialCount).toBeGreaterThan(0);
+    
+    // Store URL to detect page refresh
+    const urlBefore = page.url();
+    
+    // Handle the confirmation dialog
+    page.once('dialog', async dialog => {
+      await dialog.accept();
+    });
+    
+    // Click the first delete button
+    await deleteButtons.first().click();
+    
+    // Wait and verify NO page refresh occurred
+    await page.waitForTimeout(1000);
+    expect(page.url()).toBe(urlBefore);
+    
+    // Verify count decreased by exactly 1
+    const newCount = await deleteButtons.count();
+    expect(newCount).toBe(initialCount - 1);
   });
 
   test('should clear all history', async ({ page }) => {
