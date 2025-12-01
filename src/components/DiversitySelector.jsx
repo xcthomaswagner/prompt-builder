@@ -125,7 +125,7 @@ function NoveltySlider({ value, onChange, darkMode }) {
       {/* Header */}
       <div className="flex items-center justify-between">
         <label className={`text-sm font-medium ${darkMode ? 'text-slate-300' : 'text-slate-700'}`}>
-          Novelty Level
+          Novelty Level Slider
         </label>
         <span className={`text-xs ${darkMode ? 'text-slate-500' : 'text-slate-400'}`}>
           p&lt;{currentLevel.probabilityThreshold}
