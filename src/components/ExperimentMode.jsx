@@ -77,7 +77,7 @@ export default function ExperimentMode({ callLLM, defaultOutputType = 'doc', db,
   });
 
   // Verbalized Sampling state
-  const [generationMode, setGenerationMode] = useState('focused'); // 'focused' | 'exploratory'
+  const [generationMode, setGenerationMode] = useState('exploratory'); // 'exploratory' | 'focused'
   const [diversityLevel, setDiversityLevel] = useState('balanced'); // 'safe' | 'balanced' | 'diverse' | 'creative' | 'wild'
   const [vsOptions, setVsOptions] = useState([]);
   const [vsLoading, setVsLoading] = useState(false);

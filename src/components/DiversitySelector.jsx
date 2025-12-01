@@ -266,19 +266,19 @@ export default function DiversitySelector({
       <div className="p-4 space-y-4">
         <div className="flex gap-3">
           <ModeButton
-            icon={Target}
-            label="Focused"
-            description="Single best answer"
-            selected={mode === 'focused'}
-            onClick={() => !disabled && onModeChange('focused')}
-            darkMode={darkMode}
-          />
-          <ModeButton
             icon={Sparkles}
             label="Exploratory"
             description="5 diverse options"
             selected={mode === 'exploratory'}
             onClick={() => !disabled && onModeChange('exploratory')}
+            darkMode={darkMode}
+          />
+          <ModeButton
+            icon={Target}
+            label="Focused"
+            description="Single best answer"
+            selected={mode === 'focused'}
+            onClick={() => !disabled && onModeChange('focused')}
             darkMode={darkMode}
           />
         </div>
