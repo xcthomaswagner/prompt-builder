@@ -5,7 +5,7 @@
 import { useState } from 'react';
 import { ChevronDown, ChevronUp, FileText } from 'lucide-react';
 import { FormField, ButtonGroup, Checkbox, Select, MultiSelect } from '../ui/FormField.jsx';
-import { SECTION_STRUCTURES } from '../../lib/promptSpecs/templates/doc.js';
+import { SECTION_STRUCTURES, AGENDA_STRUCTURES } from '../../lib/promptSpecs/templates/doc.js';
 
 const DOCUMENT_TYPES = [
   { value: 'requirements', label: 'Requirements' },
@@ -13,6 +13,20 @@ const DOCUMENT_TYPES = [
   { value: 'analysis', label: 'Analysis' },
   { value: 'whitepaper', label: 'Whitepaper' },
   { value: 'proposal', label: 'Proposal' },
+  { value: 'agenda', label: 'Agenda' },
+];
+
+const AGENDA_TYPES = [
+  { value: 'call', label: 'Call' },
+  { value: 'meeting', label: 'Meeting' },
+  { value: 'workshop', label: 'Workshop' },
+  { value: 'standup', label: 'Standup' },
+  { value: 'review', label: 'Review' },
+  { value: 'planning', label: 'Planning' },
+  { value: 'kickoff', label: 'Kickoff' },
+  { value: 'board', label: 'Board' },
+  { value: 'interview', label: 'Interview' },
+  { value: 'one_on_one', label: '1:1' },
 ];
 
 const CITATION_STYLES = [
@@ -67,10 +81,18 @@ export default function DocForm({ spec, onChange, darkMode = false }) {
     });
   };
 
-  // Get suggested sections for document type
-  const suggestedSections = typeSpecific.document_type
-    ? SECTION_STRUCTURES[typeSpecific.document_type] || []
-    : [];
+  // Get suggested sections for document type (with agenda sub-type support)
+  const getSuggestedSections = () => {
+    if (typeSpecific.document_type === 'agenda' && typeSpecific.agenda_type) {
+      return AGENDA_STRUCTURES[typeSpecific.agenda_type] || SECTION_STRUCTURES.agenda;
+    }
+    return typeSpecific.document_type
+      ? SECTION_STRUCTURES[typeSpecific.document_type] || []
+      : [];
+  };
+  const suggestedSections = getSuggestedSections();
+
+  const isAgenda = typeSpecific.document_type === 'agenda';
 
   return (
     <div className={`rounded-xl shadow-sm border overflow-hidden ${darkMode ? 'bg-slate-800 border-slate-700' : 'bg-white border-slate-200'}`}>
@@ -97,13 +119,31 @@ export default function DocForm({ spec, onChange, darkMode = false }) {
               onChange={(v) => {
                 // Update document_type and auto-suggest sections in one call
                 const additionalFields = v && SECTION_STRUCTURES[v]
-                  ? { section_structure: SECTION_STRUCTURES[v] }
-                  : {};
+                  ? { section_structure: SECTION_STRUCTURES[v], agenda_type: null }
+                  : { agenda_type: null };
                 handleChange('document_type', v, additionalFields);
               }}
               darkMode={darkMode}
             />
           </FormField>
+
+          {/* Agenda Type - Only shown when Agenda is selected */}
+          {isAgenda && (
+            <FormField label="Agenda Type" hint="What type of agenda is this?" darkMode={darkMode}>
+              <ButtonGroup
+                options={AGENDA_TYPES}
+                value={typeSpecific.agenda_type}
+                onChange={(v) => {
+                  // Update agenda_type and auto-suggest sections
+                  const sections = v && AGENDA_STRUCTURES[v]
+                    ? AGENDA_STRUCTURES[v]
+                    : SECTION_STRUCTURES.agenda;
+                  handleChange('agenda_type', v, { section_structure: sections });
+                }}
+                darkMode={darkMode}
+              />
+            </FormField>
+          )}
 
           {/* Two Column Layout - Sections | Settings & Options */}
           {suggestedSections.length > 0 && (

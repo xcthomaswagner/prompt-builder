@@ -17,11 +17,12 @@
  * @typedef {Object.<string, PatternRule[]>} TypePatterns
  * @property {PatternRule[]} outputType - Patterns for main output types
  * @property {PatternRule[]} deck_type - Patterns for deck sub-types
- * @property {PatternRules[]} data_type - Patterns for data sub-types
- * @property {PatternRules[]} code_type - Patterns for code sub-types
- * @property {PatternRules[]} copy_type - Patterns for copy sub-types
- * @property {PatternRules[]} comms_type - Patterns for comms sub-types
- * @property {PatternRules[]} doc_type - Patterns for doc sub-types
+ * @property {PatternRule[]} data_type - Patterns for data sub-types
+ * @property {PatternRule[]} code_type - Patterns for code sub-types
+ * @property {PatternRule[]} copy_type - Patterns for copy sub-types
+ * @property {PatternRule[]} comms_type - Patterns for comms sub-types
+ * @property {PatternRule[]} document_type - Patterns for document sub-types
+ * @property {PatternRule[]} agenda_type - Patterns for agenda sub-types
  */
 const TYPE_PATTERNS = {
   // Output type detection (doc, deck, data, code, copy, comms)
@@ -31,6 +32,7 @@ const TYPE_PATTERNS = {
     { pattern: /\b(code|function|class|module|bug\s*fix|refactor|migration|endpoint)\b/i, value: 'code' },
     { pattern: /\b(press\s*release|ad\s*copy|landing\s*page|tagline|product\s*description|email\s*campaign|social\s*media\s*post)\b/i, value: 'copy' },
     { pattern: /\b(email|memo|announcement|update|brief|feedback|1:1|one-on-one)\b/i, value: 'comms' },
+    { pattern: /\b(agenda|meeting\s*agenda|call\s*agenda)\b/i, value: 'doc' },
     { pattern: /\b(document|doc|spec|specification|report|guide|manual|proposal)\b/i, value: 'doc' }
   ],
 
@@ -91,7 +93,22 @@ const TYPE_PATTERNS = {
     { pattern: /\b(proposal|rfp|bid|pitch\s*document)\b/i, value: 'proposal' },
     { pattern: /\b(guide|how[\s-]?to|tutorial|instructions?|manual)\b/i, value: 'guide' },
     { pattern: /\b(whitepaper|white\s*paper|research\s*paper|technical\s*paper)\b/i, value: 'whitepaper' },
-    { pattern: /\b(memo|memorandum|internal\s*communication)\b/i, value: 'memo' }
+    { pattern: /\b(memo|memorandum|internal\s*communication)\b/i, value: 'memo' },
+    { pattern: /\b(agenda|meeting\s*agenda|call\s*agenda|workshop\s*agenda)\b/i, value: 'agenda' }
+  ],
+
+  // Agenda type detection
+  agenda_type: [
+    { pattern: /\b(call|phone\s*call|video\s*call|zoom|teams\s*call|quick\s*call)\b/i, value: 'call' },
+    { pattern: /\b(meeting|team\s*meeting|staff\s*meeting|department\s*meeting)\b/i, value: 'meeting' },
+    { pattern: /\b(workshop|working\s*session|brainstorm|ideation)\b/i, value: 'workshop' },
+    { pattern: /\b(standup|stand[\s-]?up|daily|scrum|sync)\b/i, value: 'standup' },
+    { pattern: /\b(review|sprint\s*review|retrospective|retro|post[\s-]?mortem)\b/i, value: 'review' },
+    { pattern: /\b(planning|sprint\s*planning|quarterly\s*planning|roadmap)\b/i, value: 'planning' },
+    { pattern: /\b(kickoff|kick[\s-]?off|project\s*start|launch\s*meeting)\b/i, value: 'kickoff' },
+    { pattern: /\b(board|board\s*meeting|executive|leadership)\b/i, value: 'board' },
+    { pattern: /\b(interview|candidate|hiring)\b/i, value: 'interview' },
+    { pattern: /\b(1:1|one[\s-]?on[\s-]?one|1-on-1|check[\s-]?in)\b/i, value: 'one_on_one' }
   ],
 
   // Emotional appeal detection for copy
