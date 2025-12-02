@@ -150,21 +150,36 @@ export default function DocForm({ spec, onChange, darkMode = false }) {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Left Column - Sections */}
               <div className={`rounded-lg p-4 border ${darkMode ? 'bg-slate-700 border-slate-600' : 'bg-slate-50 border-slate-200'}`}>
-                <FormField 
-                  label="Sections" 
-                  hint="Select which sections to include"
-                  darkMode={darkMode}
-                >
-                  <MultiSelect
-                    options={suggestedSections.map(s => ({
-                      value: s,
-                      label: s.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase())
-                    }))}
-                    value={typeSpecific.section_structure || []}
-                    onChange={(v) => handleChange('section_structure', v)}
+                <div className="flex items-center justify-between mb-2">
+                  <FormField 
+                    label="Sections" 
+                    hint="Select which sections to include"
                     darkMode={darkMode}
                   />
-                </FormField>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const allSelected = (typeSpecific.section_structure || []).length === suggestedSections.length;
+                      handleChange('section_structure', allSelected ? [] : [...suggestedSections]);
+                    }}
+                    className={`text-xs font-medium px-2 py-1 rounded transition-colors ${
+                      darkMode 
+                        ? 'text-cyan-400 hover:bg-slate-600' 
+                        : 'text-cyan-600 hover:bg-slate-100'
+                    }`}
+                  >
+                    {(typeSpecific.section_structure || []).length === suggestedSections.length ? 'Deselect All' : 'Select All'}
+                  </button>
+                </div>
+                <MultiSelect
+                  options={suggestedSections.map(s => ({
+                    value: s,
+                    label: s.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase())
+                  }))}
+                  value={typeSpecific.section_structure || []}
+                  onChange={(v) => handleChange('section_structure', v)}
+                  darkMode={darkMode}
+                />
               </div>
 
               {/* Right Column - Settings & Options */}
