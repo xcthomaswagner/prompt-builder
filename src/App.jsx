@@ -823,7 +823,14 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
         date = new Date(ver.createdAt);
       }
       if (date && !isNaN(date.getTime())) {
-        return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        return date.toLocaleString('en-US', {
+          month: 'short',
+          day: 'numeric',
+          year: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: true
+        });
       }
     } catch (e) { console.warn("Date parse error", e); }
     return '';

@@ -23,7 +23,17 @@ export function cartesianProduct(arrays) {
  * @returns {Array<{ tone: string, length: string, format: string }>}
  */
 export function buildMatrixCombos(config) {
+  if (!config || typeof config !== 'object') {
+    throw new Error('Config object is required');
+  }
+  
   const { tones = [], lengths = [], formats = [] } = config;
+  
+  // Validate that all arrays are actually arrays
+  if (!Array.isArray(tones) || !Array.isArray(lengths) || !Array.isArray(formats)) {
+    throw new Error('All config properties (tones, lengths, formats) must be arrays');
+  }
+  
   if (!tones.length || !lengths.length || !formats.length) return [];
 
   const combos = cartesianProduct([tones, lengths, formats]);

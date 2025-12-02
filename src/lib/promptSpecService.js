@@ -7,7 +7,6 @@ export const fetchPromptSpecs = async (db) => {
   const snapshot = await getDocs(collection(db, COLLECTION));
   const specs = {};
   snapshot.forEach((docSnap) => {
-    if (!docSnap.exists()) return;
     const data = docSnap.data();
     specs[docSnap.id] = { id: docSnap.id, ...data };
   });

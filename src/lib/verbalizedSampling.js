@@ -245,7 +245,11 @@ export function parseVSResponse(response) {
       options,
     };
   } catch (error) {
-    console.error('Failed to parse VS response:', error);
+    console.error('Failed to parse Verbalized Sampling response:', {
+      error: error.message,
+      response: typeof response === 'string' ? response.substring(0, 200) + '...' : response,
+      timestamp: new Date().toISOString()
+    });
     return {
       success: false,
       error: error.message,
@@ -289,7 +293,11 @@ export async function runVerbalizedSampling({ prompt, tone, outputType, diversit
       },
     };
   } catch (error) {
-    console.error('Verbalized Sampling failed:', error);
+    console.error('Verbalized Sampling generation failed:', {
+      error: error.message,
+      config: { diversityLevel, tone, outputType },
+      timestamp: new Date().toISOString()
+    });
     return {
       success: false,
       error: error.message,

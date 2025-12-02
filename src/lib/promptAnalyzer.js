@@ -7,7 +7,22 @@
  * 3. Default fallbacks
  */
 
-// Pattern definitions for detecting content types
+/**
+ * Pattern definitions for detecting content types from user input
+ * 
+ * @typedef {Object} PatternRule
+ * @property {RegExp} pattern - Regex pattern to match
+ * @property {string} value - The inferred value when pattern matches
+ * 
+ * @typedef {Object.<string, PatternRule[]>} TypePatterns
+ * @property {PatternRule[]} outputType - Patterns for main output types
+ * @property {PatternRule[]} deck_type - Patterns for deck sub-types
+ * @property {PatternRules[]} data_type - Patterns for data sub-types
+ * @property {PatternRules[]} code_type - Patterns for code sub-types
+ * @property {PatternRules[]} copy_type - Patterns for copy sub-types
+ * @property {PatternRules[]} comms_type - Patterns for comms sub-types
+ * @property {PatternRules[]} doc_type - Patterns for doc sub-types
+ */
 const TYPE_PATTERNS = {
   // Output type detection (doc, deck, data, code, copy, comms)
   outputType: [
