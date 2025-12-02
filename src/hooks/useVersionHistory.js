@@ -12,6 +12,9 @@ import { useState, useCallback } from 'react';
 export default function useVersionHistory(maxIterations = 3) {
   const [promptVersions, setPromptVersions] = useState([]);
   const [currentVersionIndex, setCurrentVersionIndex] = useState(-1);
+  
+  // Store maxIterations for reference
+  const maxIterationsRef = maxIterations;
 
   // Save current version before making changes
   const saveVersion = useCallback((text, quality = null) => {
@@ -42,7 +45,7 @@ export default function useVersionHistory(maxIterations = 3) {
   }, []);
 
   // Check if we've hit the iteration limit
-  const canImprove = promptVersions.length < maxIterations;
+  const canImprove = promptVersions.length < maxIterationsRef;
 
   // Check if we can undo
   const canUndo = promptVersions.length > 0;

@@ -1,0 +1,16 @@
+{
+  "name": "Intelligent Prompt Builder",
+  "short_name": "Prompt Builder",
+  "description": "Transform simple inputs into comprehensive, structured prompts optimized for LLMs",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#0891b2",
+  "icons": [
+    {
+      "src": "/favicon.png",
+      "sizes": "any",
+      "type": "image/png"
+    }
+  ]
+}

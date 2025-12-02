@@ -10,6 +10,7 @@ import { getModelsByProvider } from '../lib/llmService';
  * @param {Function} props.onChange - Callback when selection changes
  * @param {boolean} [props.disabled] - Whether the selector is disabled
  * @param {string} [props.className] - Additional CSS classes
+ * @param {boolean} [props.darkMode] - Whether to use dark mode styling
  */
 export default function ModelSelector({ label, value, onChange, disabled = false, className = '', darkMode = false }) {
   const modelsByProvider = getModelsByProvider();

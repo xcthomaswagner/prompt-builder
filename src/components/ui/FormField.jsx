@@ -3,7 +3,15 @@
  */
 
 /**
- * Form field wrapper with label
+ * Form field wrapper with label and error handling
+ * 
+ * @param {Object} props
+ * @param {string} [props.label] - Field label text
+ * @param {string} [props.hint] - Helper hint text
+ * @param {string} [props.error] - Error message to display
+ * @param {React.ReactNode} props.children - Field input component
+ * @param {string} [props.className] - Additional CSS classes
+ * @param {boolean} [props.darkMode] - Whether to use dark mode styling
  */
 export function FormField({ label, hint, error, children, className = '', darkMode = false }) {
   return (

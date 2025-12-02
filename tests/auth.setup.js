@@ -16,7 +16,7 @@ setup('authenticate', async ({ page, context }) => {
   // Mock authenticated user in localStorage
   // Firebase stores auth state in localStorage/indexedDB
   await context.addInitScript(() => {
-    // Mock a logged-in user
+    // Mock a logged-in user for tests that require auth
     const mockUser = {
       uid: 'test-user-123',
       email: 'test@example.com',
@@ -24,13 +24,13 @@ setup('authenticate', async ({ page, context }) => {
       photoURL: null
     };
     
-    // Store in localStorage (simplified mock)
+    // Store in localStorage for app to detect authenticated state
     localStorage.setItem('mockAuthUser', JSON.stringify(mockUser));
   });
   
-  // For now, we'll skip actual Firebase auth and test in anonymous mode
-  // The app should still render the main UI even without full auth
+  // Wait a moment for the mock to be applied
+  await page.waitForTimeout(100);
   
-  // Save storage state
+  // Save storage state for other tests to use
   await page.context().storageState({ path: authFile });
 });

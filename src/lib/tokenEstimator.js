@@ -15,15 +15,21 @@
 export function estimateTokens(text) {
   if (!text) return 0;
   
-  // Split by whitespace and punctuation
+  // Split by whitespace
   const words = text.trim().split(/\s+/);
   
-  // Average: 1 word ≈ 1.3 tokens (accounting for punctuation and subword tokens)
+  // More accurate heuristic: 
+  // - Short words (1-3 chars): ~1 token
+  // - Medium words (4-7 chars): ~1.5 tokens  
+  // - Long words (8+ chars): ~2 tokens
+  // Average: ~1.3 tokens per word
   const tokens = words.reduce((count, word) => {
-    return count + Math.ceil(word.length / 4);
+    if (word.length <= 3) return count + 1;
+    if (word.length <= 7) return count + 1.5;
+    return count + 2;
   }, 0);
   
-  return tokens;
+  return Math.ceil(tokens);
 }
 
 /**

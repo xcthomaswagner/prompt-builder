@@ -46,6 +46,23 @@ Comprehensive end-to-end tests for the Intelligent Prompt Builder.
 - ✅ Copy functionality works
 - ✅ Error handling works
 
+### 05-backup-restore.spec.js
+- ✅ Export history as JSON
+- ✅ Import history from JSON
+- ✅ Skip duplicate items during import
+- ✅ Preserve original creation dates
+- ✅ Handle malformed JSON gracefully
+- ✅ Handle empty file gracefully
+
+### 06-verbalized-sampling.spec.js
+- ✅ Display Generation Mode selector
+- ✅ Toggle between Focused and Exploratory modes
+- ✅ Show novelty slider in Exploratory mode
+- ✅ Hide Matrix Selector in Exploratory mode
+- ✅ Show different button styles per mode
+- ✅ Display loading state during generation
+- ✅ Change button color based on mode
+
 ## 🚀 Running Tests
 
 ### Install Playwright

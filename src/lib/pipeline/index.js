@@ -6,8 +6,19 @@
  * @module pipeline
  */
 
+/**
+ * Intent analysis functions
+ */
 export { analyzeIntent } from './analyzer.js';
+
+/**
+ * Prompt generation functions
+ */
 export { generatePrompt } from './generator.js';
+
+/**
+ * Pipeline orchestration and execution
+ */
 export { 
   runPipeline, 
   runAnalysisOnly, 

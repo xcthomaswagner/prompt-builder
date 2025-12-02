@@ -158,7 +158,7 @@ Real-time token counting helps users understand prompt size and potential API co
 ## Format
 **What it controls:** The visual structure and information hierarchy - how content is chunked and displayed.
 
-**Impact:** Format affects    and information retention. "Bullets" enable quick scanning of key points. "Sections" provide deep dives with clear topic boundaries. "Table" facilitates comparison and data presentation. "Outline" shows hierarchical relationships and dependencies.
+**Impact:** Format affects scannability and information retention. "Bullets" enable quick scanning of key points. "Sections" provide deep dives with clear topic boundaries. "Table" facilitates comparison and data presentation. "Outline" shows hierarchical relationships and dependencies.
 
 **Examples:**
 - **Paragraph** → "The migration strategy involves three phases executed sequentially. First, we'll extract the authentication service as it has minimal dependencies. Second, we'll decompose the core business logic into domain-bounded services. Third, we'll migrate the data layer to service-specific databases."
@@ -227,14 +227,18 @@ Real-time token counting helps users understand prompt size and potential API co
 - "Write as if explaining to a smart 12-year-old. Use analogies and metaphors. Make it fun but informative."
 - "Follow the STAR method (Situation, Task, Action, Result). Include metrics for every claim. Cite sources where applicable."
 
+---
 
-**The Problem: Mode Collapse (The "Vanilla" Trap)**
+## Diversity & Verbalized Sampling
+
+### The Problem: Mode Collapse ("Vanilla" Trap)
+
 Most modern AI models are trained to be "safe" and "helpful." While this is good for safety, it creates a side effect called Mode Collapse.
 What happens: The model becomes "people-pleasing." It ignores unique or creative ideas and instead collapses onto the single most common, average response.
 The Business Impact: If you ask for a marketing email, the AI gives you the same generic "Click Here" copy it gives everyone else. It creates a "Typicality Bias," where the output is factually correct but strategically boring.
 
+### The Solution: Verbalized Sampling (VS)
 
-**The Solution: Verbalized Sampling (VS)**
 To fix this, we use a method called Verbalized Sampling. Instead of asking the AI for the single best answer, we ask it to generate a spread of options and assign a probability score to each one.
 How it works: This forces the AI to dig deeper into its training data. It retrieves the creative, novel, or "long-tail" ideas that it usually suppresses to be safe.
 The Result: You get a wider range of options in a single click—from "Safe and Standard" to "Wild and Novel".

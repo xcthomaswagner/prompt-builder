@@ -10,10 +10,11 @@ This is a React application that enriches and structures LLM prompts using a "re
    ```
 
 2. **Configuration:**
-   - Copy `.env.example` to `.env`
-   - Fill in your Google Gemini API Key.
-   - Fill in your Firebase configuration details.
-   - **Note:** You must enable **Firestore** and **Anonymous Authentication** in your Firebase Console.
+   - Copy `.env.example` to `.env.local`
+   - Fill in your Google Gemini API Key (required)
+   - Fill in your Firebase configuration details (required for history persistence)
+   - Optionally add OpenAI and/or Claude API keys for Experiment Mode multi-provider support
+   - **Note:** You must enable **Firestore** and **Anonymous Authentication** in your Firebase Console
 
 3. **Run Locally:**
    ```bash

@@ -11,7 +11,7 @@ This document analyzes the 270 possible combinations of output types, tones, and
 | Category | Options |
 |----------|---------|
 | **Output Types** | Deck, Doc, Data, Code, Copy, Comms |
-| **Tones** | Professional, Creative, Academic, Casual, Instructive |
+| **Tones** | Professional, Friendly, Casual, Executive, Academic, Creative, Helpful, Technical |
 | **Formats** | Paragraph, Bullets, Numbered, Steps, Sections, JSON, Email, Table, Q&A |
 
 ---

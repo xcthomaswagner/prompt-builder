@@ -24,7 +24,7 @@ import { createBaseSpec } from '../schema.js';
  */
 
 /**
- * Default code-specific fields
+ * Default code-specific fields for prompt generation
  * @type {CodeTypeSpecific}
  */
 export const codeDefaults = {

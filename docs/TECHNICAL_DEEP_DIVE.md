@@ -5,6 +5,8 @@
 2. [Prompt Assembly Process](#prompt-assembly-process)
 3. [Database Schema & Versioning](#database-schema--versioning)
 4. [Template Rendering Engine](#template-rendering-engine)
+5. [Advanced Features](#advanced-features)
+6. [Summary](#summary)
 
 ---
 

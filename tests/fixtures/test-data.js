@@ -25,10 +25,10 @@ export const testPrompts = {
   
   technical: {
     input: "API documentation for authentication endpoints",
-    outputType: "data",
+    outputType: "code",
     tone: "technical",
-    style: "analytical",
-    format: "table",
+    style: "instructional",
+    format: "sections",
     length: "long"
   },
   

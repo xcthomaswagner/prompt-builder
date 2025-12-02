@@ -32,7 +32,13 @@ export default function TypeSpecificForm({ outputType, spec, onChange, darkMode 
   const FormComponent = forms[outputType];
   
   if (!FormComponent) {
-    return null;
+    return (
+      <div className={`p-4 rounded-lg border ${darkMode ? 'bg-slate-800 border-slate-700 text-slate-300' : 'bg-amber-50 border-amber-200 text-amber-800'}`}>
+        <p className="text-sm">
+          No specific form available for "{outputType}". Using default prompt generation.
+        </p>
+      </div>
+    );
   }
   
   // Forms handle their own styling (accordion wrapper)

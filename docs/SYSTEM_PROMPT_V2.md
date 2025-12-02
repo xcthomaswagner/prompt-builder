@@ -181,6 +181,7 @@ Before outputting, verify:
 
 ### Output
 
+```markdown
 # Understanding Germany's Healthcare System: A Practical Guide for Americans
 
 ## Brief
@@ -269,3 +270,4 @@ Before outputting, verify:
 ## Closing Directive
 
 Conclude with 2-3 sentences acknowledging that healthcare systems reflect societal priorities and trade-offs, encouraging readers to evaluate which priorities (universal access, individual choice, innovation incentives, cost control) align with their own values.
+```

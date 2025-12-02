@@ -10,10 +10,13 @@ Install once with `npm install`. Run `npm run dev` for the hot-reloading Vite se
 Favor small functional React components, hooks, and descriptive prop names. Follow the existing two-space indentation, ES modules, and `const` by default. Name components in `PascalCase`, helpers in `camelCase`, and Tailwind utility groups via semantic `className` strings rather than ad hoc inline styles. Centralize environment access through `import.meta.env` and place longer logic (e.g., token estimation) in extracted helpers when it aids reuse.
 
 ## Testing Guidelines
-Automated tests are not yet wired up; when adding them, use `vitest` with `@testing-library/react` and store specs next to the component as `ComponentName.test.jsx`. For now, document manual verification steps in PRs (authentication flows, Gemini calls, history persistence) and add mock fallbacks so reviewers without secrets can exercise code paths.
+End-to-end tests use Playwright in `tests/`. Run with `npx playwright test` or `npm test`. Unit tests use `vitest` with `@testing-library/react`; store specs next to components as `ComponentName.test.jsx`. For PRs, document manual verification steps for authentication flows, Gemini calls, and history persistence. Add mock fallbacks so reviewers without secrets can exercise code paths.
 
 ## Commit & Pull Request Guidelines
 Adopt Conventional Commits (e.g., `feat: add workspace history filters` or `fix: handle expired firebase session`). Keep commit scopes tight and prefer one feature or bugfix per branch. PRs should describe intent, list key changes, note required env vars, and include screenshots or short clips when UI shifts. Link to tracking issues and call out any migrations or cleanup steps for deploys.
 
 ## Security & Configuration Tips
 Never hard-code keys; create a `.env.local` with the `VITE_FIREBASE_*` and `VITE_GEMINI_API_KEY` values and exclude it from commits. Initialize Firebase only when variables are present, mirroring the guard in `App.jsx`. Rotate keys after demos, and document any required IAM changes inside `docs/security.md` if security posture evolves.
+
+## License
+This project is licensed under the MIT License. See the `LICENSE` file for details.

@@ -26,11 +26,17 @@ exports.callClaude = onRequest(
         return res.status(400).json({ error: "Missing prompt" });
       }
 
+      // Check if API key is available
+      const apiKey = anthropicApiKey.value();
+      if (!apiKey) {
+        return res.status(500).json({ error: "Anthropic API key not configured" });
+      }
+
       const response = await fetch("https://api.anthropic.com/v1/messages", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "x-api-key": anthropicApiKey.value(),
+          "x-api-key": apiKey,
           "anthropic-version": "2023-06-01"
         },
         body: JSON.stringify({

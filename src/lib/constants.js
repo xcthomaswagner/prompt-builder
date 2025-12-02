@@ -12,6 +12,7 @@ import {
   Building,
   GraduationCap,
   Lightbulb,
+  HeartHandshake,
   Layout,
   FileText,
   Database,
@@ -34,7 +35,7 @@ export const TONES = [
   { id: 'executive', label: 'Executive', prompt: 'concise, strategic, and high-level', icon: Building },
   { id: 'academic', label: 'Academic', prompt: 'rigorous, citation-focused, and analytical', icon: GraduationCap },
   { id: 'creative', label: 'Creative', prompt: 'imaginative, evocative, and storytelling', icon: Lightbulb },
-  { id: 'helpful', label: 'Helpful', prompt: 'supportive, instructive, and solution-oriented', icon: Smile },
+  { id: 'helpful', label: 'Helpful', prompt: 'supportive, instructive, and solution-oriented', icon: HeartHandshake },
   { id: 'technical', label: 'Technical', prompt: 'precise, detailed, and specification-focused', icon: Building },
 ];
 

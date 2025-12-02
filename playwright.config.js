@@ -3,12 +3,13 @@ import { defineConfig, devices } from '@playwright/test';
 /**
  * Playwright Configuration for Intelligent Prompt Builder
  * 
- * Tests cover:
- * - Core prompt building flows
- * - Authentication
- * - History management
- * - UI controls
- * - API integrations
+ * Test suites:
+ * - 01: Core prompt building flows
+ * - 02: UI controls (dark mode, sidebar, settings)
+ * - 03: History management
+ * - 04: Regression tests
+ * - 05: Backup & Restore
+ * - 06: Verbalized Sampling / Experiment Mode
  */
 
 export default defineConfig({
