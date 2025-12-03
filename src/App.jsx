@@ -2120,6 +2120,12 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
         removeMember={removeMember}
         updateOrgName={updateOrgName}
         user={user}
+        db={db}
+        apiKeys={{
+          openai: chatgptApiKey,
+          anthropic: claudeApiKey,
+          gemini: geminiApiKey,
+        }}
       />
 
       {/* Outcome Feedback Modal */}

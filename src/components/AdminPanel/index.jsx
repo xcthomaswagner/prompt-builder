@@ -18,12 +18,14 @@ import {
 import OrgSettings from './OrgSettings';
 import OrgApiKeys from './OrgApiKeys';
 import UserRoles from './UserRoles';
+import UsageDashboard from './UsageDashboard';
+import useUsageStats from '../../hooks/useUsageStats';
 
 const TABS = [
   { id: 'settings', label: 'Settings', icon: Settings },
   { id: 'apikeys', label: 'API Keys', icon: Key },
   { id: 'users', label: 'Users', icon: Users },
-  // { id: 'usage', label: 'Usage', icon: BarChart3 }, // Phase 4
+  { id: 'usage', label: 'Usage', icon: BarChart3 },
 ];
 
 /**
@@ -42,6 +44,8 @@ const TABS = [
  * @param {Function} props.removeMember - Remove a member
  * @param {Function} props.updateOrgName - Update organization name
  * @param {Object} props.user - Current user
+ * @param {Object} props.db - Firestore database instance
+ * @param {Object} props.apiKeys - API keys for balance fetching
  */
 export default function AdminPanel({
   isOpen,
@@ -58,8 +62,13 @@ export default function AdminPanel({
   removeMember,
   updateOrgName,
   user,
+  db,
+  apiKeys = {},
 }) {
   const [activeTab, setActiveTab] = useState('settings');
+  
+  // Usage stats hook
+  const usageStats = useUsageStats(db, organization?.id, apiKeys);
 
   if (!isOpen) return null;
 
@@ -167,6 +176,12 @@ export default function AdminPanel({
               updateMemberRole={updateMemberRole}
               removeMember={removeMember}
               currentUserId={user?.uid}
+            />
+          )}
+          {activeTab === 'usage' && (
+            <UsageDashboard
+              darkMode={darkMode}
+              stats={usageStats}
             />
           )}
         </div>
