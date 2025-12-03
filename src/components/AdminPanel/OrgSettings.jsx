@@ -30,8 +30,11 @@ export default function OrgSettings({
     defaultProvider: 'gemini',
     usageAlerts: {
       enabled: true,
-      warnThreshold: 0.20,
-      criticalThreshold: 0.10,
+      monthlyBudget: 100,
+      warningThreshold: 80,
+      criticalThreshold: 95,
+      balanceWarning: 10,
+      balanceCritical: 5,
     },
   });
   const [saving, setSaving] = useState(false);
@@ -48,8 +51,11 @@ export default function OrgSettings({
         defaultProvider: organization.settings?.defaultProvider || 'gemini',
         usageAlerts: {
           enabled: organization.settings?.usageAlerts?.enabled ?? true,
-          warnThreshold: organization.settings?.usageAlerts?.warnThreshold ?? 0.20,
-          criticalThreshold: organization.settings?.usageAlerts?.criticalThreshold ?? 0.10,
+          monthlyBudget: organization.settings?.usageAlerts?.monthlyBudget ?? 100,
+          warningThreshold: organization.settings?.usageAlerts?.warningThreshold ?? 80,
+          criticalThreshold: organization.settings?.usageAlerts?.criticalThreshold ?? 95,
+          balanceWarning: organization.settings?.usageAlerts?.balanceWarning ?? 10,
+          balanceCritical: organization.settings?.usageAlerts?.balanceCritical ?? 5,
         },
       });
       setHasChanges(false);
@@ -200,7 +206,7 @@ export default function OrgSettings({
       {/* Usage Alerts */}
       <div className={cardClass}>
         <h3 className={`text-sm font-semibold mb-4 ${darkMode ? 'text-slate-200' : 'text-slate-700'}`}>
-          Usage Alerts
+          Usage & Balance Alerts
         </h3>
         <div className="space-y-4">
           <label className={`flex items-center gap-3 cursor-pointer ${darkMode ? 'text-slate-300' : 'text-slate-700'}`}>
@@ -210,32 +216,81 @@ export default function OrgSettings({
               onChange={(e) => handleAlertChange('enabled', e.target.checked)}
               className="w-4 h-4 rounded"
             />
-            <span className="font-medium">Enable low credit alerts</span>
+            <span className="font-medium">Enable alerts</span>
           </label>
           
           {settings.usageAlerts.enabled && (
-            <div className="grid grid-cols-2 gap-4 pl-7">
+            <div className="space-y-4 pl-7">
+              {/* Budget Settings */}
               <div>
-                <label className={labelClass}>Warn at (% remaining)</label>
+                <label className={labelClass}>Monthly Budget ($)</label>
                 <input
                   type="number"
                   min="1"
-                  max="50"
-                  value={Math.round(settings.usageAlerts.warnThreshold * 100)}
-                  onChange={(e) => handleAlertChange('warnThreshold', parseInt(e.target.value) / 100)}
+                  max="10000"
+                  value={settings.usageAlerts.monthlyBudget}
+                  onChange={(e) => handleAlertChange('monthlyBudget', parseInt(e.target.value) || 100)}
                   className={inputClass}
                 />
+                <p className={`text-xs mt-1 ${darkMode ? 'text-slate-500' : 'text-slate-400'}`}>
+                  Alert when usage approaches this budget
+                </p>
               </div>
-              <div>
-                <label className={labelClass}>Critical at (% remaining)</label>
-                <input
-                  type="number"
-                  min="1"
-                  max="25"
-                  value={Math.round(settings.usageAlerts.criticalThreshold * 100)}
-                  onChange={(e) => handleAlertChange('criticalThreshold', parseInt(e.target.value) / 100)}
-                  className={inputClass}
-                />
+              
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className={labelClass}>Warning at (% of budget)</label>
+                  <input
+                    type="number"
+                    min="50"
+                    max="95"
+                    value={settings.usageAlerts.warningThreshold}
+                    onChange={(e) => handleAlertChange('warningThreshold', parseInt(e.target.value) || 80)}
+                    className={inputClass}
+                  />
+                </div>
+                <div>
+                  <label className={labelClass}>Critical at (% of budget)</label>
+                  <input
+                    type="number"
+                    min="80"
+                    max="100"
+                    value={settings.usageAlerts.criticalThreshold}
+                    onChange={(e) => handleAlertChange('criticalThreshold', parseInt(e.target.value) || 95)}
+                    className={inputClass}
+                  />
+                </div>
+              </div>
+
+              {/* Balance Thresholds */}
+              <div className="pt-2 border-t border-slate-600/30">
+                <p className={`text-sm font-medium mb-3 ${darkMode ? 'text-slate-300' : 'text-slate-600'}`}>
+                  API Balance Alerts
+                </p>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className={labelClass}>Warning below ($)</label>
+                    <input
+                      type="number"
+                      min="1"
+                      max="100"
+                      value={settings.usageAlerts.balanceWarning}
+                      onChange={(e) => handleAlertChange('balanceWarning', parseInt(e.target.value) || 10)}
+                      className={inputClass}
+                    />
+                  </div>
+                  <div>
+                    <label className={labelClass}>Critical below ($)</label>
+                    <input
+                      type="number"
+                      min="1"
+                      max="50"
+                      value={settings.usageAlerts.balanceCritical}
+                      onChange={(e) => handleAlertChange('balanceCritical', parseInt(e.target.value) || 5)}
+                      className={inputClass}
+                    />
+                  </div>
+                </div>
               </div>
             </div>
           )}
