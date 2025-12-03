@@ -7,6 +7,7 @@ import useAuth from './hooks/useAuth';
 import usePromptHistory from './hooks/usePromptHistory';
 import useVersionHistory from './hooks/useVersionHistory';
 import useOrganization from './hooks/useOrganization';
+import { getKeySourceInfo, getEffectiveApiKeys } from './lib/apiKeyService';
 import {
   Sparkles,
   History,
@@ -230,6 +231,9 @@ export default function App() {
   const [refinementInstructions, setRefinementInstructions] = useState('');
   const [isRefining, setIsRefining] = useState(false);
 
+  // Key source info state (for showing where keys come from)
+  const [keySourceInfo, setKeySourceInfo] = useState({});
+
   // Auto-create organization for new users
   useEffect(() => {
     if (user && db && !orgLoading && !organization) {
@@ -238,6 +242,13 @@ export default function App() {
       });
     }
   }, [user, db, orgLoading, organization, createOrg]);
+
+  // Fetch key source info when user/org changes
+  useEffect(() => {
+    if (user && db) {
+      getKeySourceInfo(db, user.uid).then(setKeySourceInfo).catch(console.error);
+    }
+  }, [user, db, organization]);
 
   // Handle template selection
   const handleTemplateSelect = (template) => {
@@ -2090,6 +2101,7 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
         setSelectedClaudeModel={setSelectedClaudeModel}
         selectedGeminiModel={selectedGeminiModel}
         setSelectedGeminiModel={setSelectedGeminiModel}
+        keySourceInfo={keySourceInfo}
       />
 
       {/* Admin Panel Modal */}
