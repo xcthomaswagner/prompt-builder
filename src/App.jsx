@@ -6,6 +6,7 @@ import useApiSettings from './hooks/useApiSettings';
 import useAuth from './hooks/useAuth';
 import usePromptHistory from './hooks/usePromptHistory';
 import useVersionHistory from './hooks/useVersionHistory';
+import useOrganization from './hooks/useOrganization';
 import {
   Sparkles,
   History,
@@ -31,7 +32,8 @@ import {
   Moon,
   Download,
   Upload,
-  Clock
+  Clock,
+  Building2
 } from 'lucide-react';
 import { initializeApp } from "firebase/app";
 import {
@@ -46,6 +48,7 @@ import { getAuth } from "firebase/auth";
 import buildPromptPlan from './lib/promptAssembler';
 import ExperimentMode from './components/ExperimentMode';
 import SettingsModal from './components/SettingsModal';
+import AdminPanel from './components/AdminPanel';
 import {
   OPENAI_MODELS,
   CLAUDE_MODELS,
@@ -131,6 +134,22 @@ export default function App() {
     handleImportHistory
   } = usePromptHistory(db, user);
 
+  // Organization state (from custom hook)
+  const {
+    organization,
+    userRole,
+    isAdmin,
+    isOwner,
+    loading: orgLoading,
+    createOrg,
+    updateSettings,
+    updateApiKey,
+    removeApiKey,
+    updateMemberRole,
+    removeMember,
+    updateOrgName,
+  } = useOrganization(db, user);
+
   // Form State (from custom hook)
   const {
     inputText, setInputText,
@@ -158,6 +177,7 @@ export default function App() {
   const [errorMsg, setErrorMsg] = useState('');
   const [copySuccess, setCopySuccess] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
+  const [showAdminPanel, setShowAdminPanel] = useState(false);
   const [currentHistoryId, setCurrentHistoryId] = useState(null);
   const [isSavingHistory, setIsSavingHistory] = useState(false);
   const [showSystemPrompt, setShowSystemPrompt] = useState(false);
@@ -209,6 +229,15 @@ export default function App() {
   // Iterate & Refine State
   const [refinementInstructions, setRefinementInstructions] = useState('');
   const [isRefining, setIsRefining] = useState(false);
+
+  // Auto-create organization for new users
+  useEffect(() => {
+    if (user && db && !orgLoading && !organization) {
+      createOrg('My Organization').catch(err => {
+        console.error('Failed to create organization:', err);
+      });
+    }
+  }, [user, db, orgLoading, organization, createOrg]);
 
   // Handle template selection
   const handleTemplateSelect = (template) => {
@@ -1926,13 +1955,24 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
                 <div className={`text-xs ${darkMode ? 'text-slate-500' : 'text-slate-400'}`}>
                   Signed in as: {user?.displayName || user?.email || 'User'}
                 </div>
-                <button
-                  onClick={() => setShowSettings(true)}
-                  className={`p-1.5 rounded-lg transition-colors ${darkMode ? 'text-slate-400 hover:text-slate-200 hover:bg-slate-700' : 'text-slate-400 hover:text-slate-600 hover:bg-slate-100'}`}
-                  title="Settings"
-                >
-                  <Settings2 className="w-4 h-4" />
-                </button>
+                <div className="flex items-center gap-1">
+                  {isAdmin && (
+                    <button
+                      onClick={() => setShowAdminPanel(true)}
+                      className={`p-1.5 rounded-lg transition-colors ${darkMode ? 'text-slate-400 hover:text-slate-200 hover:bg-slate-700' : 'text-slate-400 hover:text-slate-600 hover:bg-slate-100'}`}
+                      title="Admin Panel"
+                    >
+                      <Building2 className="w-4 h-4" />
+                    </button>
+                  )}
+                  <button
+                    onClick={() => setShowSettings(true)}
+                    className={`p-1.5 rounded-lg transition-colors ${darkMode ? 'text-slate-400 hover:text-slate-200 hover:bg-slate-700' : 'text-slate-400 hover:text-slate-600 hover:bg-slate-100'}`}
+                    title="Settings"
+                  >
+                    <Settings2 className="w-4 h-4" />
+                  </button>
+                </div>
               </div>
             </>
           )}
@@ -2050,6 +2090,24 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
         setSelectedClaudeModel={setSelectedClaudeModel}
         selectedGeminiModel={selectedGeminiModel}
         setSelectedGeminiModel={setSelectedGeminiModel}
+      />
+
+      {/* Admin Panel Modal */}
+      <AdminPanel
+        isOpen={showAdminPanel}
+        onClose={() => setShowAdminPanel(false)}
+        darkMode={darkMode}
+        organization={organization}
+        userRole={userRole}
+        isAdmin={isAdmin}
+        isOwner={isOwner}
+        updateSettings={updateSettings}
+        updateApiKey={updateApiKey}
+        removeApiKey={removeApiKey}
+        updateMemberRole={updateMemberRole}
+        removeMember={removeMember}
+        updateOrgName={updateOrgName}
+        user={user}
       />
 
       {/* Outcome Feedback Modal */}
