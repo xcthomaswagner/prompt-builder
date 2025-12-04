@@ -60,8 +60,9 @@ async function testAnthropicKey(apiKey) {
       method: 'POST',
       headers: {
         'x-api-key': apiKey,
-        'anthropic-version': '2024-01-01',
+        'anthropic-version': '2023-06-01',
         'content-type': 'application/json',
+        'anthropic-dangerous-direct-browser-access': 'true',
       },
       body: JSON.stringify({
         model: 'claude-3-haiku-20240307',
