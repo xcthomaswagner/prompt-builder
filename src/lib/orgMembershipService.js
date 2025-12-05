@@ -26,7 +26,7 @@ import {
  * @returns {string} 8-character invite code
  */
 export function generateInviteCode() {
-  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // Removed confusing chars
+  const chars = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789'; // Removed confusing chars (0, O, 1, I, L)
   let code = '';
   for (let i = 0; i < 8; i++) {
     code += chars.charAt(Math.floor(Math.random() * chars.length));
