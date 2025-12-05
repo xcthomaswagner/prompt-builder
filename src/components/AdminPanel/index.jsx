@@ -13,18 +13,21 @@ import {
   BarChart3, 
   X,
   Shield,
-  Building2
+  Building2,
+  UserPlus
 } from 'lucide-react';
 import OrgSettings from './OrgSettings';
 import OrgApiKeys from './OrgApiKeys';
 import UserRoles from './UserRoles';
 import UsageDashboard from './UsageDashboard';
+import InviteManager from './InviteManager';
 import useUsageStats from '../../hooks/useUsageStats';
 
 const TABS = [
   { id: 'settings', label: 'Settings', icon: Settings },
   { id: 'apikeys', label: 'API Keys', icon: Key },
   { id: 'users', label: 'Users', icon: Users },
+  { id: 'invites', label: 'Invites', icon: UserPlus },
   { id: 'usage', label: 'Usage', icon: BarChart3 },
 ];
 
@@ -176,6 +179,14 @@ export default function AdminPanel({
               updateMemberRole={updateMemberRole}
               removeMember={removeMember}
               currentUserId={user?.uid}
+            />
+          )}
+          {activeTab === 'invites' && (
+            <InviteManager
+              darkMode={darkMode}
+              organization={organization}
+              user={user}
+              db={db}
             />
           )}
           {activeTab === 'usage' && (

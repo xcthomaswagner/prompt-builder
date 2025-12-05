@@ -44,6 +44,7 @@ async function testOpenAIKey(apiKey) {
     
     return { valid: false, error: errorMessage };
   } catch (error) {
+    console.error('[keyTester] OpenAI test error:', error);
     return { valid: false, error: `Network error: ${error.message}` };
   }
 }
@@ -87,6 +88,7 @@ async function testAnthropicKey(apiKey) {
     
     return { valid: false, error: errorMessage };
   } catch (error) {
+    console.error('[keyTester] Anthropic test error:', error);
     return { valid: false, error: `Network error: ${error.message}` };
   }
 }
@@ -119,6 +121,7 @@ async function testGeminiKey(apiKey) {
     
     return { valid: false, error: errorMessage };
   } catch (error) {
+    console.error('[keyTester] Gemini test error:', error);
     return { valid: false, error: `Network error: ${error.message}` };
   }
 }

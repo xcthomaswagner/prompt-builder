@@ -93,7 +93,13 @@ export default function useOrganization(db, user, orgId = null) {
     ? getUserRole(organization.members, user.uid) 
     : null;
   
-  const isAdmin = organization?.members && user 
+  // Check if this is a "real" org (has multiple members or org-level API keys)
+  const memberCount = organization?.members ? Object.keys(organization.members).length : 0;
+  const hasOrgKeys = organization?.apiKeys && Object.keys(organization.apiKeys).length > 0;
+  const isRealOrg = memberCount > 1 || hasOrgKeys || organization?.settings?.isConfigured;
+  
+  // Only show admin privileges for real orgs, not auto-created personal orgs
+  const isAdmin = organization?.members && user && isRealOrg
     ? isOrgAdmin(organization.members, user.uid) 
     : false;
   
@@ -255,6 +261,7 @@ export default function useOrganization(db, user, orgId = null) {
     userRole,
     isAdmin,
     isOwner,
+    isRealOrg,
     loading,
     error,
     createOrg,

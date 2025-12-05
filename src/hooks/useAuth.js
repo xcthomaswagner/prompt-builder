@@ -82,6 +82,16 @@ export default function useAuth(firebaseApp) {
 
   // Sign-out handler
   const handleSignOut = async () => {
+    // Clear demo/test mode if active
+    if (isTestMode || isDemoMode) {
+      localStorage.removeItem('playwright_test_user');
+      localStorage.removeItem('demo_mode_user');
+      setUser(null);
+      setIsTestMode(false);
+      setIsDemoMode(false);
+      return;
+    }
+    
     if (!auth) return;
     try {
       await signOut(auth);
@@ -90,14 +100,51 @@ export default function useAuth(firebaseApp) {
     }
   };
 
+  // Demo mode state (dev only)
+  const [isDemoMode, setIsDemoMode] = useState(false);
+
+  // Check for demo user on mount
+  useEffect(() => {
+    try {
+      const demoUser = localStorage.getItem('demo_mode_user');
+      if (demoUser) {
+        setUser(JSON.parse(demoUser));
+        setIsDemoMode(true);
+        setIsAuthLoading(false);
+      }
+    } catch (e) {
+      // Ignore parse errors
+    }
+  }, []);
+
+  // Demo sign-in handler (dev only - simulates regular member)
+  const handleDemoSignIn = () => {
+    const demoUser = {
+      uid: 'demo_user_001',
+      email: 'demo@example.com',
+      displayName: 'Demo User',
+      photoURL: null,
+      isDemo: true
+    };
+    localStorage.setItem('demo_mode_user', JSON.stringify(demoUser));
+    setUser(demoUser);
+    setIsDemoMode(true);
+  };
+
+  // Check if we're in development mode
+  const isDev = import.meta.env.DEV;
+
   return {
     user,
     isTestMode,
+    isDemoMode,
+    isDev,
     isAuthLoading,
     authError,
     setAuthError,
     handleGoogleSignIn,
     handleMicrosoftSignIn,
+    handleDemoSignIn,
     handleSignOut
   };
 }

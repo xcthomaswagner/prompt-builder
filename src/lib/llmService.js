@@ -18,9 +18,10 @@ const RETRY_DELAYS = [1000, 2000, 4000, 8000, 16000];
  * Model lists per provider - for UI dropdowns
  */
 export const OPENAI_MODELS = [
+  { id: 'gpt-4.1-mini', label: 'GPT-4.1 Mini', description: 'Fast and efficient (default)' },
+  { id: 'gpt-4.1', label: 'GPT-4.1', description: 'Advanced model' },
+  { id: 'gpt-4.1-nano', label: 'GPT-4.1 Nano', description: 'Lightweight model' },
   { id: 'gpt-5.1', label: 'GPT-5.1', description: 'Latest flagship' },
-  { id: 'gpt-4.5-preview', label: 'GPT-4.5', description: 'Large-scale agentic model' },
-  { id: 'o3', label: 'o3', description: 'Reasoning model' },
 ];
 
 export const CLAUDE_MODELS = [
@@ -33,7 +34,6 @@ export const GEMINI_MODELS = [
   { id: 'gemini-2.0-flash', label: 'Gemini 2.0 Flash', description: 'Latest fast model' },
   { id: 'gemini-1.5-pro', label: 'Gemini 1.5 Pro', description: 'Advanced reasoning' },
   { id: 'gemini-1.5-flash', label: 'Gemini 1.5 Flash', description: 'Quick responses' },
-  { id: 'gemini-1.5-flash-8b', label: 'Gemini 1.5 Flash 8B', description: 'Lightweight' },
 ];
 
 /**

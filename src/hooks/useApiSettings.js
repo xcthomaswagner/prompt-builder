@@ -13,9 +13,9 @@ const envGeminiKey = import.meta.env.VITE_GEMINI_API_KEY;
  * @returns {Object} API settings state and setters
  */
 export default function useApiSettings() {
-  // Provider selection
+  // Provider selection - default to ChatGPT
   const [selectedProvider, setSelectedProvider] = useState(
-    localStorage.getItem('selectedProvider') || 'gemini'
+    localStorage.getItem('selectedProvider') || 'chatgpt'
   );
 
   // API Keys

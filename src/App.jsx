@@ -7,6 +7,7 @@ import useAuth from './hooks/useAuth';
 import usePromptHistory from './hooks/usePromptHistory';
 import useVersionHistory from './hooks/useVersionHistory';
 import useOrganization from './hooks/useOrganization';
+import useUserOrganizations from './hooks/useUserOrganizations';
 import { getKeySourceInfo, getEffectiveApiKeys } from './lib/apiKeyService';
 import {
   Sparkles,
@@ -34,7 +35,8 @@ import {
   Download,
   Upload,
   Clock,
-  Building2
+  Building2,
+  User
 } from 'lucide-react';
 import { initializeApp } from "firebase/app";
 import {
@@ -50,6 +52,9 @@ import buildPromptPlan from './lib/promptAssembler';
 import ExperimentMode from './components/ExperimentMode';
 import SettingsModal from './components/SettingsModal';
 import AdminPanel from './components/AdminPanel';
+import OrgSwitcher from './components/OrgSwitcher';
+import CreateOrgModal from './components/CreateOrgModal';
+import JoinOrgModal from './components/JoinOrgModal';
 import {
   OPENAI_MODELS,
   CLAUDE_MODELS,
@@ -115,10 +120,13 @@ export default function App() {
   const {
     user,
     isTestMode,
+    isDemoMode,
+    isDev,
     authError,
     setAuthError,
     handleGoogleSignIn,
     handleMicrosoftSignIn,
+    handleDemoSignIn,
     handleSignOut
   } = useAuth(app);
 
@@ -135,12 +143,25 @@ export default function App() {
     handleImportHistory
   } = usePromptHistory(db, user);
 
-  // Organization state (from custom hook)
+  // User's organizations (multi-org support)
+  const {
+    organizations: userOrganizations,
+    currentOrgId,
+    currentOrg,
+    loading: orgsLoading,
+    switchOrg,
+    createNewOrg,
+    joinOrg,
+    refreshOrgs,
+  } = useUserOrganizations(db, user);
+
+  // Current organization state (from custom hook)
   const {
     organization,
     userRole,
     isAdmin,
     isOwner,
+    isRealOrg,
     loading: orgLoading,
     createOrg,
     updateSettings,
@@ -149,7 +170,11 @@ export default function App() {
     updateMemberRole,
     removeMember,
     updateOrgName,
-  } = useOrganization(db, user);
+  } = useOrganization(db, user, currentOrgId);
+
+  // Modal states for org management
+  const [showCreateOrgModal, setShowCreateOrgModal] = useState(false);
+  const [showJoinOrgModal, setShowJoinOrgModal] = useState(false);
 
   // Form State (from custom hook)
   const {
@@ -841,6 +866,27 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
                   </svg>
                   Continue with Microsoft
                 </button>
+
+                {/* Demo Mode - Dev only */}
+                {isDev && (
+                  <>
+                    <div className={`relative my-4 ${darkMode ? 'text-slate-500' : 'text-slate-400'}`}>
+                      <div className="absolute inset-0 flex items-center">
+                        <div className={`w-full border-t ${darkMode ? 'border-slate-700' : 'border-slate-200'}`}></div>
+                      </div>
+                      <div className="relative flex justify-center text-xs">
+                        <span className={`px-2 ${darkMode ? 'bg-slate-800' : 'bg-white'}`}>Dev Only</span>
+                      </div>
+                    </div>
+                    <button
+                      onClick={handleDemoSignIn}
+                      className={`w-full flex items-center justify-center gap-3 px-6 py-3 border-2 border-dashed rounded-lg font-semibold transition-all ${darkMode ? 'bg-slate-800 border-amber-600 text-amber-400 hover:bg-slate-700' : 'bg-amber-50 border-amber-400 text-amber-700 hover:bg-amber-100'}`}
+                    >
+                      <User className="w-5 h-5" />
+                      Demo Mode (Regular Member)
+                    </button>
+                  </>
+                )}
               </div>
 
               <p className={`text-xs text-center mt-6 ${darkMode ? 'text-slate-500' : 'text-slate-400'}`}>
@@ -916,6 +962,16 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
             </div>
           </div>
           <div className="flex items-center gap-4">
+            {/* Organization Switcher */}
+            <OrgSwitcher
+              organizations={userOrganizations}
+              currentOrgId={currentOrgId}
+              onSwitch={switchOrg}
+              onCreateOrg={() => setShowCreateOrgModal(true)}
+              onJoinOrg={() => setShowJoinOrgModal(true)}
+              darkMode={darkMode}
+            />
+
             {/* Theme Toggle */}
             <button
               onClick={() => setDarkMode(!darkMode)}
@@ -1012,17 +1068,20 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
 
               {/* Input Section */}
               <div className={`rounded-xl shadow-sm border p-6 transition-all focus-within:ring-2 focus-within:ring-indigo-100 focus-within:border-indigo-400 ${darkMode ? 'bg-slate-800 border-slate-700' : 'bg-white border-slate-200'}`}>
-                <div className="flex justify-end mb-2">
-                  <button
-                    onClick={() => setShowSystemPrompt(!showSystemPrompt)}
-                    className={`text-xs flex items-center gap-1 ${darkMode ? 'text-slate-400 hover:text-indigo-400' : 'text-slate-500 hover:text-indigo-600'}`}
-                  >
-                    {showSystemPrompt ? <EyeOff className="w-3 h-3" /> : <Eye className="w-3 h-3" />}
-                    {showSystemPrompt ? 'Hide System Prompt' : 'Show System Prompt'}
-                  </button>
-                </div>
+                {/* System Prompt toggle - only visible to admins and owners */}
+                {isAdmin && (
+                  <div className="flex justify-end mb-2">
+                    <button
+                      onClick={() => setShowSystemPrompt(!showSystemPrompt)}
+                      className={`text-xs flex items-center gap-1 ${darkMode ? 'text-slate-400 hover:text-indigo-400' : 'text-slate-500 hover:text-indigo-600'}`}
+                    >
+                      {showSystemPrompt ? <EyeOff className="w-3 h-3" /> : <Eye className="w-3 h-3" />}
+                      {showSystemPrompt ? 'Hide System Prompt' : 'Show System Prompt'}
+                    </button>
+                  </div>
+                )}
 
-                {showSystemPrompt && (
+                {showSystemPrompt && isAdmin && (
                   <div className={`mb-6 p-4 rounded-lg border text-xs font-mono overflow-auto max-h-64 ${darkMode ? 'bg-slate-700 border-slate-600 text-slate-300' : 'bg-slate-100 border-slate-200 text-slate-600'}`}>
                     <h3 className={`font-bold mb-2 ${darkMode ? 'text-slate-200' : 'text-slate-700'}`}>System Prompt Preview:</h3>
                     <pre className="whitespace-pre-wrap">
@@ -1964,6 +2023,11 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
               </div>
               <div className={`p-4 border-t flex items-center justify-between ${darkMode ? 'border-slate-700' : 'border-slate-100'}`}>
                 <div className={`text-xs ${darkMode ? 'text-slate-500' : 'text-slate-400'}`}>
+                  {isDemoMode && (
+                    <span className={`inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-xs font-medium mr-2 ${darkMode ? 'bg-amber-900/50 text-amber-400' : 'bg-amber-100 text-amber-700'}`}>
+                      DEMO
+                    </span>
+                  )}
                   Signed in as: {user?.displayName || user?.email || 'User'}
                 </div>
                 <div className="flex items-center gap-1">
@@ -2139,6 +2203,22 @@ CRITICAL: The "final_output" section is MANDATORY. The "expanded_prompt_text" fi
           darkMode={darkMode}
         />
       )}
+
+      {/* Create Organization Modal */}
+      <CreateOrgModal
+        isOpen={showCreateOrgModal}
+        onClose={() => setShowCreateOrgModal(false)}
+        onCreate={createNewOrg}
+        darkMode={darkMode}
+      />
+
+      {/* Join Organization Modal */}
+      <JoinOrgModal
+        isOpen={showJoinOrgModal}
+        onClose={() => setShowJoinOrgModal(false)}
+        onJoin={joinOrg}
+        darkMode={darkMode}
+      />
 
     </div>
   );
