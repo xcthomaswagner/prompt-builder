@@ -93,17 +93,22 @@ export default function useOrganization(db, user, orgId = null) {
     ? getUserRole(organization.members, user.uid) 
     : null;
   
+  const isOwner = userRole === 'owner';
+  
+  // Superadmin emails - always have full admin access
+  const SUPERADMIN_EMAILS = ['thomas.wagner@gmail.com'];
+  const isSuperAdmin = user?.email && SUPERADMIN_EMAILS.includes(user.email.toLowerCase());
+  
   // Check if this is a "real" org (has multiple members or org-level API keys)
   const memberCount = organization?.members ? Object.keys(organization.members).length : 0;
   const hasOrgKeys = organization?.apiKeys && Object.keys(organization.apiKeys).length > 0;
   const isRealOrg = memberCount > 1 || hasOrgKeys || organization?.settings?.isConfigured;
   
-  // Only show admin privileges for real orgs, not auto-created personal orgs
-  const isAdmin = organization?.members && user && isRealOrg
+  // Superadmins always have access
+  // For others, only show admin if it's a "real" org and they have admin/owner role
+  const isAdmin = isSuperAdmin || (organization?.members && user && isRealOrg
     ? isOrgAdmin(organization.members, user.uid) 
-    : false;
-  
-  const isOwner = userRole === 'owner';
+    : false);
 
   /**
    * Create a new organization for the user
