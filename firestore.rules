@@ -1,0 +1,102 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper function to check if user is authenticated
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    // Helper function to check if user owns the document
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    // Helper function to check if user is a member of an organization
+    function isOrgMember(orgId) {
+      return isAuthenticated() &&
+        exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.orgId == orgId;
+    }
+
+    // Helper function to check if user is an admin of an organization
+    function isOrgAdmin(orgId) {
+      return isOrgMember(orgId) &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+
+    // Users collection
+    match /users/{userId} {
+      // Users can read and write their own document
+      allow read, write: if isOwner(userId);
+
+      // Subcollections under users
+      match /prompt_history/{historyId} {
+        allow read, write: if isOwner(userId);
+      }
+
+      match /settings/{settingId} {
+        allow read, write: if isOwner(userId);
+      }
+
+      match /prompt_outcomes/{outcomeId} {
+        allow read, write: if isOwner(userId);
+      }
+
+      match /experiments/{experimentId} {
+        allow read, write: if isOwner(userId);
+
+        match /results/{resultId} {
+          allow read, write: if isOwner(userId);
+        }
+      }
+
+      match /experiment_settings/{settingId} {
+        allow read, write: if isOwner(userId);
+      }
+    }
+
+    // Organizations collection
+    match /organizations/{orgId} {
+      // Members can read their organization
+      allow read: if isOrgMember(orgId);
+      // Only admins can write to organization
+      allow write: if isOrgAdmin(orgId);
+      // Allow create for authenticated users (creating new org)
+      allow create: if isAuthenticated();
+
+      // Usage logs subcollection
+      match /usage_logs/{logId} {
+        allow read: if isOrgMember(orgId);
+        allow write: if isOrgMember(orgId);
+      }
+
+      // Monthly usage aggregates
+      match /usage_monthly/{monthId} {
+        allow read: if isOrgMember(orgId);
+        allow write: if isOrgMember(orgId);
+      }
+    }
+
+    // Invites collection
+    match /invites/{inviteCode} {
+      // Anyone authenticated can read invites (to validate invite codes)
+      allow read: if isAuthenticated();
+      // Only org admins can create invites for their org
+      allow create: if isAuthenticated() &&
+        request.resource.data.orgId != null &&
+        isOrgAdmin(request.resource.data.orgId);
+      // Only org admins can update/delete invites
+      allow update, delete: if isAuthenticated() &&
+        resource.data.orgId != null &&
+        isOrgAdmin(resource.data.orgId);
+    }
+
+    // Prompt specs collection (if used globally)
+    match /prompt_specs/{specId} {
+      allow read: if isAuthenticated();
+      allow write: if isAuthenticated();
+    }
+  }
+}
